@@ -63,12 +63,15 @@ export function drawWokStation(ctx, g, now, slot) {
       if (w.anim > 0.6) drawFlameBurst(ctx, cx, r.y + 44, now);
     } else if (w.state === 'burning') {
       drawBurnFlames(ctx, cx, r.y + 44, now);
-      // Dark pill over the flames so the alarm always reads.
+      // Solid bright-red pill so the alarm pops on the dark teal
+      // floor, with crisp white bold text.
       const pulse = 0.8 + 0.2 * Math.sin(now * 8);
       ctx.save(); ctx.globalAlpha = pulse;
-      ctx.fillStyle = 'rgba(18,10,6,0.88)';
+      ctx.fillStyle = '#d92d20';
       roundRectPath(ctx, cx - 96, r.y + 12, 192, 20, 10); ctx.fill();
-      ctx.fillStyle = '#ff5a2e';
+      ctx.strokeStyle = '#1a120b'; ctx.lineWidth = 1.5;
+      roundRectPath(ctx, cx - 96, r.y + 12, 192, 20, 10); ctx.stroke();
+      ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 11px system-ui, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('BURNING! CLICK TO TOSS', cx, r.y + 26);

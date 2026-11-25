@@ -104,5 +104,5 @@ export function drawBellStation(ctx, g, now) {
   ctx.fillStyle = '#5d3a1e';
   ctx.beginPath(); ctx.arc(0, 30, 5, 0, Math.PI * 2); ctx.fill();
   ctx.restore();
-  pillText(ctx, ready ? 'RING IT!' : 'Serve a full dish', cx, r.y + r.h - 14, 'bold 12px system-ui, sans-serif', ready ? '#ffd94d' : '#c9b48a');
+  pillText(ctx, ready ? 'RING IT!' : 'Serve a full dish', cx, r.y + r.h - 28, 'bold 12px system-ui, sans-serif', ready ? '#ffd94d' : '#c9b48a');
 }

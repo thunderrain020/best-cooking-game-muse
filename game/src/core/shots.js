@@ -50,8 +50,9 @@ export function setupShot(name) {
     g.chef = chef(300, 480, 'up', [{ x: 300, y: 502, t: 0.3 }, { x: 300, y: 524, t: 0.6 }]);
     g.upgrades = { knives: true, wok: true, pass: false, calm: false, bell: false, pot: false };
     g.relics = { ember: true, star: true };
-    // PERFECT float in the open corridor above wok 2, clear of its tag.
-    g.floats = [{ x: 518, y: 520, text: '+24 PERFECT!', color: '#ffd94d', t: 0.2 }];
+    // PERFECT float in the open floor corridor between island and bell:
+    // clear of the island, the bell, the dish label and the route line.
+    g.floats = [{ x: 775, y: 390, text: '+24 PERFECT!', color: '#ffd94d', t: 0.2 }];
     g.toast = null;
     g.shot = 'cover';
     return g;
@@ -97,8 +98,9 @@ export function setupShot(name) {
     g.chef = chef(820, 520, 'right', [{ x: 796, y: 520, t: 0.3 }, { x: 772, y: 520, t: 0.6 }]);
     g.upgrades = { knives: true, wok: true, pass: true, calm: true, bell: true, pot: false };
     g.relics = { ember: true, lantern: true, star: true };
-    // COMBO float in the open corridor above the bottom row.
-    g.floats = [{ x: 760, y: 480, text: 'COMBO x1.8!', color: '#ffd94d', t: 0.1 }];
+    // COMBO float in the same open corridor: clear of the island, the
+    // bell, the wok/pot tags below and the chef's route line.
+    g.floats = [{ x: 775, y: 390, text: 'COMBO x1.8!', color: '#ffd94d', t: 0.1 }];
     g.toast = null;
     g.shot = 'rush';
     return g;
