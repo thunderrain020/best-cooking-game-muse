@@ -5,6 +5,7 @@
 import { INGREDIENTS, DISHES, dishById } from '../data/recipes.js';
 import { chopHitsNeeded, potDuration, wokDuration, wokPerfect, trayCap } from '../core/state.js';
 import { spawnSteam, spawnSparks, spawnFlameBurst } from '../render/particles.js';
+import { setBonusActive } from './upgrades.js';
 import { noteGoal } from './goals.js';
 import { checkFeats } from '../data/feats.js';
 
@@ -93,7 +94,8 @@ export function pullWok(g, audio) {
   const bx = w.slot === 1 ? 518 : 314;
   if (frac >= w.perfect[0] && frac <= w.perfect[1]) {
     g.stats.perfects += 1;
-    const bonus = 4 + (g.relics.ember ? 3 : 0);
+    // V8 EMBER set bonus: 2+ EMBER pieces pay +$4 on every PERFECT sear.
+    const bonus = 4 + (g.relics.ember ? 3 : 0) + (setBonusActive(g, 'EMBER') ? 4 : 0);
     g.coins += bonus;
     addFloat(g, fx, fy, 'PERFECT SEAR!\n+$' + bonus, '#ffd94d');
     spawnFlameBurst(g, bx, 580);

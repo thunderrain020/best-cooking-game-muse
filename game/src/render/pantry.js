@@ -63,7 +63,7 @@ export function drawCrates(ctx, g) {
 
 export function drawTrash(ctx, g) {
   const r = TRASH_RECT;
-  stationTag(ctx, r.x + r.w / 2, r.y, 'TRASH BIN', 'click with hand to toss');
+  stationTag(ctx, r.x + r.w / 2, r.y, 'TRASH BIN', null);
   contactShadow(ctx, r.x + r.w / 2, r.y + r.h + 2, 44, 6);
   ctx.fillStyle = '#3c3e48';
   roundRectPath(ctx, r.x + 16, r.y + 16, 80, 58, 8); ctx.fill();
@@ -85,7 +85,7 @@ export function drawTrash(ctx, g) {
 
 export function drawTray(ctx, g) {
   const r = GARNISH_RECT;
-  stationTag(ctx, r.x + r.w / 2, r.y, 'GARNISH & SAUCE', 'click tray to take');
+  stationTag(ctx, r.x + r.w / 2, r.y, 'GARNISH & SAUCE', null);
   contactShadow(ctx, r.x + r.w / 2, r.y + r.h - 4, 84, 8);
   ctx.fillStyle = '#8a5a33';
   roundRectPath(ctx, r.x + 6, r.y + 12, r.w - 12, r.h - 24, 10); ctx.fill();

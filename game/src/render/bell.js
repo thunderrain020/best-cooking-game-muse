@@ -10,7 +10,7 @@ import { BELL_RECT } from './layout.js';
 
 export function drawBellStation(ctx, g, now) {
   const r = BELL_RECT;
-  stationTag(ctx, r.x + r.w / 2, r.y, 'PASS · SERVE', 'Space · ring the bell');
+  stationTag(ctx, r.x + r.w / 2, r.y, 'SERVE', 'SPC');
   const ready = !!g.plate.dishId;
   const cx = r.x + r.w / 2;
   // Overhead brass heat lamp: shade at the top, a warm cone of light.

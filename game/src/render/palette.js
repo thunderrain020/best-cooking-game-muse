@@ -98,26 +98,40 @@ export function stationLabel(ctx, x, y, w, label, key) {  // Crisp #fff6e5 bold 
   ctx.restore();
 }
 
-// V2 top-down station tag: the name pill floats just above the equipment
-// and the key hint sits below it, so neither ever covers the art or a
-// label underneath. `y` is the top of the equipment rect.
-export function stationTag(ctx, cx, y, label, key) {
+// V2 top-down station tag: one compact pill with the keycap badge
+// fused into it — the key ([Q], [F], [T], [R], [SPC], [G]) sits in a
+// gold square at the pill's left edge, so there is no second line of
+// hint text under the pill and the floor around every station stays
+// clean. `keycap` may be null (trash, garnish) for a bare label pill.
+// `y` is the top of the equipment rect.
+export function stationTag(ctx, cx, y, label, keycap) {
   ctx.save();
+  ctx.font = 'bold 10px system-ui, sans-serif';
+  const kw = keycap ? Math.max(20, ctx.measureText(keycap).width + 10) : 0;
   ctx.font = 'bold 14px Georgia, serif';
-  const lw = ctx.measureText(label).width + 24;
+  const lw = ctx.measureText(label).width;
+  const w = lw + 24 + (keycap ? kw + 8 : 0);
   ctx.fillStyle = 'rgba(18,10,6,0.88)';
-  roundRectPath(ctx, cx - lw / 2, y - 30, lw, 24, 12);
+  roundRectPath(ctx, cx - w / 2, y - 30, w, 24, 12);
   ctx.fill();
   ctx.strokeStyle = '#d4a017';
   ctx.lineWidth = 1.5;
-  roundRectPath(ctx, cx - lw / 2, y - 30, lw, 24, 12);
+  roundRectPath(ctx, cx - w / 2, y - 30, w, 24, 12);
   ctx.stroke();
+  if (keycap) {
+    ctx.fillStyle = '#ffd94d';
+    roundRectPath(ctx, cx - w / 2 + 3, y - 27, kw, 18, 4);
+    ctx.fill();
+    ctx.fillStyle = '#1a120b';
+    ctx.font = 'bold 10px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(keycap, cx - w / 2 + 3 + kw / 2, y - 14);
+  }
   ctx.fillStyle = '#fff6e5';
+  ctx.font = 'bold 14px Georgia, serif';
   ctx.textAlign = 'center';
-  ctx.fillText(label, cx, y - 13);
-  ctx.fillStyle = '#ffd94d';
-  ctx.font = 'bold 10px system-ui, sans-serif';
-  ctx.fillText(key, cx, y - 1);
+  const labelCx = keycap ? cx - w / 2 + kw + 8 + 12 + lw / 2 : cx;
+  ctx.fillText(label, labelCx, y - 13);
   ctx.restore();
 }
 

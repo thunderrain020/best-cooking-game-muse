@@ -8,6 +8,7 @@
 // Endless Rush unlocks: nights keep coming, harder, until service ends.
 
 import { mulberry32 } from './util.js';
+import { setBonusActive } from '../systems/upgrades.js';
 
 export const SHIFT_LENGTH = 150; // seconds per shift
 export const TOTAL_SHIFTS = 7;
@@ -129,7 +130,7 @@ export function patienceFor(g, dish) {
   const base = dish.vip ? 70 : 55;
   const critic = dish.id === CRITIC_DISH ? 20 : 0;
   const quill = dish.id === CRITIC_DISH && g.relics.quill ? 20 : 0;
-  return base + critic + quill + (g.upgrades.calm ? 12 : 0) + g.shift * 2 + diff.patience;
+  return base + critic + quill + (g.upgrades.calm ? 12 : 0) + (setBonusActive(g, 'HARBOUR') ? 10 : 0) + g.shift * 2 + diff.patience;
 }
 
 export function tipMultiplier(g) {

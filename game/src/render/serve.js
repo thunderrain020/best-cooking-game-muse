@@ -15,7 +15,7 @@ export function drawPlateStation(ctx, g, now) {
   const r = ISLAND_RECT;
   const dish = g.plate.dishId ? dishById(g.plate.dishId) : null;
   const total = dish ? dish.comps.length : Math.max(3, g.plate.items.length);
-  stationTag(ctx, r.x + r.w / 2, r.y, 'PLATING ISLAND', 'R · click to stack');
+  stationTag(ctx, r.x + r.w / 2, r.y, 'PLATE', 'R');
   // Island slab: dark walnut base, warm maple top, brass trim. The slab
   // runs to the island's bottom edge so the dish label pill sits on it.
   contactShadow(ctx, r.x + r.w / 2, r.y + r.h - 4, 150, 10);

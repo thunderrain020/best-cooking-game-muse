@@ -96,7 +96,7 @@ export function drawBurnFlames(ctx, cx, y, now) {
   }
   for (let i = 0; i < 3; i++) {
     // Smoke capped below the wok tag: it rises from the pan but never
-    // crosses the "W · Space to pull" sublabel above it.
+    // crosses the station tag pill above it.
     const sy = y - 20 - ((now * 26 + i * 23) % 24);
     const sx = cx - 18 + i * 18 + Math.sin(now * 2 + i * 2) * 5;
     ctx.fillStyle = 'rgba(30,20,20,0.55)';

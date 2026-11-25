@@ -12,6 +12,7 @@ import { drawIconBadge, drawChefMascot, drawStars } from '../render/iconBadges.j
 import { darkPanel } from '../render/palette.js';
 import { TOTAL_SHIFTS } from '../core/state.js';
 import { drawShiftChart, drawFeatsBadge, drawVictoryQuote } from './summaryChart.js';
+import { drawSetBadges } from '../render/setBadges.js';
 import { dim } from './titleOverlay.js';
 
 export function gradeRun(g) {
@@ -94,10 +95,12 @@ export function drawSummary(ctx, g) {
     ctx.font = '14px system-ui, sans-serif';
     ctx.fillText('No perks picked up this run.', 640, 450);
   }
+  // V8: live set-bonus badges under the perks strip.
+  drawSetBadges(ctx, g, 640, 464);
   // DISHES SERVED: miniature illustrated plates.
   ctx.fillStyle = '#ffd94d';
   ctx.font = 'bold 13px system-ui, sans-serif';
-  ctx.fillText('DISHES SERVED', 640, 486);
+  ctx.fillText('DISHES SERVED', 640, 494);
   const served = (g.servedDishes || []).slice(0, 6);
   if (served.length) {
     const start = 640 - ((served.length - 1) * 108) / 2;
@@ -105,15 +108,15 @@ export function drawSummary(ctx, g) {
       const d = dishById(id);
       if (!d) return;
       const x = start + i * 108;
-      drawDishPlate(ctx, d, x, 514, 18, 0);
+      drawDishPlate(ctx, d, x, 522, 18, 0);
       ctx.fillStyle = '#d8cdb4';
       ctx.font = '10px system-ui, sans-serif';
-      ctx.fillText(d.name, x, 544);
+      ctx.fillText(d.name, x, 552);
     });
   } else {
     ctx.fillStyle = '#d8cdb4';
     ctx.font = '14px system-ui, sans-serif';
-    ctx.fillText('—', 640, 516);
+    ctx.fillText('—', 640, 524);
   }
   const best = 'BEST RUN: ' + fmtCoins(g.best.score) + ' earned · reached Shift ' + g.best.shift;  ctx.font = 'bold 15px system-ui, sans-serif';
   const bw = ctx.measureText(best).width + 28;

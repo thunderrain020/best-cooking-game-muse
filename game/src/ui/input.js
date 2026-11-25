@@ -1,8 +1,8 @@
 // Ember & Tide — ui/input.js
-// Mouse and keyboard input. WASD / arrows walk the chef (held keys live
-// in view.keys), Space / E uses the nearest station, Q / F / T / R stroll
-// the chef to a station and act, 1-9 and 0 stroll to a crate and grab.
-// Clicking a crate or station strolls the chef there and acts on arrival.
+// Mouse and keyboard input. WASD / arrows walk; Space / E uses the
+// nearest station; Q / F / G / T / R stroll to a station and act;
+// 1-9 and 0 grab from crates. Clicking a crate or station strolls
+// there and acts on arrival.
 
 import { INGREDIENT_ORDER } from '../data/recipes.js';
 import { clearHand } from '../systems/kitchen.js';
@@ -77,7 +77,7 @@ function handleClick(api, mx, my) {
   for (let i = 0; i < 10; i++) {
     if (pointInRect(mx, my, crateRect(i))) { goAct(g, 'crate:' + INGREDIENT_ORDER[i], audio); return; }
   }
-  // Open floor: stroll there (never inside a counter or a station).
+  // Open floor: stroll there.
   if (mx >= 10 && mx <= 1030 && my >= 176 && my <= 660) {
     const inside = obstacles().some((r) => pointInRect(mx, my, r));
     if (!inside) walkTo(g, mx, my, null);
@@ -128,6 +128,8 @@ export function attachInput(canvas, api, view, shotName) {
     if (k === ' ' || k === 'e') { e.preventDefault(); interactNearest(g, audio); return; }
     if (k === 'q') goAct(g, 'board0', audio);
     if (k === 'f') goAct(g, 'wok0', audio);
+    // V8: G strolls to the charcoal grill (wok slot 1).
+    if (k === 'g') goAct(g, 'wok1', audio);
     if (k === 't') goAct(g, 'pot', audio);
     if (k === 'r') goAct(g, 'plate', audio);
   });

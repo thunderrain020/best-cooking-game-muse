@@ -9,6 +9,7 @@
 import { DISHES, INGREDIENTS, dishById } from '../data/recipes.js';
 import { maxTickets, patienceFor, tipMultiplier, shiftTarget, CRITIC_DISH, TOTAL_SHIFTS, DIFFICULTIES, CLEAN_ROUTE_BONUS } from '../core/state.js';
 import { pick } from '../core/util.js';
+import { setBonusActive } from './upgrades.js';
 import { batchShared, cleanRouteCheck } from './route.js';
 import { noteGoal } from './goals.js';
 import { checkFeats } from '../data/feats.js';
@@ -131,6 +132,8 @@ export function servePlate(g, audio) {
   let pay = dish.price + tip + (t.vip ? 6 : 0) + (t.vip && g.relics.star ? 6 : 0);
   if (t.mod === 'EXTRA SEAR') pay += 4;
   if (t.mod === 'DOUBLE CHILLI') pay += 3;
+  // V8 TIDE set bonus: 2+ TIDE pieces pay +$2 tip on every serve.
+  if (setBonusActive(g, 'TIDE')) pay += 2;
   if (batch) pay += 2;
   if (cleanRoute) pay += CLEAN_ROUTE_BONUS;
   if (g.rush && g.relics.chain) pay += 2;

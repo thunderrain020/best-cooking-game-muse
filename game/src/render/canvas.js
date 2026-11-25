@@ -122,7 +122,7 @@ export function drawScene(ctx, g, view) {
   ctx.fillStyle = '#fff6e5';
   ctx.font = 'bold 14px system-ui, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('WASD / arrows walk · Space / E interact · 1–9, 0 grab ingredient · Q chop · F wok · T pot · R plate · L recipe ledger · click a crate or station to stroll there', 640, 686);
+  ctx.fillText('WASD / arrows walk · Space / E interact · 1–9, 0 grab ingredient · Q chop · F wok · G grill · T pot · R plate · L recipe ledger · click a crate or station to stroll there', 640, 686);
   ctx.fillStyle = '#ffd94d';
   ctx.font = 'italic 13px Georgia, serif';
   ctx.fillText('Ember & Tide — a rooftop harbour kitchen. No network, no build step, just dinner service.', 640, 706);

@@ -14,10 +14,10 @@ export function drawPotStation(ctx, g, now) {
   const r = POT_RECT;
   const cx = r.x + r.w / 2;
   const p = g.pot;
-  // Tag raised 6px and steam/bubbles capped below it: the key line now
-  // sits at r.y-7, steam tops out at r.y+2, bubbles at r.y+4 — the
-  // "E · it finishes itself" line never touches steam, bubbles or rim.
-  stationTag(ctx, cx, r.y - 6, 'SIMMER POT', 'E · it finishes itself');
+  // Tag raised 6px and steam/bubbles capped below it: the tag pill
+  // now sits at r.y-36, steam tops out at r.y+2, bubbles at r.y+4 —
+  // steam never touches the pill, bubbles or rim.
+  stationTag(ctx, cx, r.y - 6, 'POT', 'T');
   contactShadow(ctx, cx, r.y + 100, 62, 8);
   drawBurner(ctx, cx, r.y + 96, now, p.state === 'cooking');
   const grad = ctx.createLinearGradient(r.x, r.y + 18, r.x, r.y + 92);

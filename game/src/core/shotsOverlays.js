@@ -15,7 +15,9 @@ export function setupPrep() {
   g.shopChoices = ['batch', 'twin', 'wok'];
   g.relicChoices = ['crisp', 'chain', 'lantern'];
   g.upgrades = { knives: true, wok: false, pass: false, calm: false, bell: false, pot: false, batch: false, twin: false };
-  g.relics = { ember: false, crisp: false, chain: false, lantern: false };
+  // V8: Ember Charm owned, so the draft cards show live set progress
+  // (EMBER 1/6, HARBOUR 1/5 via Sharper Knives) on their set tags.
+  g.relics = { ember: true, crisp: false, chain: false, lantern: false };
   g.feats = { 'first-perfect': true, 'perfect-chef': true, 'vip-maestro': true, 'combo-5': true, 'gold-rush': true };
   g.tickets = [ticket(g, 'ember-prawns', 41, 57), ticket(g, 'egg-rice', 38, 57)];
   g.board = { item: 'chilli', chops: 1, chopsNeeded: 3, anim: 0.9, slot: 0 };

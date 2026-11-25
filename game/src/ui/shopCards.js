@@ -7,6 +7,7 @@
 
 import { fmtCoins, roundRectPath } from '../core/util.js';
 import { drawIconBadge } from '../render/iconBadges.js';
+import { setCounts, RARITY_COLORS } from '../systems/upgrades.js';
 
 export const CARD_X = [460, 690, 920];
 export const CARD_W = 210;
@@ -44,9 +45,23 @@ export function drawCard(ctx, g, u, x, y) {
   ctx.fillStyle = '#fff6e5';
   ctx.font = 'bold 14px Georgia, serif';
   ctx.fillText(u.name, x + 68, y + 30);
-  ctx.fillStyle = u.kind === 'relic' ? '#d8a0f0' : '#ffd94d';
+  // V8: rarity pill in its set colour + the set progress tag
+  // ("EMBER 1/6") so the draft reads at a glance. The set tag runs
+  // at 9px with a 6px gap so even the longest pair (MYTHIC +
+  // "HARBOUR 2/5") stays inside the 210px card.
+  const rc = RARITY_COLORS[u.rarity];
   ctx.font = 'bold 10px system-ui, sans-serif';
-  ctx.fillText(u.kind === 'relic' ? 'RELIC · ' + u.short : 'UPGRADE · ' + u.short, x + 68, y + 48);
+  const rw = ctx.measureText(u.rarity).width + 12;
+  ctx.fillStyle = rc.fill;
+  roundRectPath(ctx, x + 68, y + 36, rw, 16, 8); ctx.fill();
+  ctx.fillStyle = rc.text;
+  ctx.textAlign = 'center';
+  ctx.fillText(u.rarity, x + 68 + rw / 2, y + 48);
+  const sc = setCounts(g)[u.set];
+  ctx.fillStyle = '#ffd94d';
+  ctx.font = 'bold 9px system-ui, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText(u.set + ' ' + sc.owned + '/' + sc.total, x + 68 + rw + 6, y + 48);
   ctx.fillStyle = '#d8cdb4';
   ctx.font = '12px system-ui, sans-serif';
   ctx.textAlign = 'center';

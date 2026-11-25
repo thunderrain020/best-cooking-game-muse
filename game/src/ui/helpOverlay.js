@@ -19,7 +19,7 @@ export function drawHelp(ctx, g) {
     'the chef strolls over and does it. Space / E uses the nearest station.',
     '1. Click a pantry crate (or press 1–8) to take an ingredient.',
     '2. Chilli, lime, herbs → CHOP BOARD — Q to chop.',
-    '3. Prawn, fish, egg → WOK — pull in the green PERFECT window.',
+    '3. Prawn, fish, egg, scallop → WOK (F) or CHARCOAL GRILL (G) — pull in the green PERFECT window.',
     '4. Rice, noodles → SIMMER POT — it finishes itself.',
     '5. Click the tray, then the PLATING ISLAND, to stack a dish.',
     '6. Ring the PASS BELL to serve the matching ticket.',

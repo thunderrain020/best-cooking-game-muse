@@ -7,6 +7,7 @@
 
 import { fmtClock, fmtCoins, fmtMult, roundRectPath } from '../core/util.js';
 import { TOTAL_SHIFTS, comboMult } from '../core/state.js';
+import { drawHudSetBadges } from './setBadges.js';
 
 export function topBarButtons() {
   return {
@@ -34,6 +35,9 @@ export function drawTopBar(ctx, g) {
   ctx.fillStyle = g.combo > 1 ? '#ffd94d' : '#c9b48a';
   ctx.font = 'bold 16px system-ui, sans-serif';
   ctx.fillText(g.combo > 1 ? 'COMBO ' + fmtMult(comboMult(g)) + ' (' + g.combo + ')' : 'COMBO —', 600, 30);
+  // V8: live set-bonus badges (2+ pieces) between the combo and the
+  // timer — compact, and they stop before the timer's left edge.
+  drawHudSetBadges(ctx, g, 682, 12, 984);
   const low = g.shiftLeft < 30;
   ctx.fillStyle = low ? '#ff6b4a' : '#fdf6e3';
   ctx.font = 'bold 26px system-ui, sans-serif';
