@@ -106,8 +106,7 @@ export function setupShot(name) {
     return g;
   }
   if (name === 'upgrades') {
-    // End-of-run Victory summary: Grade, shift-by-shift breakdown, best
-    // run, and the Replay / New Seed buttons — the payoff screen.
+    // End-of-run Victory summary (Grade, chart, best run, buttons).
     const g = base({ coins: 486, earned: 512, combo: 0, bestCombo: 8, served: 27, shift: 5, shiftServed: 4, shiftLeft: 0, time: 150 });
     g.mode = 'over';
     g.result = { won: true, reason: 'The Harbour Critic gave the Tide & Ember Special five stars!' };
@@ -115,6 +114,7 @@ export function setupShot(name) {
     g.stats = { perfects: 9, burns: 1, vipServed: 4, criticServed: 1 };
     g.failed = 1;
     g.shiftScores = [5, 6, 7, 5, 4];
+    g.servedDishes = ['prawn-rice', 'fish-noodles', 'spicy-noodles', 'tide-special', 'sunset-bowl', 'ember-prawns'];
     g.upgrades = { knives: true, wok: true, pass: true, calm: false, bell: true, pot: false };
     g.relics = { ember: true, lantern: true, star: true };
     g.tickets = [ticket(g, 'prawn-rice', 20, 57)];

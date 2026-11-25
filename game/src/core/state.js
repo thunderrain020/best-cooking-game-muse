@@ -34,6 +34,7 @@ export function createGame(seed = 20261125) {
     coins: 0,
     earned: 0,
     served: 0,
+    servedDishes: [], // dish ids served this run, in order (summary row)
     failed: 0, // tickets that walked out (lose at 3)
     combo: 0,
     bestCombo: 0,

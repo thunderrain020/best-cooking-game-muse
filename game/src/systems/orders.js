@@ -105,6 +105,8 @@ export function servePlate(g, audio) {
   g.coins += pay;
   g.earned += pay;
   g.served += 1;
+  g.servedDishes.push(dishId);
+  if (g.servedDishes.length > 12) g.servedDishes.shift();
   g.shiftServed += 1;
   g.combo += 1;
   g.bestCombo = Math.max(g.bestCombo, g.combo);

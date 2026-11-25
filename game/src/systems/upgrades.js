@@ -24,8 +24,8 @@ export const RELICS = [
 
 export function ownedBadges(g) {
   const out = [];
-  for (const u of UPGRADES) if (g.upgrades[u.id]) out.push({ icon: u.icon, short: u.short, name: u.name, kind: 'upgrade' });
-  for (const r of RELICS) if (g.relics[r.id]) out.push({ icon: r.icon, short: r.short, name: r.name, kind: 'relic' });
+  for (const u of UPGRADES) if (g.upgrades[u.id]) out.push({ id: u.id, icon: u.icon, short: u.short, name: u.name, kind: 'upgrade' });
+  for (const r of RELICS) if (g.relics[r.id]) out.push({ id: r.id, icon: r.icon, short: r.short, name: r.name, kind: 'relic' });
   return out;
 }
 

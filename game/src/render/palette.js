@@ -120,3 +120,32 @@ export function stationTag(ctx, cx, y, label, key) {
   ctx.fillText(key, cx, y - 1);
   ctx.restore();
 }
+
+// Dark-indigo panel with a warm-gold frame and glowing lantern dots along
+// the top edge: the shared overlay panel for the shop and victory card.
+export function darkPanel(ctx, x, y, w, h) {
+  ctx.fillStyle = '#1e1b3a';
+  ctx.shadowColor = 'rgba(0,0,0,0.5)';
+  ctx.shadowBlur = 24;
+  ctx.shadowOffsetY = 6;
+  roundRectPath(ctx, x, y, w, h, 16);
+  ctx.fill();
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetY = 0;
+  ctx.strokeStyle = '#d4a017';
+  ctx.lineWidth = 3;
+  roundRectPath(ctx, x, y, w, h, 16);
+  ctx.stroke();
+  ctx.strokeStyle = 'rgba(212,160,23,0.35)';
+  ctx.lineWidth = 1;
+  roundRectPath(ctx, x + 7, y + 7, w - 14, h - 14, 12);
+  ctx.stroke();
+  for (let i = 0; i < 12; i++) {
+    const lx = x + 60 + i * ((w - 120) / 11);
+    ctx.fillStyle = 'rgba(255,180,80,0.25)';
+    ctx.beginPath(); ctx.arc(lx, y + 14, 8, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#ffcd6e';
+    ctx.beginPath(); ctx.arc(lx, y + 14, 3.5, 0, Math.PI * 2); ctx.fill();
+  }
+}
