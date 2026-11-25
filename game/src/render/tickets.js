@@ -11,7 +11,7 @@ import { fmtCoins, roundRectPath, clamp } from '../core/util.js';
 import { drawShimmer } from './feel.js';
 
 export function ticketRect(i) {
-  return { x: 14 + i * 194, y: 92, w: 186, h: 80 };
+  return { x: 14 + i * 194, y: 82, w: 186, h: 80 };
 }
 
 export function drawTicket(ctx, g, t, i, now) {
@@ -102,12 +102,12 @@ export function drawTicket(ctx, g, t, i, now) {
 
 export function drawBoardPanel(ctx, g, now) {
   ctx.fillStyle = 'rgba(24,12,8,0.5)';
-  roundRectPath(ctx, 8, 88, 1024, 92, 12); ctx.fill();
+  roundRectPath(ctx, 8, 78, 1024, 86, 12); ctx.fill();
   if (!g.tickets.length) {
     ctx.fillStyle = 'rgba(255,246,227,0.7)';
     ctx.font = 'italic 14px Georgia, serif';
     ctx.textAlign = 'left';
-    ctx.fillText('No orders yet — the evening crowd is on its way…', 24, 130);
+    ctx.fillText('No orders yet — the evening crowd is on its way…', 24, 120);
   }
   g.tickets.forEach((t, i) => drawTicket(ctx, g, t, i, now));
 }

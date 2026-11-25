@@ -7,41 +7,41 @@ import { TOTAL_SHIFTS, comboMult } from '../core/state.js';
 
 export function topBarButtons() {
   return {
-    ledger: { x: 1100, y: 12, w: 52, h: 32 },
-    help: { x: 1160, y: 12, w: 52, h: 32 },
-    mute: { x: 1220, y: 12, w: 52, h: 32 },
+    ledger: { x: 1100, y: 8, w: 52, h: 32 },
+    help: { x: 1160, y: 8, w: 52, h: 32 },
+    mute: { x: 1220, y: 8, w: 52, h: 32 },
   };
 }
 
 export function drawTopBar(ctx, g) {
   ctx.fillStyle = 'rgba(24,12,8,0.72)';
-  ctx.fillRect(0, 0, 1280, 56);
+  ctx.fillRect(0, 0, 1280, 46);
   ctx.fillStyle = '#ffe6a8';
   ctx.font = 'bold 22px Georgia, serif';
   ctx.textAlign = 'left';
-  ctx.fillText('EMBER & TIDE', 16, 35);
+  ctx.fillText('EMBER & TIDE', 16, 29);
   ctx.fillStyle = '#fdf6e3';
   ctx.font = 'bold 18px system-ui, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText(fmtCoins(g.coins), 392, 35);
+  ctx.fillText(fmtCoins(g.coins), 392, 29);
   ctx.fillStyle = '#c9b48a';
   ctx.font = '12px system-ui, sans-serif';
-  ctx.fillText('SHIFT ' + g.shift + '/' + TOTAL_SHIFTS, 330, 35);
-  ctx.fillText('SERVED ' + g.served, 470, 35);
+  ctx.fillText('SHIFT ' + g.shift + '/' + TOTAL_SHIFTS, 330, 29);
+  ctx.fillText('SERVED ' + g.served, 470, 29);
   ctx.fillStyle = g.best.score > 0 ? '#ffd94d' : '#c9b48a';
   ctx.font = 'bold 12px system-ui, sans-serif';
-  ctx.fillText('BEST ' + fmtCoins(g.best.score) + ' · SHIFT ' + g.best.shift, 580, 35);
+  ctx.fillText('BEST ' + fmtCoins(g.best.score) + ' · SHIFT ' + g.best.shift, 580, 29);
   ctx.fillStyle = g.combo > 1 ? '#ffd94d' : '#c9b48a';
   ctx.font = 'bold 15px system-ui, sans-serif';
-  ctx.fillText(g.combo > 1 ? 'COMBO ' + fmtMult(comboMult(g)) + ' (' + g.combo + ')' : 'COMBO —', 760, 35);
+  ctx.fillText(g.combo > 1 ? 'COMBO ' + fmtMult(comboMult(g)) + ' (' + g.combo + ')' : 'COMBO —', 760, 29);
   const low = g.shiftLeft < 30;
   ctx.fillStyle = low ? '#ff6b4a' : '#fdf6e3';
   ctx.font = 'bold 26px system-ui, sans-serif';
   ctx.textAlign = 'right';
-  ctx.fillText(fmtClock(g.shiftLeft), 1060, 38);
+  ctx.fillText(fmtClock(g.shiftLeft), 1060, 32);
   ctx.fillStyle = '#c9b48a';
   ctx.font = '12px system-ui, sans-serif';
-  ctx.fillText('SHIFT ENDS', 1060, 52);
+  ctx.fillText('SHIFT ENDS', 1060, 44);
   ctx.textAlign = 'left';
   for (const [key, label] of [['ledger', 'BOOK'], ['help', '?'], ['mute', g.muted ? 'OFF' : 'SND']]) {
     const b = topBarButtons()[key];

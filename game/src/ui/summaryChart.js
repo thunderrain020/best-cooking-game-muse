@@ -19,6 +19,18 @@ export function drawFeatsBadge(ctx, g) {
   ctx.fillText('FEATS ' + featCount(g) + '/16', 946, 166);
 }
 
+// Post-shift quote line for the victory card: the regulars react to
+// the run. Sits between the stars and the stats, clear of both.
+export function drawVictoryQuote(ctx, g, won) {
+  ctx.fillStyle = '#ffd94d';
+  ctx.font = 'italic 14px Georgia, serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(
+    won ? '“Crisp sear!” — Critic Lin' : '“The harbour is still hungry…” — Capt. Budi',
+    640, 188,
+  );
+}
+
 export function drawShiftChart(ctx, g) {
   const scores = g.shiftScores || Array(TOTAL_SHIFTS).fill(0);
   const maxS = Math.max(1, ...scores);

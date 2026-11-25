@@ -1,13 +1,14 @@
 // Ember & Tide — render/goals.js
-// The GOALS checklist panel: in the open floor gap between the simmer
-// pot and the garnish station, below the pass bell and above the hint
-// bar. Three live shift objectives with a gold check when done. Pays
-// $10 per goal; the count also rides in the Route Planner pill up top.
+// The GOALS checklist panel: in the empty floor corner below CHOP
+// BOARD 2 (bottom-left), clear of every station. Three live shift
+// objectives with a gold check when done. Pays $10 per goal; the count
+// also rides in the Route Planner pill up top. V6: moved here from the
+// garnish station, where it covered the sauce bottles and tray slots.
 
 import { roundRectPath } from '../core/util.js';
 import { GOAL_REWARD } from '../systems/goals.js';
 
-export const GOALS_RECT = { x: 800, y: 566, w: 260, h: 88 };
+export const GOALS_RECT = { x: 16, y: 576, w: 196, h: 84 };
 
 export function drawGoals(ctx, g) {
   const r = GOALS_RECT;

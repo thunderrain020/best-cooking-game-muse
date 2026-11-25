@@ -13,8 +13,10 @@ import { CLEAN_ROUTE_BONUS } from '../core/state.js';
 
 // The open floor corridor: between the island's bottom edge and the top
 // of the bottom station headers. The dashed line and the numbered stop
-// circles live here, never on a station label or a dish title.
-export const ROUTE_Y = 501;
+// circles live here, never on a station label or a dish title. V6: the
+// corridor sits at y 494, 7px higher than V5, so the line and the stop
+// badges clear the SIMMER POT and GARNISH tag pills (tops at y 504).
+export const ROUTE_Y = 494;
 const CHEF_SPEED = 340; // px/s, matches systems/chef.js
 
 export function routeFor(g) {
@@ -71,9 +73,11 @@ function corridorPoint(p) {
 }
 
 function crossesIsland(a, b) {
-  // Conservative: the island rect grown by 4px on every side.
-  const x0 = ISLAND_RECT.x - 4, x1 = ISLAND_RECT.x + ISLAND_RECT.w + 4;
-  const y0 = ISLAND_RECT.y - 4, y1 = ISLAND_RECT.y + ISLAND_RECT.h + 4;
+  // The island rect grown by 1px: the route corridor runs 2px below
+  // the island's bottom edge, so a fatter margin would flag the corridor
+  // itself as a crossing and add a spurious detour jog.
+  const x0 = ISLAND_RECT.x - 1, x1 = ISLAND_RECT.x + ISLAND_RECT.w + 1;
+  const y0 = ISLAND_RECT.y - 1, y1 = ISLAND_RECT.y + ISLAND_RECT.h + 1;
   if (Math.max(a.x, b.x) < x0 || Math.min(a.x, b.x) > x1) return false;
   if (Math.max(a.y, b.y) < y0 || Math.min(a.y, b.y) > y1) return false;
   const t = (x0 - a.x) / (b.x - a.x);

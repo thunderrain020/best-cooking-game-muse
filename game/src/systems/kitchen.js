@@ -14,6 +14,8 @@ export function toast(g, text) {
 
 export function addFloat(g, x, y, text, color) {
   g.floats.push({ x, y, text, color: color || '#ffd94d', t: 0 });
+  // Celebratory two-line callouts burst sparks around the wok / bell.
+  if (text.includes('\n')) spawnSparks(g, x, y, 12);
 }
 
 export function grabIngredient(g, id, audio) {
@@ -93,7 +95,7 @@ export function pullWok(g, audio) {
     g.stats.perfects += 1;
     const bonus = 4 + (g.relics.ember ? 3 : 0);
     g.coins += bonus;
-    addFloat(g, fx, fy, 'PERFECT! +' + bonus, '#ffd94d');
+    addFloat(g, fx, fy, 'PERFECT SEAR!\n+$' + bonus, '#ffd94d');
     spawnFlameBurst(g, bx, 580);
     noteGoal(g, 'perfect', null, audio);
     checkFeats(g, 'perfect', null, audio);

@@ -40,7 +40,7 @@ function bump(g, id, n, audio) {
     goal.done = true;
     g.coins += GOAL_REWARD;
     g.earned += GOAL_REWARD;
-    if (g.floats) g.floats.push({ x: 930, y: 545, text: 'GOAL +$' + GOAL_REWARD, color: '#a8d94a', t: 0 });
+    if (g.floats) g.floats.push({ x: 114, y: 600, text: 'GOAL +$' + GOAL_REWARD, color: '#a8d94a', t: 0 });
     if (audio && audio.coin) audio.coin();
   }
 }

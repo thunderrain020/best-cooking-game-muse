@@ -48,8 +48,51 @@ export function drawFloats(ctx, g) {
     // rise is slow (16px over its life) so it never drifts up into the
     // station hint lines above the art.
     const y = f.y - f.t * 16;
+    const lines = f.text.split('\n');
     ctx.save();
     ctx.globalAlpha = Math.max(0, 1 - f.t / 1.4);
+    if (lines.length > 1) {
+      // Big celebratory callout (PERFECT SEAR! / STORM COMBO): two
+      // lines, a golden glow, and a spark burst around the pill.
+      ctx.font = 'bold 24px system-ui, sans-serif';
+      const w1 = ctx.measureText(lines[0]).width;
+      ctx.font = 'bold 19px system-ui, sans-serif';
+      const w2 = ctx.measureText(lines[1]).width;
+      const w = Math.max(w1, w2) + 40;
+      const px = f.x - w / 2, py = y - 34;
+      ctx.shadowColor = 'rgba(255,179,71,0.9)';
+      ctx.shadowBlur = 18;
+      ctx.fillStyle = 'rgba(24,12,8,0.92)';
+      ctx.strokeStyle = '#ffd94d';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.roundRect(px, py, w, 62, 18);
+      ctx.fill();
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      // Spark burst: eight gold 4-point stars ringing the pill,
+      // twinkling as the callout rises.
+      for (let i = 0; i < 8; i++) {
+        const a = (i / 8) * Math.PI * 2 + f.t * 2;
+        const sx = f.x + Math.cos(a) * (w / 2 + 10 + (i % 3) * 5);
+        const sy = y - 3 + Math.sin(a) * 34;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, 1 - f.t / 1.4) * (0.55 + 0.45 * Math.sin(f.t * 9 + i * 2.1));
+        ctx.strokeStyle = '#ffd94d';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(sx - 5, sy); ctx.lineTo(sx + 5, sy);
+        ctx.moveTo(sx, sy - 5); ctx.lineTo(sx, sy + 5);
+        ctx.stroke();
+        ctx.fillStyle = '#fff3c4';
+        ctx.beginPath(); ctx.arc(sx, sy, 1.8, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      }
+      outlineText(ctx, lines[0], f.x, y - 12, 'bold 24px system-ui, sans-serif', f.color || '#ffd94d');
+      outlineText(ctx, lines[1], f.x, y + 14, 'bold 19px system-ui, sans-serif', '#fff6e5');
+      ctx.restore();
+      continue;
+    }
     ctx.font = 'bold 20px system-ui, sans-serif';
     const w = ctx.measureText(f.text).width + 30;
     ctx.fillStyle = 'rgba(24,12,8,0.88)';

@@ -62,6 +62,8 @@ export function drawPlateStation(ctx, g, now) {
   ctx.beginPath(); ctx.ellipse(tx, ty, 26, 16, 0, 0, Math.PI * 2); ctx.stroke();
   // One pill inside the island's bottom edge: dish name + progress
   // pips, always crisp, on the maple slab — never over the route line.
+  // V6: raised 6px (pill 458-484) so the raised route stop badges
+  // (tops at y 485) clear it by a pixel.
   const label = dish ? dish.name + ' · ' + total + '/' + total : g.plate.items.length ? g.plate.items.length + '/' + total + ' on the plate…' : 'Fresh plate';
-  pillText(ctx, label, cx, r.y + r.h - 28, 'bold 12px system-ui, sans-serif', dish ? '#a8d94a' : '#ffe6a8');
+  pillText(ctx, label, cx, r.y + r.h - 34, 'bold 12px system-ui, sans-serif', dish ? '#a8d94a' : '#ffe6a8');
 }

@@ -11,7 +11,7 @@ import { drawDishPlate } from '../render/foodDishes.js';
 import { drawIconBadge, drawChefMascot, drawStars } from '../render/iconBadges.js';
 import { darkPanel } from '../render/palette.js';
 import { TOTAL_SHIFTS } from '../core/state.js';
-import { drawShiftChart, drawFeatsBadge } from './summaryChart.js';
+import { drawShiftChart, drawFeatsBadge, drawVictoryQuote } from './summaryChart.js';
 import { dim } from './titleOverlay.js';
 
 export function gradeRun(g) {
@@ -50,6 +50,7 @@ export function drawSummary(ctx, g) {
   ctx.font = 'italic 15px Georgia, serif';
   ctx.fillText(g.result ? g.result.reason : '', 640, 134);
   drawStars(ctx, 640, 162, 3, won ? 3 : 1);
+  drawVictoryQuote(ctx, g, won);
   const grade = gradeRun(g);
   const mg = ctx.createRadialGradient(940, 108, 4, 950, 118, 36);
   mg.addColorStop(0, '#ffe9a8');

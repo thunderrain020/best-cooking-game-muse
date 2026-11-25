@@ -93,6 +93,7 @@ export function drawShop(ctx, g) {
   ctx.fill();
   ctx.fillStyle = '#fff';
   ctx.font = 'bold 22px system-ui, sans-serif';
+  ctx.textAlign = 'center';
   ctx.fillText('START NIGHT ' + g.shift, 640, 576);
   ctx.fillStyle = '#d8cdb4';
   ctx.font = '14px system-ui, sans-serif';

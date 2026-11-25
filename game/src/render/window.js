@@ -5,6 +5,7 @@
 import { roundRectPath } from '../core/util.js';
 import { TERRACE } from './layout.js';
 import { drawDiner, drawTable, drawOrderTag } from './diners.js';
+import { drawRegulars } from './regulars.js';
 
 export function drawTerrace(ctx, g, now) {
   const T = TERRACE;
@@ -100,12 +101,8 @@ export function drawTerrace(ctx, g, now) {
   drawTable(ctx, 1160, 200);
   ctx.restore();
   drawDiner(ctx, 1160, 238, '#7a3b9e', criticHere ? 'impatient' : 'happy');
-  ctx.fillStyle = '#7a3b9e';
-  roundRectPath(ctx, 1120, 158, 80, 15, 7); ctx.fill();
-  ctx.fillStyle = '#fff';
-  ctx.font = 'bold 9px system-ui, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('CRITIC ★★★', 1160, 169);
+  // Named regulars + reactive quotes (names, critic pill, quote lines).
+  drawRegulars(ctx, g);
   // Kitchen wall down the terrace's left edge, brass-trimmed pass opening.
   ctx.fillStyle = '#231b18';
   ctx.fillRect(T.x, T.y, 14, 254);

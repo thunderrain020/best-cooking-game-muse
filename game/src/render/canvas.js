@@ -27,8 +27,8 @@ export const W = 1280;
 export const H = 720;
 
 export const LAYOUT = {
-  topBar: { x: 0, y: 0, w: 1280, h: 56 },
-  board: { x: 14, y: 92, w: 1024, h: 92 },
+  topBar: { x: 0, y: 0, w: 1280, h: 46 },
+  board: { x: 14, y: 82, w: 1024, h: 86 },
   boardRect: BOARD_RECTS[0],
   boardRect2: BOARD_RECTS[1],
   wokRect: WOK_RECTS[0],
@@ -39,7 +39,7 @@ export const LAYOUT = {
   bellRect: BELL_RECT,
   trashRect: TRASH_RECT,
   tray: { x: GARNISH_RECT.x, y: GARNISH_RECT.y, w: GARNISH_RECT.w, h: GARNISH_RECT.h },
-  crates: { x: 16, y: 200, w: 864, h: 82 },
+  crates: { x: 16, y: 190, w: 864, h: 82 },
   hintBar: { x: 0, y: 664, w: 1280, h: 56 },
   floor: FLOOR,
   terrace: TERRACE,
@@ -79,14 +79,14 @@ export function drawScene(ctx, g, view) {
     ctx.save();
     ctx.globalAlpha = 0.85 + 0.15 * Math.sin(now * 8);
     ctx.fillStyle = storm || g.critic.active ? '#7a3b9e' : '#e8442e';
-    roundRectPath(ctx, 640 - 200, 174, 400, 26, 12); ctx.fill();
+    roundRectPath(ctx, 640 - 200, 162, 400, 26, 12); ctx.fill();
     ctx.strokeStyle = '#1a120b';
     ctx.lineWidth = 2.5;
-    roundRectPath(ctx, 640 - 200, 174, 400, 26, 12); ctx.stroke();
+    roundRectPath(ctx, 640 - 200, 162, 400, 26, 12); ctx.stroke();
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 15px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(text, 640, 192);
+    ctx.fillText(text, 640, 180);
     ctx.restore();
   }
 
@@ -98,12 +98,12 @@ export function drawScene(ctx, g, view) {
     ctx.font = 'bold 13px system-ui, sans-serif';
     const w = ctx.measureText(t).width + 30;
     ctx.fillStyle = '#7a3b10';
-    roundRectPath(ctx, 16, 176, w, 24, 12); ctx.fill();
+    roundRectPath(ctx, 16, 164, w, 24, 12); ctx.fill();
     ctx.strokeStyle = '#ffd94d'; ctx.lineWidth = 2;
-    roundRectPath(ctx, 16, 176, w, 24, 12); ctx.stroke();
+    roundRectPath(ctx, 16, 164, w, 24, 12); ctx.stroke();
     ctx.fillStyle = '#ffd94d';
     ctx.textAlign = 'center';
-    ctx.fillText(t, 16 + w / 2, 192);
+    ctx.fillText(t, 16 + w / 2, 180);
     ctx.restore();
   }
 
