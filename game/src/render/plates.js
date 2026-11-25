@@ -16,6 +16,10 @@ export function plateBase(ctx, r) {
   ctx.beginPath(); ctx.ellipse(0, 0, r * 0.78, r * 0.55, 0, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = '#fdfaf2';
   ctx.beginPath(); ctx.ellipse(0, 0, r * 0.62, r * 0.42, 0, 0, Math.PI * 2); ctx.fill();
+  // Rim shadow: a soft dark crescent along the plate's lower inner edge
+  // so the food sits in the plate instead of floating on it.
+  ctx.fillStyle = 'rgba(60,30,10,0.16)';
+  ctx.beginPath(); ctx.ellipse(0, r * 0.16, r * 0.58, r * 0.3, 0, 0, Math.PI); ctx.fill();
 }
 
 // Shimmering broth for an idle simmer pot: illustrated, never a label.

@@ -17,6 +17,9 @@ export function gradeRun(g) {
 
 export function drawSummary(ctx, g) {
   dim(ctx);
+  // Footer text must never show through the overlay: opaque cover.
+  ctx.fillStyle = 'rgba(10,8,16,1)';
+  ctx.fillRect(0, 660, 1280, 60);
   panel(ctx, 280, 90, 720, 540);
   ctx.textAlign = 'center';
   const won = g.result && g.result.won;
@@ -60,18 +63,36 @@ export function drawSummary(ctx, g) {
     ctx.fillText(value, 660, y);
     ctx.font = '17px system-ui, sans-serif';
   });
+  // 5-bar shift score chart: dishes served per shift, Critic in plum.
   const scores = g.shiftScores || [0, 0, 0, 0, 0];
+  const maxS = Math.max(1, ...scores);
   ctx.fillStyle = '#7a3b5e';
-  ctx.font = 'bold 15px system-ui, sans-serif';
+  ctx.font = 'bold 13px system-ui, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('Shift by shift: ' + scores.map((s, i) => 'S' + (i + 1) + ' ' + s).join('  ·  ') + ' served', 640, 452);
+  ctx.fillText('DISHES PER SHIFT', 640, 428);
+  scores.forEach((s, i) => {
+    const bx = 462 + i * 76, bh = 8 + (s / maxS) * 30;
+    ctx.fillStyle = i === 4 ? '#7a3b9e' : '#2e7d32';
+    roundRectPath(ctx, bx, 468 - bh, 52, bh, 6); ctx.fill();
+    ctx.strokeStyle = '#1a120b'; ctx.lineWidth = 1.5;
+    roundRectPath(ctx, bx, 468 - bh, 52, bh, 6); ctx.stroke();
+    // Value inside the bar, never colliding with the chart title above.
+    if (bh >= 18) {
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 13px system-ui, sans-serif';
+      ctx.fillText(String(s), bx + 26, 468 - bh + 16);
+    }
+    ctx.fillStyle = '#7a5a34';
+    ctx.font = 'bold 11px system-ui, sans-serif';
+    ctx.fillText(i === 4 ? 'CRITIC' : 'S' + (i + 1), bx + 26, 482);
+  });
   const badges = ownedBadges(g);
   ctx.fillStyle = '#7a5a34';
   ctx.font = '14px system-ui, sans-serif';
-  ctx.fillText(badges.length ? 'Perks this run: ' + badges.map((b) => b.short).join(' · ') : 'No perks picked up this run.', 640, 480);
+  ctx.fillText(badges.length ? 'Perks this run: ' + badges.map((b) => b.short).join(' · ') : 'No perks picked up this run.', 640, 500);
   ctx.fillStyle = '#b8860b';
   ctx.font = 'bold 17px system-ui, sans-serif';
-  ctx.fillText('BEST RUN: ' + fmtCoins(g.best.score) + ' earned · reached Shift ' + g.best.shift, 640, 508);
+  ctx.fillText('BEST RUN: ' + fmtCoins(g.best.score) + ' earned · reached Shift ' + g.best.shift, 640, 520);
   ctx.fillStyle = '#e8703f';
   roundRectPath(ctx, 400, 532, 220, 56, 12);
   ctx.fill();

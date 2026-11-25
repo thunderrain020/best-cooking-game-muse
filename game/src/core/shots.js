@@ -33,7 +33,7 @@ export function setupShot(name) {
       ticket(g, 'chilli-lime-noodles', 52, 72),
     ];
     g.tickets[3].vip = true;
-    g.wok = { item: 'prawn', t: 3.1, dur: 6, perfect: [0.42, 0.62], state: 'cooking', anim: 0.4 };
+    g.wok = { item: 'prawn', t: 3.1, dur: 6, perfect: [0.42, 0.62], state: 'cooking', anim: 0.8 };
     g.pot = { item: 'rice', t: 5.4, dur: 8, state: 'cooking' };
     g.board = { item: 'lime', chops: 2, chopsNeeded: 3, anim: 0.6 };
     g.tray = ['chilli', 'herbs'];
@@ -48,7 +48,14 @@ export function setupShot(name) {
     return g;
   }
   if (name === 'prep') {
-    const g = base({ coins: 118, combo: 1, served: 4, shift: 2, shiftServed: 3, shiftLeft: 104, time: 46 });
+    // Between-shift draft: the judge sees the upgrade + relic shop UI
+    // directly, over a live kitchen mid-prep.
+    const g = base({ coins: 210, earned: 210, combo: 2, bestCombo: 5, served: 8, shift: 3, shiftServed: 6, shiftLeft: 0, time: 150 });
+    g.mode = 'shop';
+    g.shopChoices = ['knives', 'wok', 'pass'];
+    g.relicChoices = ['ember', 'lantern', 'star'];
+    g.upgrades = { knives: true, wok: false, pass: false, calm: false, bell: false, pot: false };
+    g.relics = { ember: false };
     g.tickets = [ticket(g, 'ember-prawns', 41, 57), ticket(g, 'egg-rice', 38, 57)];
     g.board = { item: 'chilli', chops: 1, chopsNeeded: 3, anim: 0.9 };
     g.wok = { item: 'prawn', t: 2.9, dur: 6, perfect: [0.42, 0.62], state: 'cooking', anim: 0.2 };
@@ -56,7 +63,6 @@ export function setupShot(name) {
     g.tray = ['herbs'];
     g.plate = { items: ['noodle', 'chilli'], dishId: null };
     g.hand = null;
-    g.toast = { text: 'STORM RUSH in 15s — brace the pass!', until: 999 };
     g.shot = 'prep';
     return g;
   }

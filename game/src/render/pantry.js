@@ -5,6 +5,7 @@
 import { INGREDIENTS, INGREDIENT_ORDER } from '../data/recipes.js';
 import { drawIngredientIcon } from './foodArt.js';
 import { roundRectPath } from '../core/util.js';
+import { contactShadow } from './feel.js';
 import { trayCap } from '../core/state.js';
 
 export function trayRect(i, cap = 4) {
@@ -47,6 +48,7 @@ export function drawCrates(ctx, g) {
     const held = g.hand && g.hand.id === id;
     // Warm parchment crate, 2px dark ink border, category colour tab.
     // Labels are always bold dark ink (#1a120b) — never white on cream.
+    contactShadow(ctx, r.x + r.w / 2, r.y + r.h + 4, r.w / 2 - 6, 5);
     ctx.fillStyle = '#f7eedc';
     roundRectPath(ctx, r.x, r.y, r.w, r.h, 10); ctx.fill();
     ctx.strokeStyle = '#1a120b';

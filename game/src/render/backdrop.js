@@ -124,6 +124,9 @@ export function drawCounter(ctx) {
   roundRectPath(ctx, 272, 140, 994, 504, 18); ctx.stroke();
   ctx.fillStyle = '#c9a24a';
   ctx.fillRect(276, 144, 986, 3);
+  // Top bevel highlight along the counter edge: the deck catches light.
+  ctx.fillStyle = 'rgba(255,235,200,0.08)';
+  ctx.fillRect(276, 148, 986, 4);
   // Subtle wood grain on the dark deck.
   ctx.fillStyle = 'rgba(255,220,160,0.05)';
   for (let i = 0; i < 12; i++) ctx.fillRect(280 + (i * 83) % 980, 154 + (i % 5) * 96, 60, 2);

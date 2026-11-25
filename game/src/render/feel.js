@@ -58,6 +58,61 @@ export function drawShimmer(ctx, x, y, w, h, now) {
   ctx.restore();
 }
 
+// Soft dark contact shadow that grounds equipment on the counter.
+export function contactShadow(ctx, cx, cy, rx, ry) {
+  ctx.fillStyle = 'rgba(8,4,2,0.45)';
+  ctx.beginPath(); ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = 'rgba(8,4,2,0.25)';
+  ctx.beginPath(); ctx.ellipse(cx, cy, rx * 0.8, ry * 0.7, 0, 0, Math.PI * 2); ctx.fill();
+}
+
+// Warm radial glow (heat lamp, burner) pooling onto the counter.
+export function radialGlow(ctx, cx, cy, r, color) {
+  const grad = ctx.createRadialGradient(cx, cy, 4, cx, cy, r);
+  grad.addColorStop(0, color);
+  grad.addColorStop(1, 'rgba(255,140,66,0)');
+  ctx.fillStyle = grad;
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+}
+
+// Tall flickering orange-red flames + dark smoke puffs: BURNING! must
+// read as danger even at thumbnail scale.
+export function drawBurnFlames(ctx, cx, y, now) {
+  for (let i = 0; i < 4; i++) {
+    const fx = cx - 30 + i * 20;
+    const flick = Math.sin(now * 11 + i * 2.4) * 7;
+    const h = 34 + ((i * 13) % 18) + flick;
+    ctx.fillStyle = i % 2 ? '#ff5a2e' : '#ff8a3c';
+    ctx.beginPath();
+    ctx.moveTo(fx - 9, y);
+    ctx.quadraticCurveTo(fx - 4, y - h * 0.6, fx, y - h);
+    ctx.quadraticCurveTo(fx + 4, y - h * 0.6, fx + 9, y);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#ffd94d';
+    ctx.beginPath();
+    ctx.moveTo(fx - 4, y);
+    ctx.quadraticCurveTo(fx, y - h * 0.45, fx + 4, y);
+    ctx.closePath(); ctx.fill();
+  }
+  for (let i = 0; i < 3; i++) {
+    const sy = y - 44 - ((now * 26 + i * 23) % 40);
+    const sx = cx - 18 + i * 18 + Math.sin(now * 2 + i * 2) * 5;
+    ctx.fillStyle = 'rgba(30,20,20,0.55)';
+    ctx.beginPath(); ctx.arc(sx, sy, 7 + i * 2, 0, Math.PI * 2); ctx.fill();
+  }
+}
+
+// Deterministic sizzle sparks rising off a cooking wok.
+export function drawSizzleSparks(ctx, cx, y, now) {
+  for (let i = 0; i < 6; i++) {
+    const t = (now * 1.6 + i * 0.17) % 1;
+    const sx = cx - 34 + ((i * 53) % 68) + Math.sin(now * 5 + i) * 4;
+    const sy = y - t * 34;
+    ctx.fillStyle = i % 2 ? 'rgba(255,180,80,0.9)' : 'rgba(255,240,200,0.9)';
+    ctx.beginPath(); ctx.arc(sx, sy, 2.5 - t, 0, Math.PI * 2); ctx.fill();
+  }
+}
+
 export function drawBurnerFlame(ctx, cx, y, now, big) {
   const h = big ? 16 : 10;
   for (let i = -1; i <= 1; i++) {

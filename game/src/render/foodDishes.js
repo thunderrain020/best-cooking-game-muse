@@ -30,6 +30,21 @@ function steamWisps(ctx, r, now) {
   }
 }
 
+// Sauce drizzle over the base: glossy amber arcs, always on top.
+function drizzle(ctx, r) {
+  ctx.strokeStyle = 'rgba(201,106,46,0.85)';
+  ctx.lineWidth = 3;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(-r * 0.42, -r * 0.05);
+  ctx.quadraticCurveTo(0, r * 0.18, r * 0.42, -r * 0.02);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(-r * 0.3, r * 0.22);
+  ctx.quadraticCurveTo(r * 0.1, r * 0.02, r * 0.34, r * 0.2);
+  ctx.stroke();
+}
+
 function drawBase(ctx, comps, r) {
   if (comps.includes('noodle')) {
     drawIngredientIcon(ctx, 'noodle', 0, r * 0.08, r * 0.62);
@@ -50,6 +65,7 @@ export function drawDishPlate(ctx, dish, cx, cy, r, now) {
   plateBase(ctx, r);
   const base = dish.comps.includes('noodle') ? 'noodle' : dish.comps.includes('rice') ? 'rice' : null;
   drawBase(ctx, dish.comps, r);
+  drizzle(ctx, r);
   const tops = dish.comps.filter((c) => c !== base);
   const spots = toppingSpots(tops.length);
   tops.forEach((id, i) => {
@@ -68,7 +84,7 @@ export function drawPlateInProgress(ctx, items, total, cx, cy, r, now) {
   plateBase(ctx, r);
   const n = Math.max(total, items.length, 1);
   const base = items.includes('noodle') ? 'noodle' : items.includes('rice') ? 'rice' : null;
-  if (base) drawBase(ctx, items, r);
+  if (base) { drawBase(ctx, items, r); drizzle(ctx, r); }
   const tops = items.filter((c) => c !== base);
   const spots = toppingSpots(n);
   for (let i = 0; i < n; i++) {

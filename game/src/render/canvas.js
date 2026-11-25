@@ -38,7 +38,7 @@ export { crateRect, trayRect, ticketRect, topBarButtons };
 export function drawScene(ctx, g, view) {
   const now = view.now;
   drawBackdrop(ctx, now);
-  drawWindowSkyline(ctx, now);
+  drawWindowSkyline(ctx, now, !!(g.rush && g.rush.name.includes('STORM')));
   drawCounter(ctx);
   drawBoardPanel(ctx, g, now);
   drawBoardStation(ctx, g, now);
@@ -93,14 +93,14 @@ export function drawScene(ctx, g, view) {
     ctx.restore();
   }
 
-  // Hint bar, translucent so the harbour water shows through below.
-  ctx.fillStyle = 'rgba(19,17,38,0.55)';
+  // Hint bar, dark enough that the footer text is always legible.
+  ctx.fillStyle = 'rgba(19,17,38,0.78)';
   ctx.fillRect(0, 664, 1280, 56);
-  ctx.fillStyle = '#e8dcc2';
-  ctx.font = '14px system-ui, sans-serif';
+  ctx.fillStyle = '#fff6e5';
+  ctx.font = 'bold 14px system-ui, sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('1–8 grab ingredient · Q chop board · W wok · E pot · R plate · Space chop / pull / ring · L recipe ledger · click everything too', 640, 686);
-  ctx.fillStyle = '#f2a54a';
+  ctx.fillStyle = '#ffd94d';
   ctx.font = 'italic 13px Georgia, serif';
   ctx.fillText('Ember & Tide — a rooftop harbour kitchen. No network, no build step, just dinner service.', 640, 706);
 }

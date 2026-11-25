@@ -7,7 +7,7 @@ import { dishById } from '../data/recipes.js';
 import { drawPlateInProgress } from './foodDishes.js';
 import { roundRectPath } from '../core/util.js';
 import { pillText, stationLabel } from './palette.js';
-import { drawShimmer } from './feel.js';
+import { drawShimmer, contactShadow, radialGlow } from './feel.js';
 import { STATION_RECTS } from './stations.js';
 
 export function drawPlateStation(ctx, g, now) {
@@ -17,6 +17,7 @@ export function drawPlateStation(ctx, g, now) {
   stationLabel(ctx, r.x, r.y, r.w, 'PLATING COUNTER', 'R · click to stack');
   const cx = r.x + r.w / 2;
   const cy = r.y + 110;
+  contactShadow(ctx, cx, cy + 64, 92, 10);
   // Dark walnut mat + patterned terracotta mat under the white plate.
   ctx.fillStyle = '#2b221e';
   ctx.beginPath(); ctx.ellipse(cx, cy + 8, 88, 58, 0, 0, Math.PI * 2); ctx.fill();
@@ -28,7 +29,8 @@ export function drawPlateStation(ctx, g, now) {
   ctx.beginPath(); ctx.ellipse(cx, cy, 74, 52, 0, 0, Math.PI * 2); ctx.stroke();
   ctx.fillStyle = 'rgba(255,246,227,0.35)';
   ctx.beginPath(); ctx.ellipse(cx, cy, 66, 45, 0, 0, Math.PI * 2); ctx.fill();
-  drawPlateInProgress(ctx, g.plate.items, total, cx, cy, 62, now);
+  // The composed meal fills ~70% of the plate: substantial, not a sticker.
+  drawPlateInProgress(ctx, g.plate.items, total, cx, cy, 76, now);
   // Chopsticks and a spoon resting beside the plate on the mat.
   ctx.save();
   ctx.translate(cx + 82, cy - 6); ctx.rotate(0.5);
@@ -64,7 +66,10 @@ export function drawBellStation(ctx, g, now) {
   ctx.closePath(); ctx.fill();
   ctx.fillStyle = '#ffe9a8';
   ctx.beginPath(); ctx.arc(cx, r.y + 62, 7, 0, Math.PI * 2); ctx.fill();
+  // Amber heat-lamp glow pooling onto the bell and the counter.
+  radialGlow(ctx, cx, r.y + 118, 72, 'rgba(255,190,90,0.32)');
   // Polished brass bell on a small round walnut mat.
+  contactShadow(ctx, cx, r.y + 154, 56, 8);
   ctx.fillStyle = '#2b221e';
   ctx.beginPath(); ctx.ellipse(cx, r.y + 148, 52, 14, 0, 0, Math.PI * 2); ctx.fill();
   ctx.strokeStyle = '#1a120b'; ctx.lineWidth = 2;

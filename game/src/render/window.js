@@ -7,7 +7,7 @@
 
 import { roundRectPath } from '../core/util.js';
 
-export function drawWindowSkyline(ctx, now) {
+export function drawWindowSkyline(ctx, now, storm) {
   // Water strip along the bottom of the window.
   ctx.fillStyle = '#16324a';
   ctx.fillRect(272, 126, 994, 14);
@@ -43,6 +43,29 @@ export function drawWindowSkyline(ctx, now) {
   ctx.fillRect(720, 108, 4, 24);
   ctx.beginPath(); ctx.moveTo(724, 108); ctx.lineTo(724, 130); ctx.lineTo(752, 130); ctx.closePath(); ctx.fill();
   ctx.beginPath(); ctx.moveTo(920, 134); ctx.lineTo(972, 134); ctx.lineTo(960, 140); ctx.lineTo(932, 140); ctx.closePath(); ctx.fill();
+  if (storm) {
+    // Storm wash: the window sky turns deep violet-navy, rain slants
+    // across it, and a lightning fork tints the far side.
+    const wash = ctx.createLinearGradient(0, 88, 0, 140);
+    wash.addColorStop(0, 'rgba(38,24,84,0.82)');
+    wash.addColorStop(1, 'rgba(18,14,48,0.88)');
+    ctx.fillStyle = wash;
+    ctx.fillRect(272, 88, 994, 52);
+    ctx.strokeStyle = 'rgba(200,210,255,0.55)';
+    ctx.lineWidth = 1.5;
+    for (let i = 0; i < 22; i++) {
+      const rx = 290 + i * 46 + Math.sin(now * 3 + i) * 6;
+      const ry = 92 + (i % 3) * 14;
+      ctx.beginPath(); ctx.moveTo(rx, ry); ctx.lineTo(rx - 7, ry + 12); ctx.stroke();
+    }
+    ctx.strokeStyle = 'rgba(232,230,255,0.9)';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(1000, 88); ctx.lineTo(986, 104); ctx.lineTo(998, 108);
+    ctx.lineTo(984, 126); ctx.lineTo(994, 128); ctx.stroke();
+    ctx.fillStyle = 'rgba(232,230,255,0.14)';
+    ctx.beginPath(); ctx.arc(990, 112, 26, 0, Math.PI * 2); ctx.fill();
+  }
   // String lanterns swagged across the window.
   ctx.strokeStyle = 'rgba(40,20,10,0.85)';
   ctx.lineWidth = 2;

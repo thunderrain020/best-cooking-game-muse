@@ -55,6 +55,9 @@ function drawCards(ctx, g, list, y, heading) {
 
 export function drawShop(ctx, g) {
   dim(ctx);
+  // Footer text must never show through the overlay: opaque cover.
+  ctx.fillStyle = 'rgba(10,8,16,1)';
+  ctx.fillRect(0, 660, 1280, 60);
   panel(ctx, 140, 56, 1000, 608);
   ctx.textAlign = 'center';
   ctx.fillStyle = '#2a1a12';

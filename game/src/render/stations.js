@@ -1,13 +1,12 @@
 // Ember & Tide — render/stations.js
-// Chop board, sizzle wok, simmer pot. Each station is drawn as its own
-// piece of kitchen equipment directly on the counter — no uniform box
-// frames. Status callouts live in dark pills. Stations sit at y 140 so
-// the harbour window above the counter stays open.
+// Chop board and sizzle wok as real equipment on the counter, with
+// contact shadows and burner glow. Stations sit at y 140 so the
+// harbour window stays open.
 
 import { drawIngredientIcon } from './foodArt.js';
 import { roundRectPath, clamp } from '../core/util.js';
 import { pillText, stationLabel } from './palette.js';
-import { drawSlash, drawFlameBurst, drawBurnerFlame } from './feel.js';
+import { drawSlash, drawFlameBurst, drawBurnerFlame, contactShadow, radialGlow, drawBurnFlames, drawSizzleSparks } from './feel.js';
 
 export const STATION_RECTS = {
   boardRect: { x: 300, y: 140, w: 170, h: 190 },
@@ -31,8 +30,13 @@ function drawKnife(ctx, x, y, rot) {
   ctx.restore();
 }
 
-// Blue-orange gas burner ring under a wok or pot.
+// Blue-orange gas burner ring under a wok or pot, with a warm glow
+// pooling onto the counter when it is lit.
 function drawBurner(ctx, cx, y, now, on) {
+  if (on) {
+    radialGlow(ctx, cx, y, 74, 'rgba(255,122,40,0.30)');
+    radialGlow(ctx, cx, y, 46, 'rgba(80,120,255,0.22)');
+  }
   ctx.strokeStyle = '#3a6fd8'; ctx.lineWidth = 3;
   ctx.beginPath(); ctx.ellipse(cx, y, 46, 8, 0, 0, Math.PI * 2); ctx.stroke();
   ctx.strokeStyle = '#ff8a3c'; ctx.lineWidth = 2;
@@ -43,7 +47,7 @@ function drawBurner(ctx, cx, y, now, on) {
 export function drawBoardStation(ctx, g, now) {
   const r = STATION_RECTS.boardRect;
   stationLabel(ctx, r.x, r.y, r.w, 'CHOP BOARD', 'Q · click or Space');
-  // Thick angled butcher-block slab with a handle cutout and grain.
+  contactShadow(ctx, r.x + r.w / 2, r.y + 158, 80, 9);
   ctx.fillStyle = '#c89a5e';
   roundRectPath(ctx, r.x + 10, r.y + 70, r.w - 20, 82, 8); ctx.fill();
   ctx.strokeStyle = '#1a120b'; ctx.lineWidth = 2.5;
@@ -63,14 +67,12 @@ export function drawBoardStation(ctx, g, now) {
     }
     drawKnife(ctx, r.x + r.w / 2 + 44, r.y + 100, -0.5 - b.anim * 0.9);
     drawSlash(ctx, r.x + r.w / 2, r.y + 110, b.anim, now);
-    // Scattered chopped bits on the slab.
     ctx.fillStyle = '#7cb342';
     ctx.fillRect(r.x + 22, r.y + 138, 6, 4);
     ctx.fillRect(r.x + 34, r.y + 142, 5, 4);
     ctx.fillStyle = '#e8442e';
     ctx.fillRect(r.x + r.w - 36, r.y + 136, 6, 4);
   } else {
-    // Illustrated empty board: clean wood and a resting knife.
     drawKnife(ctx, r.x + r.w / 2 + 30, r.y + 110, -0.4);
     ctx.fillStyle = 'rgba(255,246,227,0.5)';
     ctx.beginPath(); ctx.ellipse(r.x + r.w / 2 - 20, r.y + 110, 26, 8, 0, 0, Math.PI * 2); ctx.fill();
@@ -82,6 +84,7 @@ export function drawWokStation(ctx, g, now) {
   stationLabel(ctx, r.x, r.y, r.w, 'SIZZLE WOK', 'W · Space to pull');
   const cx = r.x + r.w / 2;
   const w = g.wok;
+  contactShadow(ctx, cx, r.y + 166, 72, 9);
   drawBurner(ctx, cx, r.y + 160, now, w.state === 'cooking');
   // Round cast-iron wok with a long riveted handle.
   const grad = ctx.createRadialGradient(cx, r.y + 104, 6, cx, r.y + 104, 62);
@@ -104,6 +107,7 @@ export function drawWokStation(ctx, g, now) {
   if (w.item) {
     drawIngredientIcon(ctx, w.item, cx, r.y + 96, 30);
     if (w.state === 'cooking') {
+      drawSizzleSparks(ctx, cx, r.y + 92, now);
       const bx = r.x + 6, by = r.y + 172, bw = r.w - 12, bh = 12;
       ctx.fillStyle = '#2a1a12'; roundRectPath(ctx, bx, by, bw, bh, 6); ctx.fill();
       ctx.fillStyle = '#e8442e'; roundRectPath(ctx, bx + bw * 0.85, by, bw * 0.15, bh, 6); ctx.fill();
@@ -118,10 +122,9 @@ export function drawWokStation(ctx, g, now) {
       ctx.save(); ctx.globalAlpha = pulse;
       pillText(ctx, 'BURNING! CLICK TO TOSS', cx, r.y + 178, 'bold 11px system-ui, sans-serif', '#fff', '#ff5a2e');
       ctx.restore();
-      drawFlameBurst(ctx, cx, r.y + 96, now);
+      drawBurnFlames(ctx, cx, r.y + 96, now);
     }
   }
 }
 
-// The simmer pot lives in stationsPot.js so no file tops 6 KB.
 export { drawBurner };
