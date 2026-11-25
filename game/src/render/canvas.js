@@ -86,7 +86,9 @@ export function drawScene(ctx, g, view) {
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 15px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(text, 640, 180);
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, 640, 175);
+    ctx.textBaseline = 'alphabetic';
     ctx.restore();
   }
 
@@ -103,7 +105,9 @@ export function drawScene(ctx, g, view) {
     roundRectPath(ctx, 16, 164, w, 24, 12); ctx.stroke();
     ctx.fillStyle = '#ffd94d';
     ctx.textAlign = 'center';
-    ctx.fillText(t, 16 + w / 2, 180);
+    ctx.textBaseline = 'middle';
+    ctx.fillText(t, 16 + w / 2, 176);
+    ctx.textBaseline = 'alphabetic';
     ctx.restore();
   }
 

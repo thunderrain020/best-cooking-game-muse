@@ -1,8 +1,6 @@
 // Ember & Tide — systems/upgrades.js
 // Between-shift progression: 8 permanent kitchen upgrades and 8 relics
-// (kitchen perks), 16 in all. Each is bought once per run. Upgrades tune
-// the stations; relics are the roguelite spice: wider burn windows,
-// richer tips, a bigger tray, and help against the Harbour Critic.
+// (kitchen perks), 16 in all. Each is bought once per run.
 
 export const UPGRADES = [
   { id: 'knives', icon: 'KN', short: 'Knife', name: 'Sharper Knives', cost: 30, set: 'HARBOUR', rarity: 'COMMON', desc: 'Chopping takes 2 hits instead of 3.', apply: (g) => { g.upgrades.knives = true; } },
@@ -28,8 +26,7 @@ export const RELICS = [
 
 // V8 sets & rarities: every upgrade and relic belongs to one of three
 // sets — EMBER (6), TIDE (5), HARBOUR (5). Owning 2+ of a set unlocks
-// its bonus, for real, in the game logic (see pullWok, servePlate,
-// patienceFor). Rarity is flavour + draft readability, not power.
+// its bonus, for real, in the game logic. Rarity is draft readability.
 export const SETS = {
   EMBER: { bonus: '+$4 Sear', desc: 'PERFECT pulls pay +$4 extra.' },
   TIDE: { bonus: '+$2 Tip', desc: 'Every serve pays +$2 tip.' },
@@ -40,6 +37,13 @@ export const RARITY_COLORS = {
   COMMON: { fill: '#b8b0a0', text: '#1a120b' },
   RARE: { fill: '#4da3ff', text: '#ffffff' },
   MYTHIC: { fill: '#c86ff0', text: '#ffffff' },
+};
+
+// V9: set accent colours for the draft-card top bars and pip fills.
+export const SET_ACCENT = {
+  EMBER: '#e85d3d',
+  TIDE: '#3f9e8f',
+  HARBOUR: '#d4a017',
 };
 
 export function setCounts(g) {

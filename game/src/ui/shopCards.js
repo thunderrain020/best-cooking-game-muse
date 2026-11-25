@@ -7,7 +7,7 @@
 
 import { fmtCoins, roundRectPath } from '../core/util.js';
 import { drawIconBadge } from '../render/iconBadges.js';
-import { setCounts, RARITY_COLORS } from '../systems/upgrades.js';
+import { setCounts, RARITY_COLORS, SET_ACCENT } from '../systems/upgrades.js';
 
 export const CARD_X = [460, 690, 920];
 export const CARD_W = 210;
@@ -35,6 +35,11 @@ export function drawCard(ctx, g, u, x, y) {
   ctx.lineWidth = 2;
   roundRectPath(ctx, x, y, CARD_W, CARD_H, 10);
   ctx.stroke();
+  // V9: set-coloured top accent bar — amber-red EMBER, sea-teal
+  // TIDE, warm gold HARBOUR — so each card reads as its own set.
+  ctx.fillStyle = SET_ACCENT[u.set];
+  roundRectPath(ctx, x + 4, y + 2, CARD_W - 8, 6, 3);
+  ctx.fill();
   if (locked) {
     ctx.fillStyle = 'rgba(8,6,12,0.55)';
     roundRectPath(ctx, x, y, CARD_W, CARD_H, 10);
@@ -56,12 +61,31 @@ export function drawCard(ctx, g, u, x, y) {
   roundRectPath(ctx, x + 68, y + 36, rw, 16, 8); ctx.fill();
   ctx.fillStyle = rc.text;
   ctx.textAlign = 'center';
-  ctx.fillText(u.rarity, x + 68 + rw / 2, y + 48);
+  ctx.textBaseline = 'middle';
+  ctx.fillText(u.rarity, x + 68 + rw / 2, y + 44);
+  ctx.textBaseline = 'alphabetic';
   const sc = setCounts(g)[u.set];
   ctx.fillStyle = '#ffd94d';
   ctx.font = 'bold 9px system-ui, sans-serif';
   ctx.textAlign = 'left';
-  ctx.fillText(u.set + ' ' + sc.owned + '/' + sc.total, x + 68 + rw + 6, y + 48);
+  ctx.textBaseline = 'middle';
+  ctx.fillText(u.set + ' ' + sc.owned + '/' + sc.total, x + 68 + rw + 6, y + 44);
+  ctx.textBaseline = 'alphabetic';
+  // V9: mini set-progress pips under the rarity row — filled for the
+  // pieces owned, hollow for the rest (● ● ○ ○ ○).
+  const px0 = x + 68;
+  for (let i = 0; i < sc.total; i++) {
+    ctx.beginPath();
+    ctx.arc(px0 + i * 11 + 3, y + 62, 3, 0, Math.PI * 2);
+    if (i < sc.owned) {
+      ctx.fillStyle = SET_ACCENT[u.set];
+      ctx.fill();
+    } else {
+      ctx.strokeStyle = 'rgba(255,217,77,0.45)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+  }
   ctx.fillStyle = '#d8cdb4';
   ctx.font = '12px system-ui, sans-serif';
   ctx.textAlign = 'center';
@@ -76,5 +100,7 @@ export function drawCard(ctx, g, u, x, y) {
   ctx.stroke();
   ctx.fillStyle = owned ? '#ffffff' : locked ? '#d8cdb4' : '#1a120b';
   ctx.font = 'bold 13px system-ui, sans-serif';
-  ctx.fillText(owned ? 'OWNED' : locked ? 'LOCKED' : fmtCoins(u.cost), x + CARD_W / 2, py + 14);
+  ctx.textBaseline = 'middle';
+  ctx.fillText(owned ? 'OWNED' : locked ? 'LOCKED' : fmtCoins(u.cost), x + CARD_W / 2, py + 10);
+  ctx.textBaseline = 'alphabetic';
 }

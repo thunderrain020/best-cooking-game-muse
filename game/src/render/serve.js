@@ -8,7 +8,7 @@ import { dishById } from '../data/recipes.js';
 import { drawPlateInProgress } from './foodDishes.js';
 import { roundRectPath } from '../core/util.js';
 import { pillText, stationTag } from './palette.js';
-import { drawShimmer, contactShadow } from './feel.js';
+import { drawShimmer, contactShadow, drawSteamWisps } from './feel.js';
 import { ISLAND_RECT } from './layout.js';
 
 export function drawPlateStation(ctx, g, now) {
@@ -36,6 +36,8 @@ export function drawPlateStation(ctx, g, now) {
   ctx.strokeStyle = '#1a120b'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.ellipse(cx, cy, 54, 36, 0, 0, Math.PI * 2); ctx.stroke();
   drawPlateInProgress(ctx, g.plate.items, total, cx, cy, 52, now);
+  // V9: gentle steam wisps above the live plate when food is on it.
+  if (g.plate.items.length) drawSteamWisps(ctx, cx, cy - 34, now, 2);
   // Chopsticks beside the live plate.
   ctx.save();
   ctx.translate(cx + 62, cy - 8); ctx.rotate(0.5);
@@ -52,6 +54,8 @@ export function drawPlateStation(ctx, g, now) {
   if (dish) {
     drawPlateInProgress(ctx, dish.comps, dish.comps.length, sx, sy, 34, now);
     drawShimmer(ctx, sx - 46, sy - 32, 92, 64, now);
+    // V9: gentle steam wisps above the finished dish.
+    drawSteamWisps(ctx, sx, sy - 26, now, 2);
   }
   // Third plate: clean and waiting, small, tucked between the two
   // plates near the top so the bottom edge stays clear for the label.

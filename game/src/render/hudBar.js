@@ -42,7 +42,11 @@ export function drawTopBar(ctx, g) {
   ctx.fillStyle = low ? '#ff6b4a' : '#fdf6e3';
   ctx.font = 'bold 26px system-ui, sans-serif';
   ctx.textAlign = 'right';
-  ctx.fillText(fmtClock(g.shiftLeft), 1060, 32);
+  // Baseline-centred at y 18: the 26px digits end at ~y 27, leaving
+  // an 8px clear gap above the SHIFT ENDS sublabel (top ~y 35).
+  ctx.textBaseline = 'middle';
+  ctx.fillText(fmtClock(g.shiftLeft), 1060, 18);
+  ctx.textBaseline = 'alphabetic';
   ctx.fillStyle = '#c9b48a';
   ctx.font = '12px system-ui, sans-serif';
   ctx.fillText('SHIFT ENDS', 1060, 44);
@@ -54,7 +58,9 @@ export function drawTopBar(ctx, g) {
     ctx.fillStyle = '#ffe6a8';
     ctx.font = 'bold 13px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(label, b.x + b.w / 2, b.y + 22);
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, b.x + b.w / 2, b.y + 16);
+    ctx.textBaseline = 'alphabetic';
   }
   ctx.textAlign = 'left';
 }

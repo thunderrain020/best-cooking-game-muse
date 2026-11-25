@@ -104,6 +104,26 @@ export function drawBurnFlames(ctx, cx, y, now) {
   }
 }
 
+// Gentle rising steam wisps above a plated dish: thin curling strokes
+// that drift and fade, capped well below the station tag above.
+export function drawSteamWisps(ctx, cx, y, now, n) {
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,244,220,0.55)';
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  for (let i = 0; i < n; i++) {
+    const sx = cx + (i - (n - 1) / 2) * 26;
+    const sway = Math.sin(now * 1.4 + i * 2.1) * 5;
+    const rise = 10 + ((now * 12 + i * 17) % 18);
+    ctx.globalAlpha = 0.55 - (rise / 28) * 0.35;
+    ctx.beginPath();
+    ctx.moveTo(sx, y);
+    ctx.bezierCurveTo(sx + sway - 6, y - rise * 0.4, sx + sway + 6, y - rise * 0.7, sx + sway, y - rise);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
 // Deterministic sizzle sparks rising off a cooking wok, V7: more
 // sparks, bigger and brighter, over a warm ember glow pooling in
 // the pan — cooking feedback that pops at thumbnail size.

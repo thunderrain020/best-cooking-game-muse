@@ -7,6 +7,7 @@ import { TERRACE } from './layout.js';
 import { drawDiner, drawTable, drawOrderTag } from './diners.js';
 import { drawRegulars } from './regulars.js';
 import { drawPassArch } from './archway.js';
+import { drawHarbourWater } from './water.js';
 
 export function drawTerrace(ctx, g, now) {
   const T = TERRACE;
@@ -49,13 +50,7 @@ export function drawTerrace(ctx, g, now) {
   for (let i = 0; i < 4; i++) ctx.fillRect(1150 + i * 22, 344 + (i % 2) * 6, 14, 2);
   ctx.strokeStyle = '#1d1428'; ctx.lineWidth = 5;
   ctx.beginPath(); ctx.moveTo(1080, 300); ctx.lineTo(1080, 262); ctx.lineTo(1140, 262); ctx.stroke();
-  ctx.fillStyle = '#16324a';
-  ctx.fillRect(T.x, 300, T.w, 60);
-  ctx.fillStyle = 'rgba(255,217,77,0.34)';
-  for (let i = 0; i < 5; i++) {
-    const y = 312 + i * 10;
-    ctx.fillRect(1060 + Math.sin(now * 0.7 + i) * 8, y, 120 - i * 10, 2);
-  }
+  drawHarbourWater(ctx, T, now);
   ctx.fillStyle = '#6d4526';
   ctx.fillRect(T.x, 360, T.w, T.h - 272);
   ctx.fillStyle = '#4a2c14';

@@ -83,7 +83,9 @@ export function drawShop(ctx, g) {
   ctx.fillStyle = '#ffd94d';
   ctx.font = 'bold 15px system-ui, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('REROLL ' + fmtCoins(REROLL_COST), 550, 507);
+  ctx.textBaseline = 'middle';
+  ctx.fillText('REROLL ' + fmtCoins(REROLL_COST), 550, 502);
+  ctx.textBaseline = 'alphabetic';
   ctx.textAlign = 'left';
   ctx.fillStyle = '#d8cdb4';
   ctx.font = '13px system-ui, sans-serif';
@@ -94,7 +96,9 @@ export function drawShop(ctx, g) {
   ctx.fillStyle = '#fff';
   ctx.font = 'bold 22px system-ui, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('START NIGHT ' + g.shift, 640, 576);
+  ctx.textBaseline = 'middle';
+  ctx.fillText('START NIGHT ' + g.shift, 640, 568);
+  ctx.textBaseline = 'alphabetic';
   ctx.fillStyle = '#d8cdb4';
   ctx.font = '14px system-ui, sans-serif';
   ctx.fillText('or press Enter', 640, 622);

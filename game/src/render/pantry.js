@@ -42,13 +42,17 @@ export function drawCrates(ctx, g) {
     ctx.fillStyle = '#ffd94d';
     ctx.font = 'bold 11px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(ing.key, r.x + 13, r.y + 14);
+    ctx.textBaseline = 'middle';
+    ctx.fillText(ing.key, r.x + 13, r.y + 10);
+    ctx.textBaseline = 'alphabetic';
     if (held) {
       ctx.fillStyle = '#1a120b';
       roundRectPath(ctx, r.x + r.w - 42, r.y + 4, 38, 13, 6); ctx.fill();
       ctx.fillStyle = '#ffd94d';
       ctx.font = 'bold 8px system-ui, sans-serif';
-      ctx.fillText('IN HAND', r.x + r.w - 23, r.y + 14);
+      ctx.textBaseline = 'middle';
+      ctx.fillText('IN HAND', r.x + r.w - 23, r.y + 10);
+      ctx.textBaseline = 'alphabetic';
     }
     ctx.fillStyle = '#fffaf0';
     roundRectPath(ctx, r.x + 8, r.y + 22, r.w - 16, 34, 6); ctx.fill();
@@ -77,10 +81,9 @@ export function drawTrash(ctx, g) {
   ctx.fillStyle = '#ffe6a8';
   ctx.font = 'bold 12px system-ui, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('TRASH', r.x + r.w / 2, r.y + 52);
-  ctx.fillStyle = '#c9b48a';
-  ctx.font = '10px system-ui, sans-serif';
-  ctx.fillText('toss the hand', r.x + r.w / 2, r.y + 66);
+  ctx.textBaseline = 'middle';
+  ctx.fillText('TRASH', r.x + r.w / 2, r.y + 45);
+  ctx.textBaseline = 'alphabetic';
 }
 
 export function drawTray(ctx, g) {

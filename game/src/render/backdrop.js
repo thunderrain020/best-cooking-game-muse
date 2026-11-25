@@ -117,4 +117,16 @@ export function drawCounter(ctx) {
   ctx.fillRect(12, 288, 1016, 3);
   ctx.fillStyle = '#4a2c14';
   ctx.fillRect(8, 292, 1024, 4);
+  // V9: warm wooden bevel — a soft highlight along the counter's top
+  // edge and a shadowed lip at its foot — plus brass corner rivets.
+  ctx.fillStyle = 'rgba(255,220,160,0.22)';
+  ctx.fillRect(12, 174, 1016, 3);
+  ctx.fillStyle = 'rgba(0,0,0,0.30)';
+  ctx.fillRect(12, 282, 1016, 3);
+  for (const [rx, ry] of [[20, 182], [1020, 182], [20, 280], [1020, 280], [520, 182], [520, 280]]) {
+    ctx.fillStyle = '#c9a24a';
+    ctx.beginPath(); ctx.arc(rx, ry, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,240,200,0.7)';
+    ctx.beginPath(); ctx.arc(rx - 1, ry - 1, 1.5, 0, Math.PI * 2); ctx.fill();
+  }
 }

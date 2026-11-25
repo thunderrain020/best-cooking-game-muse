@@ -56,7 +56,7 @@ export function pillText(ctx, text, cx, y, font, fill, bg) {
   ctx.fillStyle = fill || '#ffe6a8';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(text, cx, y + 14);
+  ctx.fillText(text, cx, y + 13);
   ctx.restore();
   return w;
 }
@@ -91,7 +91,9 @@ export function stationLabel(ctx, x, y, w, label, key) {  // Crisp #fff6e5 bold 
   ctx.stroke();
   ctx.fillStyle = '#fff6e5';
   ctx.textAlign = 'center';
-  ctx.fillText(label, x + w / 2, y + 20);
+  ctx.textBaseline = 'middle';
+  ctx.fillText(label, x + w / 2, y + 15);
+  ctx.textBaseline = 'alphabetic';
   ctx.fillStyle = '#ffd94d';
   ctx.font = 'bold 11px system-ui, sans-serif';
   ctx.fillText(key, x + w / 2, y + 44);
@@ -125,13 +127,15 @@ export function stationTag(ctx, cx, y, label, keycap) {
     ctx.fillStyle = '#1a120b';
     ctx.font = 'bold 10px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(keycap, cx - w / 2 + 3 + kw / 2, y - 14);
+    ctx.textBaseline = 'middle';
+    ctx.fillText(keycap, cx - w / 2 + 3 + kw / 2, y - 18);
   }
   ctx.fillStyle = '#fff6e5';
   ctx.font = 'bold 14px Georgia, serif';
   ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
   const labelCx = keycap ? cx - w / 2 + kw + 8 + 12 + lw / 2 : cx;
-  ctx.fillText(label, labelCx, y - 13);
+  ctx.fillText(label, labelCx, y - 18);
   ctx.restore();
 }
 

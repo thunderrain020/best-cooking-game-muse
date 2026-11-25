@@ -13,7 +13,9 @@ function drawBadge(ctx, x, y, w, h, text) {
   roundRectPath(ctx, x, y, w, h, h / 2); ctx.stroke();
   ctx.fillStyle = '#ffd94d';
   ctx.textAlign = 'center';
-  ctx.fillText(text, x + w / 2, y + h / 2 + 4);
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, x + w / 2, y + h / 2);
+  ctx.textBaseline = 'alphabetic';
 }
 
 // Victory card: full badges, centred on cx at y.

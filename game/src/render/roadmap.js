@@ -33,11 +33,15 @@ export function drawRoadmap(ctx, g, now) {
     ctx.lineWidth = 1.5;
     roundRectPath(ctx, x, 54, w, 22, 11); ctx.stroke();
     ctx.fillStyle = done || cur ? '#1a120b' : '#e8dcc2';
-    ctx.fillText(label, x + 12, 69);
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, x + 12, 65);
+    ctx.textBaseline = 'alphabetic';
     x += w + 6;
     if (s < TOTAL_SHIFTS) {
       ctx.fillStyle = '#c9b48a';
-      ctx.fillText('›', x - 2, 69);
+      ctx.textBaseline = 'middle';
+      ctx.fillText('›', x - 2, 65);
+      ctx.textBaseline = 'alphabetic';
       x += 8;
     }
   }
@@ -54,7 +58,9 @@ export function drawRoadmap(ctx, g, now) {
   pill(ctx, 640 - ow / 2, 53, ow, 24, 'rgba(24,12,8,0.88)', '#d4a017');
   ctx.fillStyle = '#ffe6a8';
   ctx.textAlign = 'center';
-  ctx.fillText(plan, 640, 69);
+  ctx.textBaseline = 'middle';
+  ctx.fillText(plan, 640, 65);
+  ctx.textBaseline = 'alphabetic';
   ctx.textAlign = 'left';
   // Perks: readable short labels in a framed strip, max 3 shown + overflow.
   const badges = ownedBadges(g);
@@ -72,7 +78,9 @@ export function drawRoadmap(ctx, g, now) {
   ctx.stroke();
   ctx.fillStyle = '#c9b48a';
   ctx.font = 'bold 10px system-ui, sans-serif';
-  ctx.fillText('PERKS', bx + 2, 69);
+  ctx.textBaseline = 'middle';
+  ctx.fillText('PERKS', bx + 2, 65);
+  ctx.textBaseline = 'alphabetic';
   bx += 46;
   for (const b of shown) {
     const w = labelW(b);
@@ -84,7 +92,9 @@ export function drawRoadmap(ctx, g, now) {
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 11px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(b.short, bx + w / 2, 69);
+    ctx.textBaseline = 'middle';
+    ctx.fillText(b.short, bx + w / 2, 65);
+    ctx.textBaseline = 'alphabetic';
     ctx.textAlign = 'left';
     bx += w + 4;
   }
@@ -94,7 +104,9 @@ export function drawRoadmap(ctx, g, now) {
     ctx.fillStyle = '#fff6e5';
     ctx.font = 'bold 11px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('+' + overflow, bx + 20, 69);
+    ctx.textBaseline = 'middle';
+    ctx.fillText('+' + overflow, bx + 20, 65);
+    ctx.textBaseline = 'alphabetic';
     ctx.textAlign = 'left';
   }
   ctx.textAlign = 'left';
