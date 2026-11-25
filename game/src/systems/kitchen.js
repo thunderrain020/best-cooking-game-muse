@@ -33,11 +33,12 @@ export function toTray(g, id) {
   g.tray.push(id);
 }
 
-export function clickBoard(g, audio) {
+export function clickBoard(g, audio, slot) {
   const b = g.board;
   if (b.item) { chopOnce(g, audio); return; }
   if (g.hand && g.hand.kind === 'raw' && INGREDIENTS[g.hand.id].station === 'board') {
     b.item = g.hand.id; b.chops = 0; b.chopsNeeded = chopHitsNeeded(g);
+    b.slot = slot || 0;
     g.hand = null; audio.place(); return;
   }
   if (g.hand) { toast(g, 'That goes to the wok or the pot, not the board.'); audio.fail(); }
@@ -57,7 +58,7 @@ export function chopOnce(g, audio) {
   }
 }
 
-export function clickWok(g, audio) {
+export function clickWok(g, audio, slot) {
   const w = g.wok;
   if (w.state === 'burning') {
     w.item = null; w.state = 'idle'; w.t = 0;
@@ -70,6 +71,7 @@ export function clickWok(g, audio) {
   if (g.hand && g.hand.kind === 'raw' && INGREDIENTS[g.hand.id].station === 'wok') {
     w.item = g.hand.id; w.t = 0; w.dur = wokDuration(g); w.state = 'cooking';
     w.perfect = g.upgrades.wok ? [0.36, 0.68] : [0.42, 0.62];
+    w.slot = slot || 0;
     g.hand = null; audio.place();
   } else if (g.hand) {
     toast(g, 'The wok takes prawn, fish or egg.');
@@ -81,19 +83,20 @@ export function pullWok(g, audio) {
   const w = g.wok;
   if (w.state !== 'cooking') return;
   const frac = w.t / w.dur;
+  // Floats sit in the open corridor above the wok's tag, clear of labels.
+  const fx = w.slot === 1 ? 518 : 314, fy = 520;
+  const bx = w.slot === 1 ? 518 : 314;
   if (frac >= w.perfect[0] && frac <= w.perfect[1]) {
     g.stats.perfects += 1;
     const bonus = 4 + (g.relics.ember ? 3 : 0);
     g.coins += bonus;
-    // Float spawns low over the empty wok bowl, clear of the hint lines
-    // above and the pot rim to the right, never over the plate.
-    addFloat(g, 600, 220, 'PERFECT! +' + bonus, '#ffd94d');
-    spawnFlameBurst(g, 575, 232);
+    addFloat(g, fx, fy, 'PERFECT! +' + bonus, '#ffd94d');
+    spawnFlameBurst(g, bx, 580);
     audio.perfect();
   } else if (frac < w.perfect[0]) {
-    addFloat(g, 600, 220, 'Early — still edible', '#e8e0cf'); audio.flip();
+    addFloat(g, fx, fy, 'Early — still edible', '#e8e0cf'); audio.flip();
   } else {
-    addFloat(g, 600, 220, 'Late — chewy', '#e8e0cf'); audio.flip();
+    addFloat(g, fx, fy, 'Late — chewy', '#e8e0cf'); audio.flip();
   }
   toTray(g, w.item);
   w.item = null;
@@ -115,11 +118,12 @@ export function clickPot(g, audio) {
 
 export function updateKitchen(g, dt, audio) {
   const w = g.wok;
+  const wx = w.slot === 1 ? 518 : 314;
   if (w.state === 'cooking') {
     w.t += dt;
     w.anim = Math.max(0, w.anim - dt * 2);
-    if (g.rng() < dt * 6) spawnSteam(g, 575, 210, 1);
-    if (g.rng() < dt * 2) spawnSparks(g, 575, 230, 1);
+    if (g.rng() < dt * 6) spawnSteam(g, wx, 556, 1);
+    if (g.rng() < dt * 2) spawnSparks(g, wx, 576, 1);
     if (w.t >= w.dur) {
       w.state = 'burning';
       w.t = w.dur;
@@ -128,12 +132,12 @@ export function updateKitchen(g, dt, audio) {
     }
   }
   if (w.state === 'burning' && g.rng() < dt * 8) {
-    spawnSteam(g, 575, 210, 1, 'rgba(60,60,60,0.6)');
+    spawnSteam(g, wx, 556, 1, 'rgba(60,60,60,0.6)');
   }
   const p = g.pot;
   if (p.state === 'cooking') {
     p.t += dt;
-    if (g.rng() < dt * 5) spawnSteam(g, 765, 210, 1);
+    if (g.rng() < dt * 5) spawnSteam(g, 722, 556, 1);
     if (p.t >= p.dur) {
       toTray(g, p.item);
       toast(g, INGREDIENTS[p.item].name + ' simmered — on the tray.');

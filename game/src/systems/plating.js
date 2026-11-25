@@ -34,8 +34,8 @@ export function clickPlate(g, audio) {
     const dish = dishForPlate(g.plate.items);
     g.plate.dishId = dish ? dish.id : null;
     if (dish) {
-      // Float sits upper-right of the plate station, never on the dish art.
-      addFloat(g, 1040, 195, dish.name + ' ready!', '#ffd94d');
+      // Float sits in the open corridor above the island, never on the art.
+      addFloat(g, 700, 312, dish.name + ' ready!', '#ffd94d');
       audio.coin();
     }
     return;
@@ -58,7 +58,7 @@ export function clickBell(g, audio, serveFn) {
   const res = serveFn(g, audio);
   if (res && res.ok) {
     audio.bell(); audio.serve();
-    addFloat(g, 1040, 195, '+' + res.pay + '  ' + res.dish.name, '#ffd94d');
+    addFloat(g, 944, 520, '+' + res.pay + '  ' + res.dish.name, '#ffd94d');
     return res;
   }
   if (res && res.reason === 'no-ticket') {

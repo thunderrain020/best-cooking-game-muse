@@ -6,7 +6,7 @@ import { fmtCoins, roundRectPath } from '../core/util.js';
 import { TOTAL_SHIFTS, LOSE_MISSES } from '../core/state.js';
 
 function dim(ctx) {
-  ctx.fillStyle = 'rgba(10, 8, 16, 0.88)';
+  ctx.fillStyle = 'rgba(8,6,12,0.92)';
   ctx.fillRect(0, 0, 1280, 720);
 }
 
@@ -54,7 +54,7 @@ export function drawTitle(ctx, g) {
   ctx.fillText('CLICK TO PLAY — or press Enter', 640, 478);
   ctx.fillStyle = '#7a5a34';
   ctx.font = '14px system-ui, sans-serif';
-  ctx.fillText('1–8 pantry · Q chop · W wok · E pot · R plate · Space chop / pull / ring · L ledger', 640, 506);
+  ctx.fillText('WASD walk · Space / E interact · 1–8 pantry · Q chop · F wok · T pot · R plate · L ledger', 640, 506);
   ctx.fillText('Mouse works for everything. Sound is synthesized live — no audio files.', 640, 528);
   ctx.fillStyle = '#e8703f';
   roundRectPath(ctx, 520, 548, 240, 56, 12);

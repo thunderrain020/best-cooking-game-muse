@@ -3,6 +3,8 @@
 // real game state through the same systems the player uses, then freezes
 // the shift clock so the capture is stable. Nothing here draws placeholders:
 // the render loop draws the staged state exactly as it draws live play.
+// The chef is staged by hand (position, facing, trail) so each shot shows
+// the route guide and the carried ingredient exactly as briefed.
 
 import { createGame } from './state.js';
 import { dishById } from '../data/recipes.js';
@@ -23,6 +25,10 @@ function ticket(g, dishId, patienceLeft, total, critic = false) {
   return t;
 }
 
+function chef(x, y, dir, trail = []) {
+  return { x, y, dir, tx: null, ty: null, action: null, trail, stepT: 0, path: null, pathTarget: null };
+}
+
 export function setupShot(name) {
   if (name === 'cover') {
     const g = base({ coins: 246, combo: 3, served: 9, shift: 3, shiftServed: 7, shiftLeft: 72, time: 78 });
@@ -33,17 +39,20 @@ export function setupShot(name) {
       ticket(g, 'chilli-lime-noodles', 52, 72),
     ];
     g.tickets[3].vip = true;
-    g.wok = { item: 'prawn', t: 3.1, dur: 6, perfect: [0.42, 0.62], state: 'cooking', anim: 0.8 };
+    // Wok 2 sizzling in its PERFECT window, pot simmering, board 2
+    // mid-chop, tray waiting on the garnish counter.
+    g.wok = { item: 'prawn', t: 3.1, dur: 6, perfect: [0.42, 0.62], state: 'cooking', anim: 0.8, slot: 1 };
     g.pot = { item: 'rice', t: 5.4, dur: 8, state: 'cooking' };
-    g.board = { item: 'lime', chops: 2, chopsNeeded: 3, anim: 0.6 };
+    g.board = { item: 'lime', chops: 2, chopsNeeded: 3, anim: 0.6, slot: 1 };
     g.tray = ['chilli', 'herbs'];
     g.plate = { items: ['rice', 'prawn'], dishId: 'prawn-rice' };
     g.hand = { kind: 'prepped', id: 'lime' };
+    g.chef = chef(300, 480, 'up', [{ x: 300, y: 502, t: 0.3 }, { x: 300, y: 524, t: 0.6 }]);
     g.upgrades = { knives: true, wok: true, pass: false, calm: false, bell: false, pot: false };
     g.relics = { ember: true, star: true };
-    // Float hangs in the open window sky, clear of every hint and rim.
-    g.floats = [{ x: 640, y: 112, text: '+24 PERFECT!', color: '#ffd94d', t: 0.2 }];
-    g.toast = { text: 'PERFECT sear! +$4', until: 999 };
+    // PERFECT float in the open corridor above wok 2, clear of its tag.
+    g.floats = [{ x: 518, y: 520, text: '+24 PERFECT!', color: '#ffd94d', t: 0.2 }];
+    g.toast = null;
     g.shot = 'cover';
     return g;
   }
@@ -57,12 +66,13 @@ export function setupShot(name) {
     g.upgrades = { knives: true, wok: false, pass: false, calm: false, bell: false, pot: false };
     g.relics = { ember: false };
     g.tickets = [ticket(g, 'ember-prawns', 41, 57), ticket(g, 'egg-rice', 38, 57)];
-    g.board = { item: 'chilli', chops: 1, chopsNeeded: 3, anim: 0.9 };
-    g.wok = { item: 'prawn', t: 2.9, dur: 6, perfect: [0.42, 0.62], state: 'cooking', anim: 0.2 };
+    g.board = { item: 'chilli', chops: 1, chopsNeeded: 3, anim: 0.9, slot: 0 };
+    g.wok = { item: 'prawn', t: 2.9, dur: 6, perfect: [0.42, 0.62], state: 'cooking', anim: 0.2, slot: 0 };
     g.pot = { item: 'noodle', t: 6.8, dur: 8, state: 'cooking' };
     g.tray = ['herbs'];
     g.plate = { items: ['noodle', 'chilli'], dishId: null };
     g.hand = null;
+    g.chef = chef(520, 520, 'up');
     g.shot = 'prep';
     return g;
   }
@@ -78,16 +88,18 @@ export function setupShot(name) {
       ticket(g, 'sunset-bowl', 31, 57),
     ];
     g.tickets[3].vip = true;
-    g.wok = { item: 'fish', t: 5.9, dur: 6, perfect: [0.42, 0.62], state: 'burning', anim: 0.1 };
+    g.wok = { item: 'fish', t: 5.9, dur: 6, perfect: [0.42, 0.62], state: 'burning', anim: 0.1, slot: 1 };
     g.pot = { item: 'noodle', t: 6.8, dur: 8, state: 'cooking' };
-    g.board = { item: 'chilli', chops: 0, chopsNeeded: 3, anim: 0 };
+    g.board = { item: 'chilli', chops: 0, chopsNeeded: 3, anim: 0, slot: 0 };
     g.tray = ['egg', 'lime'];
-    g.plate = { items: ['noodle'], dishId: 'spicy-noodles' };
-    g.hand = { kind: 'raw', id: 'herbs' };
+    g.plate = { items: ['noodle', 'chilli', 'egg'], dishId: 'spicy-noodles' };
+    g.hand = { kind: 'prepped', id: 'lime' };
+    g.chef = chef(820, 520, 'right', [{ x: 796, y: 520, t: 0.3 }, { x: 772, y: 520, t: 0.6 }]);
     g.upgrades = { knives: true, wok: true, pass: true, calm: true, bell: true, pot: false };
     g.relics = { ember: true, lantern: true, star: true };
-    // COMBO float in the window sky, right of the shifted rush banner.
-    g.floats = [{ x: 700, y: 112, text: 'COMBO x1.8!', color: '#ffd94d', t: 0.1 }];
+    // COMBO float in the open corridor above the bottom row.
+    g.floats = [{ x: 760, y: 480, text: 'COMBO x1.8!', color: '#ffd94d', t: 0.1 }];
+    g.toast = null;
     g.shot = 'rush';
     return g;
   }
@@ -104,7 +116,7 @@ export function setupShot(name) {
     g.upgrades = { knives: true, wok: true, pass: true, calm: false, bell: true, pot: false };
     g.relics = { ember: true, lantern: true, star: true };
     g.tickets = [ticket(g, 'prawn-rice', 20, 57)];
-    g.wok = { item: null, t: 0, dur: 6, perfect: [0.42, 0.62], state: 'idle', anim: 0 };
+    g.wok = { item: null, t: 0, dur: 6, perfect: [0.42, 0.62], state: 'idle', anim: 0, slot: 0 };
     g.pot = { item: null, t: 0, dur: 8, state: 'idle' };
     g.plate = { items: [], dishId: null };
     g.shot = 'upgrades';

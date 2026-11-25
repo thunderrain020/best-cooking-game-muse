@@ -18,7 +18,7 @@ export function gradeRun(g) {
 export function drawSummary(ctx, g) {
   dim(ctx);
   // Footer text must never show through the overlay: opaque cover.
-  ctx.fillStyle = 'rgba(10,8,16,1)';
+  ctx.fillStyle = 'rgba(8,6,12,0.92)';
   ctx.fillRect(0, 660, 1280, 60);
   panel(ctx, 280, 90, 720, 540);
   ctx.textAlign = 'center';

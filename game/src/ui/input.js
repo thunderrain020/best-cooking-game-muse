@@ -1,15 +1,17 @@
 // Ember & Tide — ui/input.js
-// Mouse and keyboard input. Both drive the same station actions in
-// systems/kitchen.js and systems/plating.js, so the two never drift apart.
-// The api object bridges to main.js: getG/setG read and replace the live
-// game state (restart creates a fresh one), the rest are the run actions.
+// Mouse and keyboard input for the top-down kitchen. WASD / arrows walk
+// the chef (held keys live in view.keys), Space / E uses the nearest
+// station, Q / F / T / R stroll the chef to a station and act, 1-8 stroll
+// to a crate and grab. Clicking a crate or station strolls the chef
+// there and acts on arrival; clicking open floor just walks there.
 
 import { INGREDIENT_ORDER } from '../data/recipes.js';
-import { servePlate } from '../systems/orders.js';
-import { grabIngredient, clearHand, clickBoard, chopOnce, clickWok, pullWok, clickPot } from '../systems/kitchen.js';
-import { clickTray, clickPlate, clickBell } from '../systems/plating.js';
+import { clearHand } from '../systems/kitchen.js';
 import { startShift, buyUpgrade, buyRelic } from '../systems/run.js';
+import { goAct, walkTo, doAction } from '../systems/act.js';
+import { interactNearest } from '../systems/pathing.js';
 import { LAYOUT, crateRect, trayRect, topBarButtons, W, H } from '../render/canvas.js';
+import { STATION_AT, obstacles } from '../render/layout.js';
 import { titleButtons } from './titleOverlay.js';
 import { shopButtons } from './shopOverlay.js';
 import { ledgerButtons } from './ledgerOverlay.js';
@@ -18,21 +20,7 @@ import { helpButtons } from './helpOverlay.js';
 import { pointInRect } from '../core/util.js';
 import { trayCap } from '../core/state.js';
 
-function pressSpace(g, audio) {
-  if (g.mode !== 'play') return;
-  if (g.wok.state === 'cooking') { pullWok(g, audio); return; }
-  if (g.wok.state === 'burning') { clickWok(g, audio); return; }
-  if (g.board.item) { chopOnce(g, audio); return; }
-  if (g.plate.dishId) { clickBell(g, audio, servePlate); }
-}
-
-function stationKey(g, audio, station) {
-  if (g.mode !== 'play') return;
-  if (station === 'board') clickBoard(g, audio);
-  if (station === 'wok') clickWok(g, audio);
-  if (station === 'pot') clickPot(g, audio);
-  if (station === 'plate') clickPlate(g, audio);
-}
+const REACH = 48;
 
 function handleClick(api, mx, my) {
   const g = api.getG();
@@ -68,22 +56,32 @@ function handleClick(api, mx, my) {
   if (pointInRect(mx, my, tb.ledger)) { g.ledgerOpen = true; audio.click(); return; }
   if (pointInRect(mx, my, tb.help)) { g.helpOpen = true; audio.click(); return; }
   if (pointInRect(mx, my, tb.mute)) { g.muted = !g.muted; audio.setMuted(g.muted); audio.click(); return; }
-  if (pointInRect(mx, my, LAYOUT.bellRect)) { clickBell(g, audio, servePlate); return; }
-  if (pointInRect(mx, my, LAYOUT.boardRect)) { clickBoard(g, audio); return; }
-  if (pointInRect(mx, my, LAYOUT.wokRect)) { clickWok(g, audio); return; }
-  if (pointInRect(mx, my, LAYOUT.potRect)) { clickPot(g, audio); return; }
-  if (pointInRect(mx, my, LAYOUT.plateRect)) { clickPlate(g, audio); return; }
+  if (pointInRect(mx, my, LAYOUT.bellRect)) { goAct(g, 'bell', audio); return; }
+  if (pointInRect(mx, my, LAYOUT.boardRect)) { goAct(g, 'board0', audio); return; }
+  if (pointInRect(mx, my, LAYOUT.boardRect2)) { goAct(g, 'board1', audio); return; }
+  if (pointInRect(mx, my, LAYOUT.wokRect)) { goAct(g, 'wok0', audio); return; }
+  if (pointInRect(mx, my, LAYOUT.wokRect2)) { goAct(g, 'wok1', audio); return; }
+  if (pointInRect(mx, my, LAYOUT.potRect)) { goAct(g, 'pot', audio); return; }
+  if (pointInRect(mx, my, LAYOUT.plateRect)) { goAct(g, 'plate', audio); return; }
+  if (pointInRect(mx, my, LAYOUT.trashRect)) { goAct(g, 'trash', audio); return; }
   for (let i = 0; i < trayCap(g); i++) {
-    if (pointInRect(mx, my, trayRect(i, trayCap(g)))) { clickTray(g, i, audio); return; }
-  }
-  for (let i = 0; i < 8; i++) {
-    if (pointInRect(mx, my, crateRect(i))) {
-      if (g.hand && g.hand.id === INGREDIENT_ORDER[i]) { clearHand(g); audio.click(); }
-      else grabIngredient(g, INGREDIENT_ORDER[i], audio);
+    if (pointInRect(mx, my, trayRect(i, trayCap(g)))) {
+      const at = STATION_AT.garnish;
+      const c = g.chef;
+      const dx = at.x - c.x, dy = at.y - c.y;
+      if (dx * dx + dy * dy < REACH * REACH) doAction(g, { kind: 'tray', index: i }, audio);
+      else walkTo(g, at.x, at.y, { kind: 'tray', index: i });
       return;
     }
   }
-  if (g.hand) { clearHand(g); audio.click(); }
+  for (let i = 0; i < 8; i++) {
+    if (pointInRect(mx, my, crateRect(i))) { goAct(g, 'crate:' + INGREDIENT_ORDER[i], audio); return; }
+  }
+  // Open floor: stroll there (never inside a counter or a station).
+  if (mx >= 10 && mx <= 1030 && my >= 176 && my <= 660) {
+    const inside = obstacles().some((r) => pointInRect(mx, my, r));
+    if (!inside) walkTo(g, mx, my, null);
+  }
 }
 
 export function attachInput(canvas, api, view, shotName) {
@@ -99,8 +97,12 @@ export function attachInput(canvas, api, view, shotName) {
     handleClick(api, (e.clientX - r.left) * (W / r.width), (e.clientY - r.top) * (H / r.height));
   });
   window.addEventListener('keydown', (e) => {
-    if (e.repeat) return;
     const k = e.key.toLowerCase();
+    if (view.keys && ['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(k)) {
+      view.keys.add(k);
+      if (e.repeat) return;
+    }
+    if (e.repeat) return;
     if (shotName) return;
     const g = api.getG();
     const audio = api.audio;
@@ -118,20 +120,18 @@ export function attachInput(canvas, api, view, shotName) {
     if (k === 'm') { g.muted = !g.muted; audio.setMuted(g.muted); return; }
     if (k === 'escape') {
       if (g.ledgerOpen || g.helpOpen) { g.ledgerOpen = false; g.helpOpen = false; }
-      else clearHand(g);
+      else { clearHand(g); g.chef.tx = null; g.chef.ty = null; g.chef.action = null; }
       return;
     }
     if (g.mode !== 'play' || g.ledgerOpen || g.helpOpen) return;
-    if (k >= '1' && k <= '8') {
-      const id = INGREDIENT_ORDER[Number(k) - 1];
-      if (g.hand && g.hand.id === id) clearHand(g);
-      else grabIngredient(g, id, audio);
-      return;
-    }
-    if (k === ' ') { e.preventDefault(); pressSpace(g, audio); return; }
-    if (k === 'q') stationKey(g, audio, 'board');
-    if (k === 'w') stationKey(g, audio, 'wok');
-    if (k === 'e') stationKey(g, audio, 'pot');
-    if (k === 'r') stationKey(g, audio, 'plate');
+    if (k >= '1' && k <= '8') { goAct(g, 'crate:' + INGREDIENT_ORDER[Number(k) - 1], audio); return; }
+    if (k === ' ' || k === 'e') { e.preventDefault(); interactNearest(g, audio); return; }
+    if (k === 'q') goAct(g, 'board0', audio);
+    if (k === 'f') goAct(g, 'wok0', audio);
+    if (k === 't') goAct(g, 'pot', audio);
+    if (k === 'r') goAct(g, 'plate', audio);
+  });
+  window.addEventListener('keyup', (e) => {
+    if (view.keys) view.keys.delete(e.key.toLowerCase());
   });
 }

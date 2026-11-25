@@ -43,10 +43,14 @@ export function createGame(seed = 20261125) {
     critic: { spawned: false, served: false, active: false },
     result: null, // { won, reason } on the summary screen
     hand: null,
+    // V2 top-down chef: walks the floor, carries the hand in front, and
+    // queues one walk-to-act (click a crate/station to stroll over and
+    // do it). `trail` holds fading footstep dust dots.
+    chef: { x: 520, y: 520, dir: 'up', tx: null, ty: null, action: null, trail: [], stepT: 0, path: null, pathTarget: null },
     tickets: [],
     spawnIn: 1.2,
-    board: { item: null, chops: 0, chopsNeeded: 3, anim: 0 },
-    wok: { item: null, t: 0, dur: 6, perfect: [0.42, 0.62], state: 'idle', anim: 0 },
+    board: { item: null, chops: 0, chopsNeeded: 3, anim: 0, slot: 0 },
+    wok: { item: null, t: 0, dur: 6, perfect: [0.42, 0.62], state: 'idle', anim: 0, slot: 0 },
     pot: { item: null, t: 0, dur: 8, state: 'idle' },
     plate: { items: [], dishId: null },
     tray: [],

@@ -15,21 +15,22 @@ export function drawHelp(ctx, g) {
   ctx.fillStyle = '#3a2a1a';
   ctx.font = '16px system-ui, sans-serif';
   const lines = [
+    'Walk with WASD or the arrow keys. Click a crate or station and',
+    'the chef strolls over and does it. Space / E uses the nearest station.',
     '1. Click a pantry crate (or press 1–8) to take an ingredient.',
-    '2. Chilli, lime and herbs go to the CHOP BOARD — click to chop.',
-    '3. Prawn, fish and egg go to the WOK — pull them out in the green',
-    '    PERFECT window. Leave them and they burn.',
-    '4. Rice and noodles go in the SIMMER POT — it finishes itself.',
-    '5. Click the tray, then the PLATING COUNTER, to stack a dish.',
+    '2. Chilli, lime, herbs → CHOP BOARD — Q to chop.',
+    '3. Prawn, fish, egg → WOK — pull in the green PERFECT window.',
+    '4. Rice, noodles → SIMMER POT — it finishes itself.',
+    '5. Click the tray, then the PLATING ISLAND, to stack a dish.',
     '6. Ring the PASS BELL to serve the matching ticket.',
     '',
-    'Tickets lose patience. Serve fast for tips, chain serves for',
-    'combos, and spend coins on upgrades and relics between shifts.',
-    '',
+    'Follow the golden route line: chef → next station → island → bell.',
+    'Serve fast for tips; chain serves for combos; spend coins',
+    'on upgrades and relics between shifts.',
     'WIN: clear ' + TOTAL_SHIFTS + ' shifts and serve the Harbour Critic.',
     'LOSE: ' + LOSE_MISSES + ' tickets walk out, or the finale target is missed.',
   ];
-  lines.forEach((l, i) => ctx.fillText(l, 640, 210 + i * 26));
+  lines.forEach((l, i) => ctx.fillText(l, 640, 206 + i * 24));
   ctx.fillStyle = '#5d3a1e';
   roundRectPath(ctx, 540, 540, 200, 44, 10);
   ctx.fill();

@@ -76,8 +76,7 @@ export function outlineText(ctx, text, x, y, font, fill, outline) {
   ctx.restore();
 }
 
-export function stationLabel(ctx, x, y, w, label, key) {
-  // Crisp #fff6e5 bold text on its own dark pill: >= 7:1 contrast, and
+export function stationLabel(ctx, x, y, w, label, key) {  // Crisp #fff6e5 bold text on its own dark pill: >= 7:1 contrast, and
   // the pill keeps the header clear of the station art below it.
   ctx.save();
   ctx.font = 'bold 15px Georgia, serif';
@@ -96,5 +95,28 @@ export function stationLabel(ctx, x, y, w, label, key) {
   ctx.fillStyle = '#ffd94d';
   ctx.font = 'bold 11px system-ui, sans-serif';
   ctx.fillText(key, x + w / 2, y + 44);
+  ctx.restore();
+}
+
+// V2 top-down station tag: the name pill floats just above the equipment
+// and the key hint sits below it, so neither ever covers the art or a
+// label underneath. `y` is the top of the equipment rect.
+export function stationTag(ctx, cx, y, label, key) {
+  ctx.save();
+  ctx.font = 'bold 14px Georgia, serif';
+  const lw = ctx.measureText(label).width + 24;
+  ctx.fillStyle = 'rgba(18,10,6,0.88)';
+  roundRectPath(ctx, cx - lw / 2, y - 30, lw, 24, 12);
+  ctx.fill();
+  ctx.strokeStyle = '#d4a017';
+  ctx.lineWidth = 1.5;
+  roundRectPath(ctx, cx - lw / 2, y - 30, lw, 24, 12);
+  ctx.stroke();
+  ctx.fillStyle = '#fff6e5';
+  ctx.textAlign = 'center';
+  ctx.fillText(label, cx, y - 13);
+  ctx.fillStyle = '#ffd94d';
+  ctx.font = 'bold 10px system-ui, sans-serif';
+  ctx.fillText(key, cx, y - 1);
   ctx.restore();
 }

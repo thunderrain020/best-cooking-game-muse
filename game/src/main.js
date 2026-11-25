@@ -9,6 +9,7 @@ import { setupShot } from './core/shots.js';
 import { AudioSys } from './systems/audio.js';
 import { updateOrders } from './systems/orders.js';
 import { updateKitchen, toast } from './systems/kitchen.js';
+import { updateChef } from './systems/chef.js';
 import { endShift, endRun } from './systems/run.js';
 import { drawScene } from './render/canvas.js';
 import { drawTitle } from './ui/titleOverlay.js';
@@ -28,7 +29,7 @@ let g = shotName ? setupShot(shotName) : createGame();
 if (!shotName) g.best = loadBest();
 g.muted = false;
 
-const view = { mouse: { x: 965, y: 215 }, now: 0 };
+const view = { mouse: { x: 965, y: 215 }, now: 0, keys: new Set() };
 let last = performance.now();
 
 function restart() {
@@ -76,6 +77,7 @@ function frame(nowMs) {
       if (ev === 'shiftEnd') endShift(g, audio);
     }
     updateKitchen(g, dt, audio);
+    updateChef(g, dt, view.keys, audio);
     if (g.critic.served && g.mode === 'play') {
       endRun(g, true, 'The Critic loved the Tide & Ember Special — five shifts cleared!');
     }
