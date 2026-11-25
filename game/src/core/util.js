@@ -32,7 +32,11 @@ export function fmtClock(seconds) {
 }
 
 export function fmtCoins(n) {
-  return '¢' + Math.round(n);
+  return '$' + Math.round(n);
+}
+
+export function fmtMult(x) {
+  return 'x' + x.toFixed(1);
 }
 
 // Rounded-rect path helper for canvas drawing.

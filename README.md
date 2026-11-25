@@ -28,9 +28,17 @@ upgrades between shifts.
   signatures) across 4 stations plus the pass.
 - 3–5 live tickets with patience bars, VIP tickets, combo multiplier, and two
   rush waves per shift (**Sunset Rush**, **Storm Rush**).
+- A run is **5 shifts**: Shifts 1–4, then the **Critic Finale** on Shift 5,
+  when the Harbour Critic orders the Tide & Ember Special. Win by clearing
+  all 5 shifts and serving the Critic; lose if 3 tickets walk out or a
+  shift target is missed. The HUD shows the WIN / LOSE objective and a
+  5-shift roadmap.
 - Between shifts: a **kitchen upgrade shop** (sharper knives, copper wok,
-  longer pass, calm waters, golden bell, big simmer pot) and a **recipe
-  ledger** of all 12 dishes.
+  longer pass, calm waters, golden bell, big simmer pot) **and a 6-relic
+  draft** (Ember Charm, Storm Lantern, Golden Ladle, Harbour Star, Salt of
+  the Tide, Critic's Quill). Owned upgrades and relics show as badges in the
+  HUD. Best score and best shift persist in `localStorage` and show in the
+  HUD and the end-of-run summary.
 - Sound is synthesized live with the Web Audio API — sizzle, chop, bell —
   with zero audio files and zero network requests.
 
@@ -45,12 +53,13 @@ node serve.ts        # serves game/ on http://localhost:8080
 
 ## Files
 
-- `game/index.html` — the page; `game/src/main.js` — bootstrap, loop, input
-- `game/src/core/` — state, utilities, staged screenshot states
-- `game/src/data/recipes.js` — ingredients, dishes, upgrades
-- `game/src/systems/` — kitchen stations, order board, synthesized audio
-- `game/src/render/` — canvas scene and vector food art
-- `game/src/ui/hud.js` — title, upgrade shop, recipe ledger, help
+- `game/index.html` — the page; `game/src/main.js` — bootstrap and loop
+- `game/src/core/` — state, utilities, best-run persistence, staged shots
+- `game/src/data/recipes.js` — ingredients and dishes
+- `game/src/systems/` — kitchen, plating, orders, upgrades/relics, run flow, audio
+- `game/src/render/` — palette, harbour backdrop, stations, tickets, pantry,
+  particles, food art, plates, HUD bar
+- `game/src/ui/` — title, shop, ledger, summary, help, input
 - `screenshots/` — 4 real renders of the running game
 - `main.ts` — hands `game/` + `screenshots/` to `/output` with `dossier.json`
 - `vendor/makefun-game.ts` — the kit's library, unchanged

@@ -37,13 +37,3 @@ export const DISHES = [
 export function dishById(id) {
   return DISHES.find((d) => d.id === id);
 }
-
-// Upgrades sold between shifts. Each is bought once per run; cost grows with shift.
-export const UPGRADES = [
-  { id: 'knives', name: 'Sharper Knives', cost: 30, desc: 'Chopping takes 2 hits instead of 3.', apply: (g) => { g.upgrades.knives = true; } },
-  { id: 'wok', name: 'Copper Wok', cost: 35, desc: 'The wok PERFECT window is 60% wider.', apply: (g) => { g.upgrades.wok = true; } },
-  { id: 'pass', name: 'Longer Pass', cost: 40, desc: 'The order board holds one more ticket.', apply: (g) => { g.upgrades.pass = true; } },
-  { id: 'calm', name: 'Calm Waters', cost: 30, desc: 'Every ticket gets +12s of patience.', apply: (g) => { g.upgrades.calm = true; } },
-  { id: 'bell', name: 'Golden Bell', cost: 45, desc: 'Tips pay 50% more on every serve.', apply: (g) => { g.upgrades.bell = true; } },
-  { id: 'pot', name: 'Big Simmer Pot', cost: 25, desc: 'Rice and noodles simmer 30% faster.', apply: (g) => { g.upgrades.pot = true; } },
-];
