@@ -1,8 +1,9 @@
 // Ember & Tide — render/pantry.js
-// The pantry crates along the top counter (8 ingredients, 1-8), the trash
-// bin, and the garnish / sauce station at the bottom right, whose counter
-// holds the prepped tray. The IN HAND pill sits top-right of a crate, so
-// it never covers the ingredient name below the art.
+// The pantry crates along the top counter (10 ingredients, 1-9 and 0),
+// the trash bin, and the garnish / sauce station at the bottom right,
+// whose counter holds the prepped tray. The IN HAND pill sits top-right
+// of a crate, inside its border, so it never covers the ingredient
+// name below the art.
 
 import { INGREDIENTS, INGREDIENT_ORDER } from '../data/recipes.js';
 import { drawIngredientIcon } from './foodArt.js';
@@ -53,7 +54,7 @@ export function drawCrates(ctx, g) {
     roundRectPath(ctx, r.x + 8, r.y + 22, r.w - 16, 34, 6); ctx.fill();
     ctx.strokeStyle = '#1a120b'; ctx.lineWidth = 1.5;
     roundRectPath(ctx, r.x + 8, r.y + 22, r.w - 16, 34, 6); ctx.stroke();
-    drawIngredientIcon(ctx, id, r.x + r.w / 2, r.y + 39, 19);
+    drawIngredientIcon(ctx, id, r.x + r.w / 2, r.y + 39, 17);
     ctx.fillStyle = '#1a120b';
     ctx.font = 'bold 11px Georgia, serif';
     ctx.fillText(ing.name, r.x + r.w / 2, r.y + 74);

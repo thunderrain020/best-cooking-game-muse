@@ -5,12 +5,13 @@
 
 import { createGame } from './core/state.js';
 import { loadBest } from './core/best.js';
+import { loadMeta } from './core/meta.js';
 import { setupShot } from './core/shots.js';
 import { AudioSys } from './systems/audio.js';
 import { updateOrders } from './systems/orders.js';
 import { updateKitchen, toast } from './systems/kitchen.js';
 import { updateChef } from './systems/chef.js';
-import { endShift, endRun } from './systems/run.js';
+import { endShift, endRun, startEndless } from './systems/run.js';
 import { drawScene } from './render/canvas.js';
 import { drawTitle } from './ui/titleOverlay.js';
 import { drawShop } from './ui/shopOverlay.js';
@@ -26,22 +27,35 @@ const audio = new AudioSys();
 const params = new URLSearchParams(location.search);
 const shotName = params.get('shot');
 let g = shotName ? setupShot(shotName) : createGame();
-if (!shotName) g.best = loadBest();
+if (!shotName) {
+  g.best = loadBest();
+  // The persisted profile: difficulty, unlocked feats, Endless Rush.
+  const meta = loadMeta();
+  g.meta = meta;
+  g.difficulty = meta.difficulty;
+  g.feats = { ...meta.feats };
+  g.endlessAvailable = meta.endlessUnlocked;
+}
 g.muted = false;
 
 const view = { mouse: { x: 965, y: 215 }, now: 0, keys: new Set() };
 let last = performance.now();
 
 function restart() {
-  const best = g.best;
-  const muted = g.muted;
+  const best = g.best, muted = g.muted, meta = g.meta;
   g = createGame(Date.now() % 100000);
   g.best = best;
   g.muted = muted;
+  g.meta = meta;
+  if (meta) {
+    g.difficulty = meta.difficulty;
+    g.feats = { ...meta.feats };
+    g.endlessAvailable = meta.endlessUnlocked;
+  }
   audio.setMuted(muted);
 }
 
-attachInput(canvas, { getG: () => g, setG: (ng) => { g = ng; }, audio, restart }, view, shotName);
+attachInput(canvas, { getG: () => g, setG: (ng) => { g = ng; }, audio, restart, startEndless: () => startEndless(g, audio) }, view, shotName);
 
 // In shot mode, settle the steam and sparks, then freeze the clock.
 // The settle ages floats out, so restore the staged callouts after it.
@@ -79,7 +93,7 @@ function frame(nowMs) {
     updateKitchen(g, dt, audio);
     updateChef(g, dt, view.keys, audio);
     if (g.critic.served && g.mode === 'play') {
-      endRun(g, true, 'The Critic loved the Tide & Ember Special — five shifts cleared!');
+      endRun(g, true, 'The Critic loved the Tide & Ember Special — seven Harbour Nights cleared!');
     }
   }
   if (g.mode === 'title') drawTitle(ctx, g);

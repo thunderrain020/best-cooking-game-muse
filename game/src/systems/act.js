@@ -9,10 +9,29 @@ import { INGREDIENTS, INGREDIENT_ORDER } from '../data/recipes.js';
 import { grabIngredient, clearHand, clickBoard, clickWok, clickPot, toast } from './kitchen.js';
 import { clickTray, clickPlate, clickBell } from './plating.js';
 import { servePlate } from './orders.js';
+import { recordVisit } from './route.js';
 import { STATION_AT, crateAt } from '../render/layout.js';
+import { trayRect } from '../render/pantry.js';
+import { pointInRect } from '../core/util.js';
 import { trayCap } from '../core/state.js';
 
 const REACH = 48;
+
+// Clicking the prepped tray: grab the item if the chef is close enough
+// to the garnish station, else stroll there first. Returns true when a
+// tray slot was hit.
+export function trayClick(g, mx, my, audio) {
+  for (let i = 0; i < trayCap(g); i++) {
+    if (!pointInRect(mx, my, trayRect(i, trayCap(g)))) continue;
+    const at = STATION_AT.garnish;
+    const c = g.chef;
+    const dx = at.x - c.x, dy = at.y - c.y;
+    if (dx * dx + dy * dy < REACH * REACH) doAction(g, { kind: 'tray', index: i }, audio);
+    else walkTo(g, at.x, at.y, { kind: 'tray', index: i });
+    return true;
+  }
+  return false;
+}
 
 export function stationAt(key) {
   if (key === 'plate') return STATION_AT.island;
@@ -44,13 +63,13 @@ export function doAction(g, action, audio) {
     else grabIngredient(g, action.id, audio);
     return;
   }
-  if (action.kind === 'board') { clickBoard(g, audio, action.slot || 0); return; }
-  if (action.kind === 'wok') { clickWok(g, audio, action.slot || 0); return; }
-  if (action.kind === 'pot') { clickPot(g, audio); return; }
+  if (action.kind === 'board') { recordVisit(g, 'board'); clickBoard(g, audio, action.slot || 0); return; }
+  if (action.kind === 'wok') { recordVisit(g, 'wok'); clickWok(g, audio, action.slot || 0); return; }
+  if (action.kind === 'pot') { recordVisit(g, 'pot'); clickPot(g, audio); return; }
   if (action.kind === 'plate') { clickPlate(g, audio); return; }
   if (action.kind === 'bell') { clickBell(g, audio, servePlate); return; }
   if (action.kind === 'tray') { clickTray(g, action.index, audio); return; }
-  if (action.kind === 'trash' && g.hand) { clearHand(g); toast(g, 'Tossed it in the bin.'); audio.click(); }
+  if (action.kind === 'trash' && g.hand) { clearHand(g); g.shiftTrashed += 1; toast(g, 'Tossed it in the bin.'); audio.click(); }
 }
 
 export function goAct(g, key, audio) {

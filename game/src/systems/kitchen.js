@@ -3,8 +3,10 @@
 // carries a single ingredient; each station holds one item at a time.
 
 import { INGREDIENTS, DISHES, dishById } from '../data/recipes.js';
-import { chopHitsNeeded, potDuration, wokDuration, trayCap } from '../core/state.js';
+import { chopHitsNeeded, potDuration, wokDuration, wokPerfect, trayCap } from '../core/state.js';
 import { spawnSteam, spawnSparks, spawnFlameBurst } from '../render/particles.js';
+import { noteGoal } from './goals.js';
+import { checkFeats } from '../data/feats.js';
 
 export function toast(g, text) {
   g.toast = { text, until: g.time + 2.2 };
@@ -63,6 +65,7 @@ export function clickWok(g, audio, slot) {
   if (w.state === 'burning') {
     w.item = null; w.state = 'idle'; w.t = 0;
     g.stats.burns += 1;
+    g.shiftBurns += 1;
     toast(g, 'Burnt! Tossed it out.');
     audio.burn();
     return;
@@ -70,11 +73,11 @@ export function clickWok(g, audio, slot) {
   if (w.state === 'cooking') { pullWok(g, audio); return; }
   if (g.hand && g.hand.kind === 'raw' && INGREDIENTS[g.hand.id].station === 'wok') {
     w.item = g.hand.id; w.t = 0; w.dur = wokDuration(g); w.state = 'cooking';
-    w.perfect = g.upgrades.wok ? [0.36, 0.68] : [0.42, 0.62];
+    w.perfect = wokPerfect(g);
     w.slot = slot || 0;
     g.hand = null; audio.place();
   } else if (g.hand) {
-    toast(g, 'The wok takes prawn, fish or egg.');
+    toast(g, 'The wok takes prawn, fish, egg or scallop.');
     audio.fail();
   }
 }
@@ -92,6 +95,8 @@ export function pullWok(g, audio) {
     g.coins += bonus;
     addFloat(g, fx, fy, 'PERFECT! +' + bonus, '#ffd94d');
     spawnFlameBurst(g, bx, 580);
+    noteGoal(g, 'perfect', null, audio);
+    checkFeats(g, 'perfect', null, audio);
     audio.perfect();
   } else if (frac < w.perfect[0]) {
     addFloat(g, fx, fy, 'Early — still edible', '#e8e0cf'); audio.flip();
@@ -111,7 +116,7 @@ export function clickPot(g, audio) {
     p.item = g.hand.id; p.t = 0; p.dur = potDuration(g); p.state = 'cooking';
     g.hand = null; audio.place();
   } else if (g.hand) {
-    toast(g, 'The pot takes rice or noodles.');
+    toast(g, 'The pot takes rice, noodles or tofu.');
     audio.fail();
   }
 }

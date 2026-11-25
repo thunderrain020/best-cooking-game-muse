@@ -1,5 +1,5 @@
 // Ember & Tide — data/recipes.js
-// The pantry: 8 shared raw ingredients combine into 12 original harbour dishes.
+// The pantry: 10 shared raw ingredients combine into 18 original harbour dishes.
 // Every ingredient names the station that prepares it; every dish names the
 // components a plate needs, in the order the ledger teaches them.
 
@@ -12,9 +12,11 @@ export const INGREDIENTS = {
   chilli: { id: 'chilli', name: 'Chilli', key: '6', station: 'board', color: '#e8442e', dark: '#8f1d10', emoji: '🌶️' },
   lime: { id: 'lime', name: 'Lime', key: '7', station: 'board', color: '#a8d94a', dark: '#5d8a1e', emoji: '🍋' },
   herbs: { id: 'herbs', name: 'Herbs', key: '8', station: 'board', color: '#4caf6d', dark: '#22663a', emoji: '🌿' },
+  scallop: { id: 'scallop', name: 'Scallop', key: '9', station: 'wok', color: '#ffe9d6', dark: '#c98f5a', emoji: '🐚' },
+  tofu: { id: 'tofu', name: 'Tofu', key: '0', station: 'pot', color: '#fbf3e2', dark: '#cbb98a', emoji: '🧈' },
 };
 
-export const INGREDIENT_ORDER = ['prawn', 'fish', 'rice', 'noodle', 'egg', 'chilli', 'lime', 'herbs'];
+export const INGREDIENT_ORDER = ['prawn', 'fish', 'rice', 'noodle', 'egg', 'chilli', 'lime', 'herbs', 'scallop', 'tofu'];
 
 // A component is one prepared ingredient on the plate. `station` is where the
 // raw ingredient is prepared; `fresh` components skip cooking and go straight
@@ -32,6 +34,12 @@ export const DISHES = [
   { id: 'omelette', name: 'Golden Harbour Omelette', price: 13, comps: ['egg', 'herbs', 'chilli'], blurb: 'A puffed omelette, herbs and chilli inside.' },
   { id: 'sunset-bowl', name: 'Sunset Rice Bowl', price: 12, comps: ['rice', 'egg', 'chilli'], blurb: 'Rice, egg and chilli under the evening light.' },
   { id: 'tide-special', name: 'Tide & Ember Special', price: 22, vip: true, comps: ['fish', 'prawn', 'lime', 'herbs'], blurb: 'Fish and prawn, lime and herbs: the whole tide.' },
+  { id: 'scallop-noodles', name: 'Scallop Sear Noodles', price: 17, comps: ['noodle', 'scallop', 'lime'], blurb: 'Golden-seared scallops over silky noodles, lime bright.' },
+  { id: 'tofu-rice', name: 'Golden Tofu Rice', price: 13, comps: ['rice', 'tofu', 'herbs'], blurb: 'Crisp tofu and herbs folded through harbour rice.' },
+  { id: 'scallop-tofu', name: 'Seared Scallop & Tofu', price: 18, vip: true, comps: ['tofu', 'scallop', 'chilli'], blurb: 'Scallop and tofu, seared hard, chilli heat on top.' },
+  { id: 'tofu-noodles', name: 'Crispy Tofu Noodles', price: 14, comps: ['noodle', 'tofu', 'egg'], blurb: 'Crisp tofu and soft egg tangled in warm noodles.' },
+  { id: 'scallop-rice', name: 'Harbour Scallop Rice', price: 17, comps: ['rice', 'scallop', 'chilli'], blurb: 'Seared scallops over steamed rice, chilli kick.' },
+  { id: 'tofu-omelette', name: 'Tofu & Herb Omelette', price: 14, comps: ['egg', 'tofu', 'herbs'], blurb: 'A puffed omelette, silken tofu and herbs inside.' },
 ];
 
 export function dishById(id) {

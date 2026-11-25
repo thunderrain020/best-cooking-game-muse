@@ -11,10 +11,13 @@ import { drawBoardPanel, ticketRect } from './tickets.js';
 import { drawBoardStation } from './stationsBoard.js';
 import { drawWokStation } from './stations.js';
 import { drawPotStation } from './stationsPot.js';
-import { drawPlateStation, drawBellStation } from './serve.js';
+import { drawPlateStation } from './serve.js';
+import { drawBellStation } from './bell.js';
 import { drawTray, drawCrates, drawTrash, crateRect, trayRect } from './pantry.js';
 import { drawParticles, drawFloats } from './particles.js';
-import { drawTopBar, drawRoadmap, topBarButtons } from './hudBar.js';
+import { drawTopBar, topBarButtons } from './hudBar.js';
+import { drawRoadmap } from './roadmap.js';
+import { drawGoals } from './goals.js';
 import { drawRoute, drawChef } from './chef.js';
 import { pillText } from './palette.js';
 import { roundRectPath } from '../core/util.js';
@@ -25,7 +28,7 @@ export const H = 720;
 
 export const LAYOUT = {
   topBar: { x: 0, y: 0, w: 1280, h: 56 },
-  board: { x: 14, y: 92, w: 1024, h: 80 },
+  board: { x: 14, y: 92, w: 1024, h: 92 },
   boardRect: BOARD_RECTS[0],
   boardRect2: BOARD_RECTS[1],
   wokRect: WOK_RECTS[0],
@@ -52,6 +55,9 @@ export function drawScene(ctx, g, view) {
   drawBoardPanel(ctx, g, now);
   drawCrates(ctx, g);
   drawTrash(ctx, g);
+  // The route guide is drawn before the stations, so a stray segment is
+  // occluded by station art instead of crossing a label or dish title.
+  drawRoute(ctx, g);
   drawBoardStation(ctx, g, now, 0);
   drawBoardStation(ctx, g, now, 1);
   drawWokStation(ctx, g, now, 0);
@@ -60,7 +66,7 @@ export function drawScene(ctx, g, view) {
   drawPlateStation(ctx, g, now);
   drawBellStation(ctx, g, now);
   drawTray(ctx, g);
-  drawRoute(ctx, g);
+  drawGoals(ctx, g);
   drawChef(ctx, g, now);
   drawParticles(ctx, g);
   drawFloats(ctx, g);
@@ -73,14 +79,14 @@ export function drawScene(ctx, g, view) {
     ctx.save();
     ctx.globalAlpha = 0.85 + 0.15 * Math.sin(now * 8);
     ctx.fillStyle = storm || g.critic.active ? '#7a3b9e' : '#e8442e';
-    roundRectPath(ctx, 640 - 200, 163, 400, 26, 12); ctx.fill();
+    roundRectPath(ctx, 640 - 200, 174, 400, 26, 12); ctx.fill();
     ctx.strokeStyle = '#1a120b';
     ctx.lineWidth = 2.5;
-    roundRectPath(ctx, 640 - 200, 163, 400, 26, 12); ctx.stroke();
+    roundRectPath(ctx, 640 - 200, 174, 400, 26, 12); ctx.stroke();
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 15px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(text, 640, 181);
+    ctx.fillText(text, 640, 192);
     ctx.restore();
   }
 
@@ -92,12 +98,12 @@ export function drawScene(ctx, g, view) {
     ctx.font = 'bold 13px system-ui, sans-serif';
     const w = ctx.measureText(t).width + 30;
     ctx.fillStyle = '#7a3b10';
-    roundRectPath(ctx, 16, 170, w, 24, 12); ctx.fill();
+    roundRectPath(ctx, 16, 176, w, 24, 12); ctx.fill();
     ctx.strokeStyle = '#ffd94d'; ctx.lineWidth = 2;
-    roundRectPath(ctx, 16, 170, w, 24, 12); ctx.stroke();
+    roundRectPath(ctx, 16, 176, w, 24, 12); ctx.stroke();
     ctx.fillStyle = '#ffd94d';
     ctx.textAlign = 'center';
-    ctx.fillText(t, 16 + w / 2, 186);
+    ctx.fillText(t, 16 + w / 2, 192);
     ctx.restore();
   }
 
@@ -116,7 +122,7 @@ export function drawScene(ctx, g, view) {
   ctx.fillStyle = '#fff6e5';
   ctx.font = 'bold 14px system-ui, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('WASD / arrows walk · Space / E interact · 1–8 grab ingredient · Q chop · F wok · T pot · R plate · L recipe ledger · click a crate or station to stroll there', 640, 686);
+  ctx.fillText('WASD / arrows walk · Space / E interact · 1–9, 0 grab ingredient · Q chop · F wok · T pot · R plate · L recipe ledger · click a crate or station to stroll there', 640, 686);
   ctx.fillStyle = '#ffd94d';
   ctx.font = 'italic 13px Georgia, serif';
   ctx.fillText('Ember & Tide — a rooftop harbour kitchen. No network, no build step, just dinner service.', 640, 706);

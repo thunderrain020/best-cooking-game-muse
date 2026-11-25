@@ -1,7 +1,9 @@
 // Ember & Tide — render/tickets.js
 // The order rail: a clean top horizontal strip of ticket cards (up to 5),
 // each with dish art, step checkmarks for components already on the
-// plate, VIP / CRITIC badges and a bold patience bar with a countdown.
+// plate, VIP / CRITIC badges, a bold patience bar with a countdown, and
+// a modifier chip (EXTRA SEAR / NO HERBS / DOUBLE CHILLI) along the
+// bottom edge when the ticket carries one.
 
 import { drawDishPlate } from './foodDishes.js';
 import { drawIngredientIcon } from './foodArt.js';
@@ -9,7 +11,7 @@ import { fmtCoins, roundRectPath, clamp } from '../core/util.js';
 import { drawShimmer } from './feel.js';
 
 export function ticketRect(i) {
-  return { x: 14 + i * 194, y: 92, w: 186, h: 68 };
+  return { x: 14 + i * 194, y: 92, w: 186, h: 80 };
 }
 
 export function drawTicket(ctx, g, t, i, now) {
@@ -77,21 +79,30 @@ export function drawTicket(ctx, g, t, i, now) {
   ctx.fillText(fmtCoins(t.dish.price) + ' + tip', r.x + r.w - 8, r.y + 39);
   // Bold patience bar with the countdown pill on its right end.
   ctx.fillStyle = '#e8dcc2';
-  roundRectPath(ctx, r.x + 10, r.y + 50, r.w - 20, 8, 4); ctx.fill();
+  roundRectPath(ctx, r.x + 10, r.y + 48, r.w - 20, 8, 4); ctx.fill();
   ctx.fillStyle = frac > 0.5 ? '#4caf6d' : frac > 0.3 ? '#f2a54a' : '#e8442e';
-  roundRectPath(ctx, r.x + 10, r.y + 50, (r.w - 20) * frac, 8, 4); ctx.fill();
+  roundRectPath(ctx, r.x + 10, r.y + 48, (r.w - 20) * frac, 8, 4); ctx.fill();
   ctx.fillStyle = urgent ? '#e8442e' : 'rgba(24,12,8,0.85)';
-  roundRectPath(ctx, r.x + r.w - 44, r.y + 46, 34, 16, 8); ctx.fill();
+  roundRectPath(ctx, r.x + r.w - 44, r.y + 44, 34, 16, 8); ctx.fill();
   ctx.fillStyle = '#fff';
   ctx.font = 'bold 11px system-ui, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText(Math.ceil(t.left) + 's', r.x + r.w - 27, r.y + 58);
+  ctx.fillText(Math.ceil(t.left) + 's', r.x + r.w - 27, r.y + 56);
+  // Ticket modifier chip along the bottom edge: a small gold pill.
+  if (t.mod) {
+    ctx.fillStyle = '#7a3b10';
+    roundRectPath(ctx, r.x + 10, r.y + 64, r.w - 20, 12, 6); ctx.fill();
+    ctx.fillStyle = '#ffd94d';
+    ctx.font = 'bold 8px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(t.mod + (t.mod === 'EXTRA SEAR' ? ' +$4' : t.mod === 'DOUBLE CHILLI' ? ' +$3' : ''), r.x + r.w / 2, r.y + 73);
+  }
   ctx.textAlign = 'left';
 }
 
 export function drawBoardPanel(ctx, g, now) {
   ctx.fillStyle = 'rgba(24,12,8,0.5)';
-  roundRectPath(ctx, 8, 88, 1024, 80, 12); ctx.fill();
+  roundRectPath(ctx, 8, 88, 1024, 92, 12); ctx.fill();
   if (!g.tickets.length) {
     ctx.fillStyle = 'rgba(255,246,227,0.7)';
     ctx.font = 'italic 14px Georgia, serif';

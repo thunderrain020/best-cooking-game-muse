@@ -6,12 +6,11 @@
 
 import { drawIngredientIcon } from './foodArt.js';
 import { plateBase } from './plates.js';
-import { routeFor } from '../systems/route.js';
+import { routeWaypoints } from '../systems/route.js';
 
 export function drawRoute(ctx, g) {
-  const pts = routeFor(g);
-  if (!pts.length) return;
-  const c = g.chef;
+  const { line, stops } = routeWaypoints(g);
+  if (line.length < 2) return;
   ctx.save();
   ctx.strokeStyle = 'rgba(255,217,77,0.95)';
   ctx.lineWidth = 4;
@@ -19,16 +18,24 @@ export function drawRoute(ctx, g) {
   ctx.setLineDash([12, 10]);
   ctx.lineDashOffset = -((performance.now() / 60) % 22);
   ctx.beginPath();
-  ctx.moveTo(c.x, c.y);
-  for (const p of pts) ctx.lineTo(p.x, p.y);
+  ctx.moveTo(line[0].x, line[0].y);
+  for (let i = 1; i < line.length; i++) ctx.lineTo(line[i].x, line[i].y);
   ctx.stroke();
   ctx.setLineDash([]);
-  for (const p of pts) {
+  // Numbered stop badges (1 -> 2 -> 3) on each waypoint. The corridor
+  // waypoints sit in the open floor between the island and the bottom
+  // station headers, so no badge ever crosses a label or dish title.
+  stops.forEach((s, i) => {
     ctx.fillStyle = '#ffd94d';
-    ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(s.x, s.y, 9, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = '#1a120b'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, Math.PI * 2); ctx.stroke();
-  }
+    ctx.beginPath(); ctx.arc(s.x, s.y, 9, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = '#1a120b';
+    ctx.font = 'bold 11px system-ui, sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(String(i + 1), s.x, s.y + 0.5);
+    ctx.textBaseline = 'alphabetic';
+  });
   ctx.restore();
 }
 

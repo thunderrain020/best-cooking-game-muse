@@ -1,7 +1,8 @@
 // Ember & Tide — ui/summaryOverlay.js
-// End-of-run summary, V3: dark-navy & gold victory card. Header: chef
-// mascot, gold stars, Grade medallion. Body: stats, 5-bar chart, Perks
-// & Relics icons, DISHES SERVED plates. Footer: BEST RUN + buttons.
+// End-of-run summary, V5: dark-navy & gold victory card. Header: chef
+// mascot, gold stars, Grade medallion. Body: stats, 7-bar shift chart
+// (S1..S6 + CRITIC), FEATS badge, Perks & Relics icons, DISHES SERVED
+// plates. Footer: BEST RUN + COOK AGAIN / NEW SEED / ENDLESS buttons.
 
 import { fmtCoins, roundRectPath } from '../core/util.js';
 import { dishById } from '../data/recipes.js';
@@ -9,6 +10,8 @@ import { ownedBadges } from '../systems/upgrades.js';
 import { drawDishPlate } from '../render/foodDishes.js';
 import { drawIconBadge, drawChefMascot, drawStars } from '../render/iconBadges.js';
 import { darkPanel } from '../render/palette.js';
+import { TOTAL_SHIFTS } from '../core/state.js';
+import { drawShiftChart, drawFeatsBadge } from './summaryChart.js';
 import { dim } from './titleOverlay.js';
 
 export function gradeRun(g) {
@@ -62,6 +65,8 @@ export function drawSummary(ctx, g) {
   ctx.fillStyle = '#ffd94d';
   ctx.font = 'bold 10px system-ui, sans-serif';
   ctx.fillText('GRADE', 950, 168);
+  // FEATS badge: unlocked feats this run, out of 16.
+  drawFeatsBadge(ctx, g);
   // Two-column stats.
   statRows(ctx, [
     ['Dishes served', String(g.served)],
@@ -72,30 +77,10 @@ export function drawSummary(ctx, g) {
   statRows(ctx, [
     ['VIP dishes served', String(g.stats.vipServed)],
     ['Tickets lost', String(g.failed) + ' / 3'],
-    ['Shift reached', String(g.shift) + ' / 5'],
+    ['Shift reached', String(g.shift) + ' / ' + TOTAL_SHIFTS],
     ['Critic served', g.stats.criticServed ? 'Yes' : 'No'],
   ], 920, 938, 210);
-  const scores = g.shiftScores || [0, 0, 0, 0, 0];
-  const maxS = Math.max(1, ...scores);
-  ctx.fillStyle = '#ffd94d';
-  ctx.font = 'bold 13px system-ui, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('DISHES PER SHIFT', 640, 306);
-  scores.forEach((s, i) => {
-    const bx = 462 + i * 76, bh = 10 + (s / maxS) * 44;
-    ctx.fillStyle = i === 4 ? '#7a3b9e' : '#2e7d32';
-    roundRectPath(ctx, bx, 380 - bh, 52, bh, 6); ctx.fill();
-    ctx.strokeStyle = '#d4a017'; ctx.lineWidth = 1.5;
-    roundRectPath(ctx, bx, 380 - bh, 52, bh, 6); ctx.stroke();
-    if (bh >= 18) {
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 13px system-ui, sans-serif';
-      ctx.fillText(String(s), bx + 26, 380 - bh + 16);
-    }
-    ctx.fillStyle = '#b8a67c';
-    ctx.font = 'bold 11px system-ui, sans-serif';
-    ctx.fillText(i === 4 ? 'CRITIC' : 'S' + (i + 1), bx + 26, 394);
-  });
+  drawShiftChart(ctx, g);
   ctx.fillStyle = '#ffd94d';
   ctx.font = 'bold 13px system-ui, sans-serif';
   ctx.fillText('PERKS & RELICS THIS RUN', 640, 424);
@@ -140,26 +125,35 @@ export function drawSummary(ctx, g) {
   ctx.stroke();
   ctx.fillStyle = '#1a120b';
   ctx.fillText(best, 640, 574);
-  // Buttons.
+  // Buttons: COOK AGAIN / NEW SEED, plus ENDLESS once unlocked.
   ctx.fillStyle = '#e8703f';
-  roundRectPath(ctx, 400, 596, 220, 48, 12);
+  roundRectPath(ctx, 340, 596, 200, 48, 12);
   ctx.fill();
   ctx.fillStyle = '#fff';
   ctx.font = 'bold 19px system-ui, sans-serif';
-  ctx.fillText('COOK AGAIN', 510, 626);
+  ctx.fillText('COOK AGAIN', 440, 626);
   ctx.fillStyle = '#2e7d32';
-  roundRectPath(ctx, 660, 596, 220, 48, 12);
+  roundRectPath(ctx, 560, 596, 200, 48, 12);
   ctx.fill();
   ctx.fillStyle = '#fff';
-  ctx.fillText('NEW SEED', 770, 626);
+  ctx.fillText('NEW SEED', 660, 626);
+  if (g.endlessAvailable || g.meta && g.meta.endlessUnlocked) {
+    ctx.fillStyle = '#7a3b9e';
+    roundRectPath(ctx, 780, 596, 200, 48, 12);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.fillText('ENDLESS', 880, 626);
+  }
   ctx.fillStyle = '#d8cdb4';
   ctx.font = '12px system-ui, sans-serif';
   ctx.fillText('or press Enter to cook again', 640, 656);
 }
 
-export function summaryButtons() {
-  return {
-    again: { x: 400, y: 596, w: 220, h: 48 },
-    seed: { x: 660, y: 596, w: 220, h: 48 },
+export function summaryButtons(g) {
+  const btns = {
+    again: { x: 340, y: 596, w: 200, h: 48 },
+    seed: { x: 560, y: 596, w: 200, h: 48 },
   };
+  if (g.endlessAvailable || g.meta && g.meta.endlessUnlocked) btns.endless = { x: 780, y: 596, w: 200, h: 48 };
+  return btns;
 }

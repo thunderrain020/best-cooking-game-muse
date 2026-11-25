@@ -4,6 +4,7 @@
 // files stay under the 6 KB module cap.
 
 import { roundRectPath } from '../core/util.js';
+import { glyphExtra } from './iconGlyphsB.js';
 
 export function starPath(ctx, cx, cy, r) {
   ctx.beginPath();
@@ -138,8 +139,12 @@ export function glyph(ctx, id) {
     ctx.restore();
     return;
   }
+  // V5 glyphs live in iconGlyphsB.js (batch, twin, crisp, chain).
+  if (glyphExtra(ctx, id)) return;
   ctx.fillStyle = '#ffd94d';
   ctx.font = 'bold 18px system-ui, sans-serif';
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillText(id.charAt(0).toUpperCase(), 0, 1);
 }
+
+export { glyphExtra };

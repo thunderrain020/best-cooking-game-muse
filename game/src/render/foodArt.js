@@ -6,6 +6,7 @@
 import { drawPrawn, drawFish } from './foodIngredients.js';
 import { drawRice, drawNoodle, drawEgg } from './foodIngredientsB.js';
 import { drawChilli, drawLime, drawHerbs } from './foodIngredientsC.js';
+import { drawScallop, drawTofu } from './foodIngredientsD.js';
 
 const DRAW = {
   prawn: drawPrawn,
@@ -16,6 +17,8 @@ const DRAW = {
   chilli: drawChilli,
   lime: drawLime,
   herbs: drawHerbs,
+  scallop: drawScallop,
+  tofu: drawTofu,
 };
 
 export function drawIngredientIcon(ctx, id, cx, cy, r) {
