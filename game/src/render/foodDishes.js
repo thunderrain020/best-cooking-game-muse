@@ -17,15 +17,15 @@ function toppingSpots(n) {
 }
 
 function steamWisps(ctx, r, now) {
-  ctx.strokeStyle = 'rgba(255,244,220,0.55)';
+  ctx.strokeStyle = 'rgba(255,244,220,0.7)';
   ctx.lineWidth = 2;
   ctx.lineCap = 'round';
-  for (let i = 0; i < 2; i++) {
-    const x = (i - 0.5) * r * 0.5;
+  for (let i = 0; i < 3; i++) {
+    const x = (i - 1) * r * 0.45;
     const sway = Math.sin((now || 0) * 1.4 + i * 2.2) * r * 0.06;
     ctx.beginPath();
     ctx.moveTo(x, -r * 0.42);
-    ctx.bezierCurveTo(x + sway - r * 0.12, -r * 0.62, x + sway + r * 0.12, -r * 0.78, x + sway, -r * 0.95);
+    ctx.bezierCurveTo(x + sway - r * 0.12, -r * 0.68, x + sway + r * 0.12, -r * 0.85, x + sway, -r * 1.05);
     ctx.stroke();
   }
 }
@@ -46,6 +46,14 @@ function drizzle(ctx, r) {
 }
 
 function drawBase(ctx, comps, r) {
+  if (comps.includes('noodle') || comps.includes('rice')) {
+    // Rich amber broth pool under the starch: contrast against the pale
+    // plate so the mound reads as food, not a white blob, at thumbnail size.
+    ctx.fillStyle = '#b4712e';
+    ctx.beginPath(); ctx.ellipse(0, r * 0.1, r * 0.62, r * 0.34, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#7a4a16'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.ellipse(0, r * 0.1, r * 0.62, r * 0.34, 0, 0, Math.PI * 2); ctx.stroke();
+  }
   if (comps.includes('noodle')) {
     drawIngredientIcon(ctx, 'noodle', 0, r * 0.08, r * 0.62);
   } else if (comps.includes('rice')) {
@@ -72,8 +80,9 @@ export function drawDishPlate(ctx, dish, cx, cy, r, now) {
     const big = id === 'prawn' || id === 'fish' ? r * 0.4 : r * 0.32;
     drawIngredientIcon(ctx, id, spots[i][0] * r, spots[i][1] * r - r * 0.08, big);
   });
-  // A herb garnish on top, and heat rising off the dish.
+  // A herb garnish and a crisp lime wedge on top, and heat rising off it.
   drawIngredientIcon(ctx, 'herbs', r * 0.28, -r * 0.28, r * 0.22);
+  drawIngredientIcon(ctx, 'lime', -r * 0.3, -r * 0.26, r * 0.2);
   steamWisps(ctx, r, now);
   ctx.restore();
 }
@@ -103,6 +112,12 @@ export function drawPlateInProgress(ctx, items, total, cx, cy, r, now) {
       ctx.beginPath(); ctx.arc(x, y, r * 0.3, 0, Math.PI * 2); ctx.stroke();
     }
   }
-  if (items.length) steamWisps(ctx, r, now);
+  if (items.length) {
+    // Garnish + steam on a mid-assembly plate too, so the island reads
+    // as food in progress rather than loose icons.
+    drawIngredientIcon(ctx, 'herbs', r * 0.28, -r * 0.28, r * 0.22);
+    drawIngredientIcon(ctx, 'lime', -r * 0.3, -r * 0.26, r * 0.2);
+    steamWisps(ctx, r, now);
+  }
   ctx.restore();
 }

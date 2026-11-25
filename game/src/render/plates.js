@@ -20,6 +20,10 @@ export function plateBase(ctx, r) {
   // so the food sits in the plate instead of floating on it.
   ctx.fillStyle = 'rgba(60,30,10,0.16)';
   ctx.beginPath(); ctx.ellipse(0, r * 0.16, r * 0.58, r * 0.3, 0, 0, Math.PI); ctx.fill();
+  // Thin gold rim ring: the plate edge reads at thumbnail size.
+  ctx.strokeStyle = 'rgba(212,160,23,0.55)';
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.ellipse(0, 0, r * 0.88, r * 0.63, 0, 0, Math.PI * 2); ctx.stroke();
 }
 
 // Shimmering broth for an idle simmer pot: illustrated, never a label.

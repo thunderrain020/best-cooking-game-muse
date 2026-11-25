@@ -1,18 +1,14 @@
 // Ember & Tide — render/window.js
-// The harbour rooftop terrace down the right edge (x 1040–1280): sunset
-// or storm sky, skyline, water, deck planks, string lanterns, diner
-// tables with mood badges and the Harbour Critic's purple table. The
-// kitchen wall runs down its left edge with a brass-trimmed pass
-// opening at the bell's height.
+// The harbour rooftop terrace (x 1040–1280): sky, skyline, lighthouse
+// beam, deck, lanterns, set diner tables with order tags, and the Critic.
 
 import { roundRectPath } from '../core/util.js';
 import { TERRACE } from './layout.js';
-import { drawDiner, drawTable } from './diners.js';
+import { drawDiner, drawTable, drawOrderTag } from './diners.js';
 
 export function drawTerrace(ctx, g, now) {
   const T = TERRACE;
   const storm = !!(g.rush && g.rush.name.includes('STORM'));
-  // Sky: sunset gradient, or deep violet-navy in a storm.
   const sky = ctx.createLinearGradient(0, T.y, 0, T.y + T.h);
   if (storm) {
     sky.addColorStop(0, '#1a1038'); sky.addColorStop(0.5, '#2c1d54'); sky.addColorStop(1, '#141024');
@@ -28,7 +24,6 @@ export function drawTerrace(ctx, g, now) {
     ctx.strokeStyle = '#ff8c42'; ctx.lineWidth = 3;
     ctx.beginPath(); ctx.arc(1196, 150, 32, 0, Math.PI * 2); ctx.stroke();
   }
-  // Distant skyline: warehouses, lighthouse, cranes.
   ctx.fillStyle = '#241a33';
   const sheds = [[1052, 24], [1120, 34], [1200, 26]];
   for (const [x, h] of sheds) ctx.fillRect(x, 300 - h, 56, h);
@@ -41,11 +36,17 @@ export function drawTerrace(ctx, g, now) {
   ctx.fillRect(1168, 250, 12, 50);
   ctx.fillStyle = '#ffd94d';
   ctx.fillRect(1164, 242, 20, 9);
+  // Lighthouse beam: bright core ray, wide soft wash, lit lamp, gold path on the water.
   ctx.fillStyle = 'rgba(255,217,77,0.3)';
   ctx.beginPath(); ctx.moveTo(1188, 246); ctx.lineTo(1250, 236); ctx.lineTo(1250, 256); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = 'rgba(255,217,77,0.15)';
+  ctx.beginPath(); ctx.moveTo(1188, 246); ctx.lineTo(1252, 228); ctx.lineTo(1252, 264); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = 'rgba(255,230,160,0.6)';
+  ctx.beginPath(); ctx.arc(1174, 246, 5, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = 'rgba(255,217,77,0.5)';
+  for (let i = 0; i < 4; i++) ctx.fillRect(1150 + i * 22, 344 + (i % 2) * 6, 14, 2);
   ctx.strokeStyle = '#1d1428'; ctx.lineWidth = 5;
   ctx.beginPath(); ctx.moveTo(1080, 300); ctx.lineTo(1080, 262); ctx.lineTo(1140, 262); ctx.stroke();
-  // Water strip with sunset reflections.
   ctx.fillStyle = '#16324a';
   ctx.fillRect(T.x, 300, T.w, 60);
   ctx.fillStyle = 'rgba(255,217,77,0.34)';
@@ -53,14 +54,12 @@ export function drawTerrace(ctx, g, now) {
     const y = 312 + i * 10;
     ctx.fillRect(1060 + Math.sin(now * 0.7 + i) * 8, y, 120 - i * 10, 2);
   }
-  // Deck planks below the waterline.
   ctx.fillStyle = '#6d4526';
   ctx.fillRect(T.x, 360, T.w, T.h - 272);
   ctx.fillStyle = '#4a2c14';
   for (let y = 380; y < T.y + T.h; y += 34) ctx.fillRect(T.x, y, T.w, 3);
   ctx.fillStyle = 'rgba(255,220,160,0.06)';
   for (let i = 0; i < 8; i++) ctx.fillRect(T.x + 10 + (i * 29) % 200, 372 + (i % 6) * 44, 40, 2);
-  // String lanterns swagged across the terrace.
   ctx.strokeStyle = 'rgba(40,20,10,0.85)';
   ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(T.x, 96); ctx.quadraticCurveTo(1160, 128, 1280, 96); ctx.stroke();
@@ -82,14 +81,16 @@ export function drawTerrace(ctx, g, now) {
       ctx.fillRect(x - 2, y + 14, 4, 6);
     }
   }
-  // Diner tables with mood badges.
+  // Diner tables: set tables, varied hats/hair, an order tag over each.
+  drawOrderTag(ctx, 1120, 376, '#1', 'waiting');
   drawTable(ctx, 1120, 430);
-  drawDiner(ctx, 1086, 470, '#c96a3a', g.tickets.length ? 'waiting' : 'happy');
-  drawDiner(ctx, 1154, 470, '#4a5a8a', g.tickets.length ? 'impatient' : 'happy');
+  drawDiner(ctx, 1086, 470, '#c96a3a', g.tickets.length ? 'waiting' : 'happy', 'straw');
+  drawDiner(ctx, 1154, 470, '#4a5a8a', g.tickets.length ? 'impatient' : 'happy', 'bun');
+  drawOrderTag(ctx, 1120, 540, '#2 · VIP ★', 'happy');
   drawTable(ctx, 1120, 590);
-  drawDiner(ctx, 1086, 630, '#7a9e4a', 'happy');
+  drawDiner(ctx, 1086, 630, '#7a9e4a', 'happy', 'band');
   drawDiner(ctx, 1154, 630, '#b8860b', 'happy');
-  // The Harbour Critic's table: purple glow, CRITIC pill.
+  // Critic's table: purple glow when the critic ticket is live.
   const criticHere = g.tickets.some((t) => t.critic);
   ctx.save();
   if (criticHere) {
@@ -100,13 +101,12 @@ export function drawTerrace(ctx, g, now) {
   ctx.restore();
   drawDiner(ctx, 1160, 238, '#7a3b9e', criticHere ? 'impatient' : 'happy');
   ctx.fillStyle = '#7a3b9e';
-  roundRectPath(ctx, 1134, 158, 52, 15, 7); ctx.fill();
+  roundRectPath(ctx, 1120, 158, 80, 15, 7); ctx.fill();
   ctx.fillStyle = '#fff';
   ctx.font = 'bold 9px system-ui, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('CRITIC', 1160, 169);
-  // Kitchen wall down the terrace's left edge, with the brass-trimmed
-  // pass opening at the bell's height.
+  ctx.fillText('CRITIC ★★★', 1160, 169);
+  // Kitchen wall down the terrace's left edge, brass-trimmed pass opening.
   ctx.fillStyle = '#231b18';
   ctx.fillRect(T.x, T.y, 14, 254);
   ctx.fillRect(T.x, 490, 14, T.h - 402);

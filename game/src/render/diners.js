@@ -14,7 +14,7 @@ const MOODS = {
   waiting: { color: '#f2a54a', glyph: '…' },
 };
 
-export function drawDiner(ctx, x, y, shirt, mood) {
+export function drawDiner(ctx, x, y, shirt, mood, style) {
   const m = MOODS[mood] || MOODS.waiting;
   // Shoulders: broad rounded dome in the shirt colour, ink outline,
   // with a small cream collar V at the throat.
@@ -35,6 +35,23 @@ export function drawDiner(ctx, x, y, shirt, mood) {
   ctx.beginPath(); ctx.arc(x, y - 8, 8.5, 0, Math.PI * 2); ctx.stroke();
   ctx.fillStyle = '#3a2418';
   ctx.beginPath(); ctx.arc(x, y - 9, 8.5, Math.PI * 1.05, Math.PI * 1.95); ctx.fill();
+  // Hats and hair: straw brim, top bun, or a red band — diners differ.
+  if (style === 'straw') {
+    ctx.fillStyle = '#e8c96a';
+    ctx.beginPath(); ctx.ellipse(x, y - 10, 13, 5, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#1a120b'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.ellipse(x, y - 10, 13, 5, 0, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = '#d4a017';
+    ctx.beginPath(); ctx.arc(x, y - 11, 6, Math.PI, 0); ctx.fill();
+  } else if (style === 'bun') {
+    ctx.fillStyle = '#3a2418';
+    ctx.beginPath(); ctx.arc(x, y - 17, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#1a120b'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(x, y - 17, 4, 0, Math.PI * 2); ctx.stroke();
+  } else if (style === 'band') {
+    ctx.strokeStyle = '#e8442e'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(x - 8, y - 10); ctx.lineTo(x + 8, y - 10); ctx.stroke();
+  }
   // Mood bubble: round, to the side of the head so it never covers
   // the table above, with a bold white glyph and a tiny tail.
   const bx = x + 17, by = y - 12;
@@ -62,4 +79,37 @@ export function drawTable(ctx, x, y) {
   ctx.fillStyle = '#ffe6a8';
   ctx.beginPath(); ctx.arc(x - 6, y - 4, 5, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.arc(x + 7, y + 5, 4, 0, Math.PI * 2); ctx.fill();
+  // The table is set: chopsticks, a folded napkin, a tiny soy dish.
+  ctx.strokeStyle = '#3a2418'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(x - 15, y + 13); ctx.lineTo(x - 5, y + 17); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x - 14, y + 16); ctx.lineTo(x - 4, y + 20); ctx.stroke();
+  ctx.fillStyle = '#fdf6e3';
+  ctx.fillRect(x + 11, y + 11, 9, 9);
+  ctx.strokeStyle = '#1a120b'; ctx.lineWidth = 1;
+  ctx.strokeRect(x + 11, y + 11, 9, 9);
+  ctx.fillStyle = '#7a3b9e';
+  ctx.beginPath(); ctx.arc(x + 15, y - 13, 4, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = '#1a120b'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.arc(x + 15, y - 13, 4, 0, Math.PI * 2); ctx.stroke();
+}
+
+// Small order tag above a terrace table: number, VIP star or Critic
+// stars, with a heart when the table is happy.
+export function drawOrderTag(ctx, x, y, label, mood) {
+  ctx.save();
+  ctx.font = 'bold 11px system-ui, sans-serif';
+  const w = ctx.measureText(label).width + (mood === 'happy' ? 28 : 18);
+  ctx.fillStyle = 'rgba(18,10,6,0.88)';
+  roundRectPath(ctx, x - w / 2, y, w, 20, 10); ctx.fill();
+  ctx.strokeStyle = '#d4a017'; ctx.lineWidth = 1.5;
+  roundRectPath(ctx, x - w / 2, y, w, 20, 10); ctx.stroke();
+  ctx.fillStyle = '#ffd94d';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(label, x - (mood === 'happy' ? 6 : 0), y + 11);
+  if (mood === 'happy') {
+    ctx.fillStyle = '#ff6b8a';
+    ctx.fillText('♥', x + w / 2 - 12, y + 11);
+  }
+  ctx.restore();
 }

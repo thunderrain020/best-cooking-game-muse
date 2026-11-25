@@ -3,8 +3,8 @@
 // each with dish art, step checkmarks for components already on the
 // plate, VIP / CRITIC badges and a bold patience bar with a countdown.
 
-import { INGREDIENTS } from '../data/recipes.js';
 import { drawDishPlate } from './foodDishes.js';
+import { drawIngredientIcon } from './foodArt.js';
 import { fmtCoins, roundRectPath, clamp } from '../core/util.js';
 import { drawShimmer } from './feel.js';
 
@@ -55,22 +55,20 @@ export function drawTicket(ctx, g, t, i, now) {
   ctx.font = 'bold 11px Georgia, serif';
   ctx.textAlign = 'left';
   ctx.fillText(t.dish.name, r.x + 46, r.y + 19, 96);
-  // Step pips: one per component, green tick once it is on the plate.
+  // Step pips: one per component — the real mini ingredient icon while
+  // it waits, a green tick once it is on the plate. Depth reads instantly.
   t.dish.comps.forEach((c, j) => {
-    const px = r.x + 52 + j * 17, py = r.y + 35;
+    const px = r.x + 52 + j * 18, py = r.y + 35;
     const done = g.plate.items.includes(c);
     ctx.fillStyle = done ? '#4caf6d' : '#e8dcc2';
-    ctx.beginPath(); ctx.arc(px, py, 6.5, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(px, py, 7.5, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = '#1a120b'; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.arc(px, py, 6.5, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(px, py, 7.5, 0, Math.PI * 2); ctx.stroke();
     if (done) {
       ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.moveTo(px - 3, py); ctx.lineTo(px - 1, py + 2.5); ctx.lineTo(px + 3.5, py - 2.5); ctx.stroke();
     } else {
-      ctx.fillStyle = '#7a5a34';
-      ctx.font = 'bold 8px system-ui, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(INGREDIENTS[c].name[0], px, py + 3);
+      drawIngredientIcon(ctx, c, px, py, 6.5);
     }
   });
   ctx.fillStyle = critic ? '#7a3b9e' : t.vip ? '#b8860b' : '#5a7a3a';

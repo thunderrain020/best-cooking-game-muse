@@ -81,7 +81,7 @@ export function drawBurnFlames(ctx, cx, y, now) {
   for (let i = 0; i < 4; i++) {
     const fx = cx - 30 + i * 20;
     const flick = Math.sin(now * 11 + i * 2.4) * 7;
-    const h = 34 + ((i * 13) % 18) + flick;
+    const h = 24 + ((i * 13) % 10) + flick;
     ctx.fillStyle = i % 2 ? '#ff5a2e' : '#ff8a3c';
     ctx.beginPath();
     ctx.moveTo(fx - 9, y);
@@ -95,7 +95,9 @@ export function drawBurnFlames(ctx, cx, y, now) {
     ctx.closePath(); ctx.fill();
   }
   for (let i = 0; i < 3; i++) {
-    const sy = y - 44 - ((now * 26 + i * 23) % 40);
+    // Smoke capped below the wok tag: it rises from the pan but never
+    // crosses the "W · Space to pull" sublabel above it.
+    const sy = y - 20 - ((now * 26 + i * 23) % 24);
     const sx = cx - 18 + i * 18 + Math.sin(now * 2 + i * 2) * 5;
     ctx.fillStyle = 'rgba(30,20,20,0.55)';
     ctx.beginPath(); ctx.arc(sx, sy, 7 + i * 2, 0, Math.PI * 2); ctx.fill();

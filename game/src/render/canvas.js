@@ -84,6 +84,23 @@ export function drawScene(ctx, g, view) {
     ctx.restore();
   }
 
+  // Kitchen event modifier badge: a second live modifier, in the open
+  // seam left of the rush banner — clear of tickets, crates and tags.
+  if (g.event) {
+    const t = '★ ' + g.event.name + ' · ' + g.event.bonus + ' ★';
+    ctx.save();
+    ctx.font = 'bold 13px system-ui, sans-serif';
+    const w = ctx.measureText(t).width + 30;
+    ctx.fillStyle = '#7a3b10';
+    roundRectPath(ctx, 16, 170, w, 24, 12); ctx.fill();
+    ctx.strokeStyle = '#ffd94d'; ctx.lineWidth = 2;
+    roundRectPath(ctx, 16, 170, w, 24, 12); ctx.stroke();
+    ctx.fillStyle = '#ffd94d';
+    ctx.textAlign = 'center';
+    ctx.fillText(t, 16 + w / 2, 186);
+    ctx.restore();
+  }
+
   drawTopBar(ctx, g);
   drawRoadmap(ctx, g, now);
 

@@ -14,7 +14,10 @@ export function drawPotStation(ctx, g, now) {
   const r = POT_RECT;
   const cx = r.x + r.w / 2;
   const p = g.pot;
-  stationTag(ctx, cx, r.y, 'SIMMER POT', 'E · it finishes itself');
+  // Tag raised 6px and steam/bubbles capped below it: the key line now
+  // sits at r.y-7, steam tops out at r.y+2, bubbles at r.y+4 — the
+  // "E · it finishes itself" line never touches steam, bubbles or rim.
+  stationTag(ctx, cx, r.y - 6, 'SIMMER POT', 'E · it finishes itself');
   contactShadow(ctx, cx, r.y + 100, 62, 8);
   drawBurner(ctx, cx, r.y + 96, now, p.state === 'cooking');
   const grad = ctx.createLinearGradient(r.x, r.y + 18, r.x, r.y + 92);
@@ -36,12 +39,12 @@ export function drawPotStation(ctx, g, now) {
       const sway = Math.sin(now * 1.6 + i * 2.2) * 5;
       ctx.beginPath();
       ctx.moveTo(sx, r.y + 18);
-      ctx.bezierCurveTo(sx + sway - 7, r.y + 8, sx + sway + 7, r.y - 2, sx + sway, r.y - 12);
+      ctx.bezierCurveTo(sx + sway - 7, r.y + 12, sx + sway + 7, r.y + 6, sx + sway, r.y + 2);
       ctx.stroke();
     }
     for (let i = 0; i < 5; i++) {
       const bx = cx - 30 + i * 15 + Math.sin(now * 3 + i * 2) * 3;
-      const by = r.y + 16 - ((now * 14 + i * 9) % 22);
+      const by = r.y + 16 - ((now * 14 + i * 9) % 12);
       ctx.fillStyle = 'rgba(255,240,200,0.9)';
       ctx.beginPath(); ctx.arc(bx, by, 3 + (i % 2), 0, Math.PI * 2); ctx.fill();
     }

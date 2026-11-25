@@ -50,16 +50,15 @@ export function setupShot(name) {
     g.chef = chef(300, 480, 'up', [{ x: 300, y: 502, t: 0.3 }, { x: 300, y: 524, t: 0.6 }]);
     g.upgrades = { knives: true, wok: true, pass: false, calm: false, bell: false, pot: false };
     g.relics = { ember: true, star: true };
-    // PERFECT float in the open floor corridor between island and bell:
-    // clear of the island, the bell, the dish label and the route line.
+    // PERFECT float: open floor corridor, clear of island/bell/labels.
     g.floats = [{ x: 775, y: 390, text: '+24 PERFECT!', color: '#ffd94d', t: 0.2 }];
     g.toast = null;
+    g.event = { name: 'WOK FLARE', bonus: '+50% SEAR' };
     g.shot = 'cover';
     return g;
   }
   if (name === 'prep') {
-    // Between-shift draft: the judge sees the upgrade + relic shop UI
-    // directly, over a live kitchen mid-prep.
+    // Between-shift draft: the shop UI over a live kitchen mid-prep.
     const g = base({ coins: 210, earned: 210, combo: 2, bestCombo: 5, served: 8, shift: 3, shiftServed: 6, shiftLeft: 0, time: 150 });
     g.mode = 'shop';
     g.shopChoices = ['knives', 'wok', 'pass'];
@@ -95,13 +94,14 @@ export function setupShot(name) {
     g.tray = ['egg', 'lime'];
     g.plate = { items: ['noodle', 'chilli', 'egg'], dishId: 'spicy-noodles' };
     g.hand = { kind: 'prepped', id: 'lime' };
-    g.chef = chef(820, 520, 'right', [{ x: 796, y: 520, t: 0.3 }, { x: 772, y: 520, t: 0.6 }]);
+    // Chef staged higher in the open lane: clears the GARNISH & SAUCE tag.
+    g.chef = chef(790, 470, 'right', [{ x: 766, y: 470, t: 0.3 }, { x: 742, y: 470, t: 0.6 }]);
     g.upgrades = { knives: true, wok: true, pass: true, calm: true, bell: true, pot: false };
     g.relics = { ember: true, lantern: true, star: true };
-    // COMBO float in the same open corridor: clear of the island, the
-    // bell, the wok/pot tags below and the chef's route line.
+    // COMBO float: same open corridor, clear of island/bell/tags.
     g.floats = [{ x: 775, y: 390, text: 'COMBO x1.8!', color: '#ffd94d', t: 0.1 }];
     g.toast = null;
+    g.event = { name: 'BROTH RUSH', bonus: '+25% TIPS' };
     g.shot = 'rush';
     return g;
   }
