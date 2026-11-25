@@ -40,23 +40,25 @@ export function drawSummary(ctx, g) {
   drawStars(ctx, 640, 144, 3, won ? 3 : 1);
   drawVictoryQuote(ctx, g, won);
   const grade = gradeRun(g);
-  const mg = ctx.createRadialGradient(940, 90, 4, 950, 100, 36);
+  const mg = ctx.createRadialGradient(950, 92, 4, 950, 92, 30);
   mg.addColorStop(0, '#ffe9a8');
   mg.addColorStop(1, '#d4a017');
   ctx.fillStyle = mg;
-  ctx.beginPath(); ctx.arc(950, 100, 34, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(950, 92, 30, 0, Math.PI * 2); ctx.fill();
   ctx.strokeStyle = '#1a120b';
   ctx.lineWidth = 2.5;
-  ctx.beginPath(); ctx.arc(950, 100, 34, 0, Math.PI * 2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(950, 92, 30, 0, Math.PI * 2); ctx.stroke();
   ctx.fillStyle = '#1a120b';
   ctx.font = 'bold 30px Georgia, serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(grade, 950, 100);
-  ctx.textBaseline = 'alphabetic';
+  ctx.fillText(grade, 950, 92);
   ctx.fillStyle = '#ffd94d';
   ctx.font = 'bold 10px system-ui, sans-serif';
-  ctx.fillText('GRADE', 950, 140);
+  // V10: GRADE baseline-centred at y 133 — 11px below the gold S border
+  // (circle bottom 122) and a clean gap above the FEATS pill (top 148).
+  ctx.fillText('GRADE', 950, 133);
+  ctx.textBaseline = 'alphabetic';
   // FEATS badge: unlocked feats this run, out of 16.
   drawFeatsBadge(ctx, g);
   // Two-column stats, then the shift chart.

@@ -8,6 +8,7 @@ import { drawIngredientIcon } from './foodArt.js';
 import { roundRectPath } from '../core/util.js';
 import { stationTag } from './palette.js';
 import { drawSlash, contactShadow } from './feel.js';
+import { drawChopAction } from './actionFx.js';
 import { BOARD_RECTS } from './layout.js';
 
 function drawKnife(ctx, x, y, rot) {
@@ -71,6 +72,9 @@ export function drawBoardStation(ctx, g, now, slot) {
       }
       drawCleaver(ctx, cx + 52, cy - 4, -0.5 - b.anim * 0.9);
       drawSlash(ctx, cx - 12, cy + 2, b.anim, now);
+      // V10: slash + confetti while a chop is in progress — keyed off
+      // mid-chop state, not the anim (the settle ages anim to zero).
+      if (b.chops < b.chopsNeeded) drawChopAction(ctx, cx - 12, cy + 2, now);
     } else {
       drawCleaver(ctx, cx + 40, cy + 2, -0.4);
       ctx.fillStyle = 'rgba(255,246,227,0.5)';
@@ -97,6 +101,9 @@ export function drawBoardStation(ctx, g, now, slot) {
     }
     drawKnife(ctx, cx + 52, cy - 4, -0.5 - b.anim * 0.9);
     drawSlash(ctx, cx - 12, cy + 2, b.anim, now);
+    // V10: slash + confetti while a chop is in progress — keyed off
+    // mid-chop state, not the anim (the settle ages anim to zero).
+    if (b.chops < b.chopsNeeded) drawChopAction(ctx, cx - 12, cy + 2, now);
   } else {
     drawKnife(ctx, cx + 40, cy + 2, -0.4);
     ctx.fillStyle = 'rgba(255,246,227,0.5)';

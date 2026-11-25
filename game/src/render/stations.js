@@ -9,6 +9,7 @@
 import { drawIngredientIcon } from './foodArt.js';
 import { stationTag } from './palette.js';
 import { drawFlameBurst, drawBurnerFlame, contactShadow, radialGlow, drawBurnFlames, drawSizzleSparks } from './feel.js';
+import { drawTossAction, drawFlameLicks } from './actionFx.js';
 import { drawGrillStation, drawWokTiming, drawBurnAlarm } from './stationsGrill.js';
 import { WOK_RECTS } from './layout.js';
 
@@ -60,9 +61,12 @@ export function drawWokStation(ctx, g, now, slot) {
     if (w.state === 'cooking') {
       drawSizzleSparks(ctx, cx, r.y + 40, now);
       drawWokTiming(ctx, w, r);
+      // V10: tossed item + flame licks above the active wok.
+      drawTossAction(ctx, cx, r.y + 44, now, w.item);
       if (w.anim > 0.6) drawFlameBurst(ctx, cx, r.y + 44, now);
     } else if (w.state === 'burning') {
       drawBurnFlames(ctx, cx, r.y + 44, now);
+      drawFlameLicks(ctx, cx, r.y + 38, now);
       drawBurnAlarm(ctx, cx, r.y, now);
     }
   }

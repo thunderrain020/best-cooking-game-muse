@@ -7,6 +7,7 @@ import { drawIngredientIcon } from './foodArt.js';
 import { roundRectPath, clamp } from '../core/util.js';
 import { stationTag } from './palette.js';
 import { drawFlameBurst, drawBurnFlames, contactShadow, radialGlow, drawSizzleSparks } from './feel.js';
+import { drawTossAction, drawFlameLicks } from './actionFx.js';
 import { WOK_RECTS } from './layout.js';
 
 export function drawWokTiming(ctx, w, r) {
@@ -83,9 +84,12 @@ export function drawGrillStation(ctx, g, now) {
     if (w.state === 'cooking') {
       drawSizzleSparks(ctx, cx, r.y + 40, now);
       drawWokTiming(ctx, w, r);
+      // V10: tossed item + flame licks above the active grill.
+      drawTossAction(ctx, cx, r.y + 44, now, w.item);
       if (w.anim > 0.6) drawFlameBurst(ctx, cx, r.y + 44, now);
     } else if (w.state === 'burning') {
       drawBurnFlames(ctx, cx, r.y + 44, now);
+      drawFlameLicks(ctx, cx, r.y + 38, now);
       drawBurnAlarm(ctx, cx, r.y, now);
     }
   }

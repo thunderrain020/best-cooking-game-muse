@@ -112,29 +112,35 @@ export function stationTag(ctx, cx, y, label, keycap) {
   const kw = keycap ? Math.max(20, ctx.measureText(keycap).width + 10) : 0;
   ctx.font = 'bold 14px Georgia, serif';
   const lw = ctx.measureText(label).width;
-  const w = lw + 24 + (keycap ? kw + 8 : 0);
+  // V10: balanced padding — the label sits dead-centre in the dark pill
+  // area between the gold keycap and the right pill border (12px each
+  // side), instead of drifting right as the old math did.
+  const pad = 12;
+  const w = (keycap ? 3 + kw : 0) + pad + lw + pad;
+  const x0 = cx - w / 2;
+  const innerLeft = keycap ? (x0 + 3 + kw) : x0;
+  const labelCx = innerLeft + (w - (innerLeft - x0)) / 2;
   ctx.fillStyle = 'rgba(18,10,6,0.88)';
-  roundRectPath(ctx, cx - w / 2, y - 30, w, 24, 12);
+  roundRectPath(ctx, x0, y - 30, w, 24, 12);
   ctx.fill();
   ctx.strokeStyle = '#d4a017';
   ctx.lineWidth = 1.5;
-  roundRectPath(ctx, cx - w / 2, y - 30, w, 24, 12);
+  roundRectPath(ctx, x0, y - 30, w, 24, 12);
   ctx.stroke();
   if (keycap) {
     ctx.fillStyle = '#ffd94d';
-    roundRectPath(ctx, cx - w / 2 + 3, y - 27, kw, 18, 4);
+    roundRectPath(ctx, x0 + 3, y - 27, kw, 18, 4);
     ctx.fill();
     ctx.fillStyle = '#1a120b';
     ctx.font = 'bold 10px system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(keycap, cx - w / 2 + 3 + kw / 2, y - 18);
+    ctx.fillText(keycap, x0 + 3 + kw / 2, y - 18);
   }
   ctx.fillStyle = '#fff6e5';
   ctx.font = 'bold 14px Georgia, serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  const labelCx = keycap ? cx - w / 2 + kw + 8 + 12 + lw / 2 : cx;
   ctx.fillText(label, labelCx, y - 18);
   ctx.restore();
 }

@@ -40,7 +40,7 @@ export const LAYOUT = {
   trashRect: TRASH_RECT,
   tray: { x: GARNISH_RECT.x, y: GARNISH_RECT.y, w: GARNISH_RECT.w, h: GARNISH_RECT.h },
   crates: { x: 16, y: 190, w: 864, h: 82 },
-  hintBar: { x: 0, y: 664, w: 1280, h: 56 },
+  hintBar: { x: 0, y: 684, w: 1280, h: 36 },
   floor: FLOOR,
   terrace: TERRACE,
 };
@@ -120,14 +120,15 @@ export function drawScene(ctx, g, view) {
     pillText(ctx, g.toast.text, 640, 520, '14px system-ui, sans-serif', '#ffe6a8');
   }
 
-  // Hint bar, dark enough that the footer text is always legible.
+  // Hint bar: one single crisp line — the italic tagline row is gone
+  // (V10), and the bar is 20px shorter, so the kitchen floor breathes
+  // cleanly at the bottom edge.
   ctx.fillStyle = 'rgba(19,17,38,0.78)';
-  ctx.fillRect(0, 664, 1280, 56);
+  ctx.fillRect(0, 684, 1280, 36);
   ctx.fillStyle = '#fff6e5';
   ctx.font = 'bold 14px system-ui, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('WASD / arrows walk · Space / E interact · 1–9, 0 grab ingredient · Q chop · F wok · G grill · T pot · R plate · L recipe ledger · click a crate or station to stroll there', 640, 686);
-  ctx.fillStyle = '#ffd94d';
-  ctx.font = 'italic 13px Georgia, serif';
-  ctx.fillText('Ember & Tide — a rooftop harbour kitchen. No network, no build step, just dinner service.', 640, 706);
+  ctx.textBaseline = 'middle';
+  ctx.fillText('WASD / arrows walk · Space / E interact · 1–9, 0 grab ingredient · Q chop · F wok · G grill · T pot · R plate · L recipe ledger · click a crate or station to stroll there', 640, 702);
+  ctx.textBaseline = 'alphabetic';
 }
