@@ -43,11 +43,13 @@ export function drawBurnAlarm(ctx, cx, y, now) {
 export function drawGrillStation(ctx, g, now) {
   const r = WOK_RECTS[1];
   const cx = r.x + r.w / 2;
-  const w = g.wok;
+  // V12: the grill reads the second cook job (g.wok2); older states
+  // without it fall back to the single shared wok.
+  const w = g.wok2 || g.wok;
   stationTag(ctx, cx, r.y, 'GRILL', 'G');
   contactShadow(ctx, cx, r.y + 100, 66, 8);
-  // Warm ember glow pooling under the trough.
-  radialGlow(ctx, cx, r.y + 78, 70, 'rgba(255,90,46,0.30)');
+  // Warm ember glow pooling under the trough — V12: brighter + wider.
+  radialGlow(ctx, cx, r.y + 78, 88, 'rgba(255,90,46,0.45)');
   // Stone trough.
   ctx.fillStyle = '#3c3e48';
   roundRectPath(ctx, r.x + 6, r.y + 30, r.w - 12, 56, 10); ctx.fill();

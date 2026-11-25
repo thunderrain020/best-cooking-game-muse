@@ -5,7 +5,7 @@
 // cards — pick 1 of 3 per row, with a Reroll ($10) button for fresh
 // choices. The cards themselves live in ui/shopCards.js.
 
-import { UPGRADES, RELICS } from '../systems/upgrades.js';
+import { UPGRADES, RELICS, setCounts, SETS, SET_ACCENT } from '../systems/upgrades.js';
 import { dishById } from '../data/recipes.js';
 import { fmtCoins, roundRectPath } from '../core/util.js';
 import { drawIngredientIcon } from '../render/foodArt.js';
@@ -90,22 +90,39 @@ export function drawShop(ctx, g) {
   ctx.fillStyle = '#d8cdb4';
   ctx.font = '13px system-ui, sans-serif';
   ctx.fillText('Pick 1 per row — the others lock. Reroll draws fresh choices.', 660, 507);
+  // V12: SET BONUSES bar — the three set thresholds with live
+  // active/inactive highlight, so draft synergy reads at a glance.
+  const counts = setCounts(g);
+  ['EMBER', 'TIDE', 'HARBOUR'].forEach((name, i) => {
+    const active = counts[name].owned >= 2;
+    const bx = 460 + i * 220;
+    ctx.fillStyle = active ? '#d4a017' : 'rgba(24,12,8,0.78)';
+    roundRectPath(ctx, bx, 528, 210, 24, 12); ctx.fill();
+    ctx.strokeStyle = active ? '#1a120b' : SET_ACCENT[name]; ctx.lineWidth = 1.5;
+    roundRectPath(ctx, bx, 528, 210, 24, 12); ctx.stroke();
+    ctx.fillStyle = active ? '#1a120b' : '#d8cdb4';
+    ctx.font = 'bold 12px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(name + ' 2+: ' + SETS[name].bonus, bx + 105, 540);
+    ctx.textBaseline = 'alphabetic';
+  });
   ctx.fillStyle = '#2e7d32';
-  roundRectPath(ctx, 500, 540, 280, 56, 12);
+  roundRectPath(ctx, 500, 560, 280, 52, 12);
   ctx.fill();
   ctx.fillStyle = '#fff';
   ctx.font = 'bold 22px system-ui, sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('START NIGHT ' + g.shift, 640, 568);
+  ctx.fillText('START NIGHT ' + g.shift, 640, 586);
   ctx.textBaseline = 'alphabetic';
   ctx.fillStyle = '#d8cdb4';
   ctx.font = '14px system-ui, sans-serif';
-  ctx.fillText('or press Enter', 640, 622);
+  ctx.fillText('or press Enter', 640, 634);
 }
 
 export function shopButtons(g) {
-  const btns = { next: { x: 500, y: 540, w: 280, h: 56 }, reroll: { x: 460, y: 484, w: 180, h: 36 }, cards: [], relicCards: [] };
+  const btns = { next: { x: 500, y: 560, w: 280, h: 52 }, reroll: { x: 460, y: 484, w: 180, h: 36 }, cards: [], relicCards: [] };
   g.shopChoices.forEach((id, i) => btns.cards.push({ id, x: CARD_X[i], y: 176, w: CARD_W, h: CARD_H }));
   g.relicChoices.forEach((id, i) => btns.relicCards.push({ id, x: CARD_X[i], y: 340, w: CARD_W, h: CARD_H }));
   return btns;

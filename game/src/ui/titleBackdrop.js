@@ -1,8 +1,9 @@
 // Ember & Tide — ui/titleBackdrop.js
-// The title hub backdrop: sunset-to-indigo harbour skyline, hanging
-// string lanterns, the lighthouse beam, harbour water ripples, and the
-// steaming hero dish with the chef mascot. Split out of ui/titleArt.js
-// so both files stay under the 6 KB module cap.
+// The title hub backdrop: the harbour skyline (ui/titleHarbour.js),
+// hanging string lanterns, and the steaming hero dish with the chef
+// mascot. Split out of ui/titleArt.js so both files stay under the
+// 6 KB module cap; the skyline/lighthouse/water lives in
+// ui/titleHarbour.js so this file stays under 5 KB too.
 
 import { roundRectPath } from '../core/util.js';
 import { FEATS, featCount } from '../data/feats.js';
@@ -11,6 +12,7 @@ import { drawChefMascot } from '../render/iconBadges.js';
 import { drawDishPlate } from '../render/foodDishes.js';
 import { dishById } from '../data/recipes.js';
 import { drawSteamWisps } from '../render/feel.js';
+import { drawHarbour } from './titleHarbour.js';
 
 // The feats panel on the title hub: two columns of all 16 feats with
 // their unlock state. Lives here so ui/titleOverlay.js stays small.
@@ -44,47 +46,9 @@ export function drawFeatsPanel(ctx, g) {
   centreText(ctx, 'click ✕ or press F to close', 640, 596, '12px system-ui, sans-serif', '#8a7a5c');
 }
 
-const SKYLINE = [46, 78, 58, 92, 40, 70, 84, 52, 66, 96, 44, 74, 60, 88, 50, 68, 80, 56];
 export function drawTitleBackdrop(ctx, now) {
-  const sky = ctx.createLinearGradient(0, 0, 0, 720);
-  sky.addColorStop(0, '#4a2350');
-  sky.addColorStop(0.35, '#2b1e4e');
-  sky.addColorStop(1, '#17102b');
-  ctx.fillStyle = sky;
-  ctx.fillRect(0, 0, 1280, 720);
-  // Warm sunset glow behind the title.
-  const glow = ctx.createRadialGradient(640, 70, 10, 640, 70, 420);
-  glow.addColorStop(0, 'rgba(255,154,92,0.55)');
-  glow.addColorStop(1, 'rgba(255,154,92,0)');
-  ctx.fillStyle = glow;
-  ctx.fillRect(0, 0, 1280, 400);
-  // Setting sun, right of the title so it never sits behind the text.
-  ctx.fillStyle = '#ffb347';
-  ctx.beginPath(); ctx.arc(1120, 66, 30, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = 'rgba(255,179,71,0.25)';
-  ctx.beginPath(); ctx.arc(1120, 66, 44, 0, Math.PI * 2); ctx.fill();
-  // Harbour skyline silhouettes with lit windows.
-  ctx.fillStyle = '#1a1030';
-  let bx = 0;
-  for (let i = 0; i < SKYLINE.length; i++) {
-    const bw = 72, bh = SKYLINE[i];
-    ctx.fillRect(bx, 260 - bh, bw, bh);
-    ctx.fillStyle = 'rgba(255,217,77,0.75)';
-    for (let wy = 268 - bh; wy < 250; wy += 18) {
-      for (let wx = bx + 12; wx < bx + bw - 10; wx += 20) {
-        if ((wx + wy) % 3 === 0) ctx.fillRect(wx, wy, 5, 7);
-      }
-    }
-    ctx.fillStyle = '#1a1030';
-    bx += bw;
-  }
-  // Lighthouse on the right, beam sweeping the water.
-  ctx.fillStyle = '#241a3a';
-  ctx.fillRect(1216, 150, 26, 110);
-  ctx.fillStyle = '#ffd94d';
-  ctx.fillRect(1216, 142, 26, 10);
-  ctx.fillStyle = 'rgba(255,217,77,0.16)';
-  ctx.beginPath(); ctx.moveTo(1216, 152); ctx.lineTo(1040, 120 + Math.sin(now * 0.5) * 14); ctx.lineTo(1040, 190 + Math.sin(now * 0.5) * 14); ctx.closePath(); ctx.fill();
+  // Harbour sky, sun, skyline, lighthouse beam and water ripples.
+  drawHarbour(ctx, now);
   // Hanging string lanterns, draped on the left and right edges only,
   // so the strings never cross the centred title.
   for (const [x0, x1, y0, sag] of [[0, 330, 22, 34], [950, 1280, 22, 34], [0, 260, 48, 30], [1020, 1280, 48, 30]]) {
@@ -102,17 +66,7 @@ export function drawTitleBackdrop(ctx, now) {
       ctx.beginPath(); ctx.arc(x + sway, y + 20, 11, 0, Math.PI * 2); ctx.fill();
     }
   }
-  // Harbour water ripples: a gold shimmer band above the feature strip.
-  ctx.strokeStyle = 'rgba(255,230,160,0.30)'; ctx.lineWidth = 2;
-  for (let i = 0; i < 4; i++) {
-    const y = 576 + i * 7;
-    ctx.beginPath();
-    for (let x = 0; x <= 1280; x += 32) {
-      const yy = y + Math.sin(x * 0.02 + now * 0.9 + i * 1.7) * 2;
-      if (x === 0) ctx.moveTo(x, yy); else ctx.lineTo(x, yy);
-    }
-    ctx.stroke();
-  }
+  // Water ripples live in drawHarbour (ui/titleHarbour.js).
 }
 
 export function drawHero(ctx, now) {

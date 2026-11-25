@@ -73,11 +73,13 @@ export function drawBackdrop(ctx, now) {
   }
   ctx.fillStyle = '#ffd94d';
   ctx.beginPath(); ctx.arc(mx, my, 3, 0, Math.PI * 2); ctx.fill();
-  // Warm lantern light pools on the floor.
-  const pools = [[260, 340, 160], [700, 440, 180], [920, 340, 140], [520, 600, 160], [300, 460, 140]];
+  // Warm lantern light pools on the floor — V12: brighter (0.32)
+  // and wider, so the dark harbour theme keeps high figure-ground
+  // contrast and the heat under the stations reads at a glance.
+  const pools = [[260, 340, 180], [700, 440, 200], [920, 340, 160], [520, 610, 190], [300, 460, 160]];
   for (const [x, y, r] of pools) {
     const g = ctx.createRadialGradient(x, y, 8, x, y, r);
-    g.addColorStop(0, 'rgba(255,190,90,0.20)');
+    g.addColorStop(0, 'rgba(255,190,90,0.32)');
     g.addColorStop(1, 'rgba(255,190,90,0)');
     ctx.fillStyle = g;
     ctx.fillRect(x - r, y - r, r * 2, r * 2);

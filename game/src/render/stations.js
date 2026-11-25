@@ -17,8 +17,9 @@ import { WOK_RECTS } from './layout.js';
 // pooling onto the floor when it is lit.
 function drawBurner(ctx, cx, y, now, on) {
   if (on) {
-    radialGlow(ctx, cx, y, 78, 'rgba(255,122,40,0.38)');
-    radialGlow(ctx, cx, y, 40, 'rgba(80,120,255,0.22)');
+    // V12: brighter ember under-glow when the burner is lit.
+    radialGlow(ctx, cx, y, 92, 'rgba(255,122,40,0.55)');
+    radialGlow(ctx, cx, y, 56, 'rgba(80,120,255,0.30)');
   }
   ctx.strokeStyle = '#3a6fd8'; ctx.lineWidth = 3;
   ctx.beginPath(); ctx.ellipse(cx, y, 42, 7, 0, 0, Math.PI * 2); ctx.stroke();

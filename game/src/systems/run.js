@@ -50,6 +50,7 @@ export function endShift(g, audio) {
   g.tray = [];
   g.board = { item: null, chops: 0, chopsNeeded: 3, anim: 0, slot: 0 };
   g.wok = { item: null, t: 0, dur: 6, perfect: [0.42, 0.62], state: 'idle', anim: 0, slot: 0 };
+  g.wok2 = { item: null, t: 0, dur: 6, perfect: [0.42, 0.62], state: 'idle', anim: 0, slot: 1 };
   g.pot = { item: null, t: 0, dur: 8, state: 'idle' };
   g.rush = null;
   const draft = pickDraft(g, g.rng);

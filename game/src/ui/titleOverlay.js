@@ -25,7 +25,7 @@ export function titleButtons(g) {
   };
   if (hasSave) push('continue', '⏎', 'CONTINUE', { accent: true });
   push('new', 'N', 'NEW RUN', { accent: !hasSave });
-  push('endless', 'E', endless ? 'ENDLESS RUSH' : 'ENDLESS RUSH · LOCKED', { disabled: !endless });
+  push('endless', 'E', 'ENDLESS RUSH', { disabled: !endless, lock: endless ? 'unlocked' : 'locked' });
   push('ledger', 'L', 'RECIPE LEDGER (18)', {});
   push('feats', 'F', 'FEATS (' + featCount(g) + '/16)', {});
   push('help', 'H', 'HOW TO PLAY', {});
@@ -44,6 +44,15 @@ export function drawTitle(ctx, g, now) {
   centreText(ctx, 'EMBER & TIDE', 640, 78, 'bold 54px Georgia, serif', '#ffd94d');
   centreText(ctx, 'a rooftop harbour kitchen at sunset', 640, 112, 'italic 20px Georgia, serif', '#ffe6a8');
   const b = titleButtons(g);
+  // V12: the run's real seed, top-right of the hub — clear of the
+  // setting sun above and the lighthouse below.
+  if (g.seed != null) {
+    ctx.fillStyle = 'rgba(24,12,8,0.78)';
+    roundRectPath(ctx, 1090, 116, 140, 24, 12); ctx.fill();
+    ctx.strokeStyle = '#d4a017'; ctx.lineWidth = 1.5;
+    roundRectPath(ctx, 1090, 116, 140, 24, 12); ctx.stroke();
+    centreText(ctx, 'SEED #' + g.seed, 1160, 128, 'bold 12px system-ui, sans-serif', '#ffd94d');
+  }
   for (const m of b.menu) menuButton(ctx, m.rect, m.key, m.label, m.opts);
   centreText(ctx, 'DIFFICULTY', MENU.x + MENU.w / 2, b.diffLabelY, 'bold 13px system-ui, sans-serif', '#ffe6a8');
   for (const d of b.diff) diffPill(ctx, d, d.id, g.difficulty === d.id);

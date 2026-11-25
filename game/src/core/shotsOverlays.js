@@ -15,6 +15,7 @@ export function setupTitle() {
   const g = base({ coins: 0, served: 0, shift: 1, shiftLeft: 150, time: 0 });
   g.mode = 'title';
   g.difficulty = 'service';
+  g.seed = 4821; // V12: the staged hub's demo seed for the SEED pill
   g.best = { score: 512, shift: 7 };
   g.feats = {
     'first-perfect': true, 'perfect-chef': true, 'storm-survivor': true, 'zero-waste': true,
@@ -39,9 +40,11 @@ export function setupPrep() {
   g.mode = 'shop';
   g.shopChoices = ['batch', 'twin', 'wok'];
   g.relicChoices = ['crisp', 'chain', 'lantern'];
-  g.upgrades = { knives: true, wok: false, pass: false, calm: false, bell: false, pot: false, batch: false, twin: false };
+  g.upgrades = { knives: true, wok: false, pass: false, calm: false, bell: false, pot: true, batch: false, twin: false };
+  // V12: knives + pot make HARBOUR 2/5, so the SET BONUSES bar
+  // shows one live bonus (HARBOUR) beside two inactive ones.
   // V8: Ember Charm owned, so the draft cards show live set progress
-  // (EMBER 1/6, HARBOUR 1/5 via Sharper Knives) on their set tags.
+  // (EMBER 1/6, HARBOUR 2/5 via Sharper Knives + Big Simmer Pot) on their set tags.
   g.relics = { ember: true, crisp: false, chain: false, lantern: false };
   g.feats = { 'first-perfect': true, 'perfect-chef': true, 'vip-maestro': true, 'combo-5': true, 'gold-rush': true };
   g.tickets = [ticket(g, 'ember-prawns', 41, 57), ticket(g, 'egg-rice', 38, 57)];

@@ -48,8 +48,25 @@ export function menuButton(ctx, r, keycap, label, opts = {}) {
   // Gold keycap square, letter dead-centre.
   pill(ctx, r.x + 10, r.y + r.h / 2 - 13, 26, 26, '#d4a017', '#1a120b', 6);
   centreText(ctx, keycap, r.x + 23, r.y + r.h / 2, 'bold 15px system-ui, sans-serif', '#1a120b');
-  centreText(ctx, label, menuLabelCx(r.x, r.w, 46), r.y + r.h / 2,
+  // The label centres in the free area: keycap to right edge, or to
+  // the lock badge when one is drawn, so it never reads right-shifted.
+  const labelCx = opts.lock ? menuLabelCx(r.x, r.w - 40, 46) : menuLabelCx(r.x, r.w, 46);
+  centreText(ctx, label, labelCx, r.y + r.h / 2,
     'bold 16px system-ui, sans-serif', opts.disabled ? '#8a7a5c' : '#ffe6a8');
+  // V12: lock badge at the button's right end — a crisp padlock when
+  // locked, a gold open padlock once unlocked. The label stays centred
+  // in the keycap-to-right-edge area, clear of the badge.
+  if (opts.lock) {
+    const bx = r.x + r.w - 34, by = r.y + r.h / 2 - 9;
+    const locked = opts.lock === 'locked';
+    ctx.fillStyle = locked ? '#8a7a5c' : '#ffd94d';
+    roundRectPath(ctx, bx, by + 7, 18, 13, 3); ctx.fill();
+    ctx.strokeStyle = locked ? '#8a7a5c' : '#ffd94d'; ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    if (locked) ctx.arc(bx + 9, by + 8, 6, Math.PI, 0);
+    else ctx.arc(bx + 9, by + 8, 6, Math.PI, -0.4);
+    ctx.stroke();
+  }
 }
 
 export function diffPill(ctx, r, id, selected) {

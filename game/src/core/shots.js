@@ -16,9 +16,9 @@ export function setupShot(name) {
     // V11 cover: the most dramatic state — Storm Rush + Critic Finale
     // on Night 7: BROTH RUSH, rain and lightning, STORM COMBO ×8!,
     // an EXTRA SEAR ticket, BATCH ×2 (noodle is prepped on the plate
-    // and shared by the fish-noodles and spicy-noodles tickets), tall
-    // wok flames on the burning wok, tossed prawn + knife slash FX,
-    // and the numbered route line.
+    // and shared by the fish-noodles and spicy-noodles tickets), fish
+    // searing in the wok + prawn on the grill + lime on board 2,
+    // tossed prawn + knife slash FX, and the numbered route line.
     const g = base({ coins: 402, combo: 8, served: 17, shift: 7, shiftServed: 0, shiftLeft: 38, time: 112 });
     g.rush = { name: 'STORM RUSH', until: 999 };
     g.critic = { spawned: true, served: false, active: true };
@@ -31,12 +31,14 @@ export function setupShot(name) {
     ];
     g.tickets[3].vip = true;
     g.tickets[2].mod = 'EXTRA SEAR';
-    // Grill mid-sear in its PERFECT window (tossed prawn + flame burst
-    // above the coals), pot simmering, board 1 mid-chop, tray waiting
-    // on the garnish counter.
-    g.wok = { item: 'prawn', t: 3.1, dur: 6, perfect: [0.42, 0.62], state: 'cooking', anim: 0.8, slot: 1 };
+    // V12 cover: EVERY station firing at once in the Storm Rush —
+    // wok searing fish (slot 0) AND grill searing prawn (slot 1,
+    // its own cook job), pot simmering, board 2 mid-chop on lime
+    // (2/3, slash + confetti), tray waiting on the garnish counter.
+    g.wok = { item: 'fish', t: 2.9, dur: 6, perfect: [0.42, 0.62], state: 'cooking', anim: 0.8, slot: 0 };
+    g.wok2 = { item: 'prawn', t: 3.1, dur: 6, perfect: [0.42, 0.62], state: 'cooking', anim: 0.8, slot: 1 };
     g.pot = { item: 'noodle', t: 6.8, dur: 8, state: 'cooking' };
-    g.board = { item: 'chilli', chops: 0, chopsNeeded: 3, anim: 0, slot: 0 };
+    g.board = { item: 'lime', chops: 2, chopsNeeded: 3, anim: 0.6, slot: 1 };
     g.tray = ['egg', 'lime'];
     g.plate = { items: ['noodle', 'chilli', 'egg'], dishId: 'spicy-noodles' };
     g.hand = { kind: 'prepped', id: 'lime' };

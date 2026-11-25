@@ -69,12 +69,14 @@ if (shotName) {
   const stagedFloats = g.floats.map((f) => ({ ...f }));
   const stagedToast = g.toast;
   const stagedWok = { ...g.wok };
+  const stagedWok2 = g.wok2 ? { ...g.wok2 } : null;
   const stagedPot = { ...g.pot };
   const stagedTray = [...g.tray];
   for (let i = 0; i < 90; i++) updateKitchen(g, 1 / 60, audio);
   g.floats = stagedFloats;
   g.toast = stagedToast;
   g.wok = stagedWok;
+  if (stagedWok2) g.wok2 = stagedWok2;
   g.pot = stagedPot;
   g.tray = stagedTray;
   view.mouse = null;

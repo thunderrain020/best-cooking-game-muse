@@ -79,6 +79,8 @@ export function createGame(seed = 20261125) {
     spawnIn: 1.2,
     board: { item: null, chops: 0, chopsNeeded: 3, anim: 0, slot: 0 },
     wok: { item: null, t: 0, dur: 6, perfect: [0.42, 0.62], state: 'idle', anim: 0, slot: 0 },
+    // V12: the grill's own cook job — wok + grill sear at once.
+    wok2: { item: null, t: 0, dur: 6, perfect: [0.42, 0.62], state: 'idle', anim: 0, slot: 1 },
     pot: { item: null, t: 0, dur: 8, state: 'idle' },
     plate: { items: [], dishId: null },
     tray: [],

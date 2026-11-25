@@ -64,7 +64,10 @@ export function chopOnce(g, audio) {
 }
 
 export function clickWok(g, audio, slot) {
-  const w = g.wok;
+  // V12: two cook jobs — slot 0 is the wok (g.wok), slot 1 the grill
+  // (g.wok2). Each holds one item with its own timer and PERFECT
+  // window; older saves without wok2 fall back to the single job.
+  const w = slot === 1 ? (g.wok2 || g.wok) : g.wok;
   if (w.state === 'burning') {
     w.item = null; w.state = 'idle'; w.t = 0;
     g.stats.burns += 1;
@@ -73,7 +76,7 @@ export function clickWok(g, audio, slot) {
     audio.burn();
     return;
   }
-  if (w.state === 'cooking') { pullWok(g, audio); return; }
+  if (w.state === 'cooking') { pullWok(g, audio, w); return; }
   if (g.hand && g.hand.kind === 'raw' && INGREDIENTS[g.hand.id].station === 'wok') {
     w.item = g.hand.id; w.t = 0; w.dur = wokDuration(g); w.state = 'cooking';
     w.perfect = wokPerfect(g);
@@ -85,8 +88,8 @@ export function clickWok(g, audio, slot) {
   }
 }
 
-export function pullWok(g, audio) {
-  const w = g.wok;
+export function pullWok(g, audio, job) {
+  const w = job || g.wok;
   if (w.state !== 'cooking') return;
   const frac = w.t / w.dur;
   // Floats sit in the open corridor above the wok's tag, clear of labels.
@@ -126,7 +129,10 @@ export function clickPot(g, audio) {
 }
 
 export function updateKitchen(g, dt, audio) {
-  const w = g.wok;
+  // V12: step both cook jobs — the wok and the grill each advance
+  // their own timer, steam and sparks, and burn on their own.
+  const jobs = g.wok2 ? [g.wok, g.wok2] : [g.wok];
+  for (const w of jobs) {
   const wx = w.slot === 1 ? 518 : 314;
   if (w.state === 'cooking') {
     w.t += dt;
@@ -142,6 +148,7 @@ export function updateKitchen(g, dt, audio) {
   }
   if (w.state === 'burning' && g.rng() < dt * 8) {
     spawnSteam(g, wx, 556, 1, 'rgba(60,60,60,0.6)');
+  }
   }
   const p = g.pot;
   if (p.state === 'cooking') {
@@ -161,6 +168,6 @@ export function updateKitchen(g, dt, audio) {
   g.particles = g.particles.filter((pt) => pt.t < pt.life);
   for (const f of g.floats) f.t += dt;
   g.floats = g.floats.filter((f) => f.t < 1.4);
-  const cooking = w.state === 'cooking' || p.state === 'cooking';
+  const cooking = jobs.some((j) => j.state === 'cooking') || p.state === 'cooking';
   audio.setSizzle(cooking && !g.muted && g.mode === 'play');
 }
