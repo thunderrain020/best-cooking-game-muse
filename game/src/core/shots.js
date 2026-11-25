@@ -41,7 +41,7 @@ export function setupShot(name) {
     g.hand = { kind: 'prepped', id: 'lime' };
     g.upgrades = { knives: true, wok: true, pass: false, calm: false, bell: false, pot: false };
     g.relics = { ember: true, star: true };
-    g.floats = [{ x: 575, y: 250, text: '+24 PERFECT!', color: '#ffd94d', t: 0.2 }];
+    g.floats = [{ x: 640, y: 205, text: '+24 PERFECT!', color: '#ffd94d', t: 0.2 }];
     g.toast = { text: 'PERFECT sear! +$4', until: 999 };
     g.shot = 'cover';
     return g;
@@ -79,17 +79,22 @@ export function setupShot(name) {
     g.hand = { kind: 'raw', id: 'herbs' };
     g.upgrades = { knives: true, wok: true, pass: true, calm: true, bell: true, pot: false };
     g.relics = { ember: true, lantern: true, star: true };
-    g.floats = [{ x: 965, y: 240, text: 'COMBO x1.8!', color: '#ffd94d', t: 0.1 }];
+    g.floats = [{ x: 640, y: 205, text: 'COMBO x1.8!', color: '#ffd94d', t: 0.1 }];
     g.shot = 'rush';
     return g;
   }
   if (name === 'upgrades') {
-    const g = base({ coins: 486, earned: 512, combo: 0, bestCombo: 6, served: 21, shift: 3, shiftServed: 8, shiftLeft: 0, time: 150 });
-    g.mode = 'shop';
-    g.shopChoices = ['knives', 'wok', 'bell'];
-    g.relicChoices = ['ember', 'lantern', 'star'];
-    g.upgrades = { knives: false, wok: false, pass: true, calm: false, bell: false, pot: false };
-    g.relics = { ladle: true };
+    // End-of-run Victory summary: Grade, shift-by-shift breakdown, best
+    // run, and the Replay / New Seed buttons — the payoff screen.
+    const g = base({ coins: 486, earned: 512, combo: 0, bestCombo: 8, served: 27, shift: 5, shiftServed: 4, shiftLeft: 0, time: 150 });
+    g.mode = 'over';
+    g.result = { won: true, reason: 'The Harbour Critic gave the Tide & Ember Special five stars!' };
+    g.best = { score: 512, shift: 5 };
+    g.stats = { perfects: 9, burns: 1, vipServed: 4, criticServed: 1 };
+    g.failed = 1;
+    g.shiftScores = [5, 6, 7, 5, 4];
+    g.upgrades = { knives: true, wok: true, pass: true, calm: false, bell: true, pot: false };
+    g.relics = { ember: true, lantern: true, star: true };
     g.tickets = [ticket(g, 'prawn-rice', 20, 57)];
     g.wok = { item: null, t: 0, dur: 6, perfect: [0.42, 0.62], state: 'idle', anim: 0 };
     g.pot = { item: null, t: 0, dur: 8, state: 'idle' };

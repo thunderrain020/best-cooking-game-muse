@@ -7,24 +7,28 @@ import { roundRectPath } from '../core/util.js';
 
 export function drawBackdrop(ctx, now) {
   const sky = ctx.createLinearGradient(0, 0, 0, 720);
-  sky.addColorStop(0, '#241a44');
-  sky.addColorStop(0.3, '#6e3358');
-  sky.addColorStop(0.52, '#c65a3d');
-  sky.addColorStop(0.68, '#f2a54a');
-  sky.addColorStop(0.8, '#7a4a3a');
-  sky.addColorStop(1, '#2e2233');
+  sky.addColorStop(0, '#131126');
+  sky.addColorStop(0.28, '#2c1d42');
+  sky.addColorStop(0.5, '#7a3350');
+  sky.addColorStop(0.64, '#ff8c42');
+  sky.addColorStop(0.78, '#f2a54a');
+  sky.addColorStop(0.88, '#5a3a4a');
+  sky.addColorStop(1, '#1c1426');
   ctx.fillStyle = sky;
   ctx.fillRect(0, 0, 1280, 720);
 
   // Low sun and its glow.
-  const sun = ctx.createRadialGradient(1010, 178, 10, 1010, 178, 230);
-  sun.addColorStop(0, 'rgba(255,214,130,0.95)');
-  sun.addColorStop(0.4, 'rgba(255,170,80,0.5)');
-  sun.addColorStop(1, 'rgba(255,170,80,0)');
+  const sun = ctx.createRadialGradient(1010, 178, 10, 1010, 178, 260);
+  sun.addColorStop(0, 'rgba(255,214,130,0.98)');
+  sun.addColorStop(0.4, 'rgba(255,140,66,0.55)');
+  sun.addColorStop(1, 'rgba(255,140,66,0)');
   ctx.fillStyle = sun;
-  ctx.fillRect(740, 0, 540, 430);
+  ctx.fillRect(720, 0, 560, 460);
   ctx.fillStyle = '#ffe6a8';
   ctx.beginPath(); ctx.arc(1010, 182, 50, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = '#ff8c42';
+  ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.arc(1010, 182, 58, 0, Math.PI * 2); ctx.stroke();
 
   // Distant skyline: warehouses, a lighthouse, cranes, masts.
   ctx.fillStyle = '#241a33';
@@ -55,15 +59,20 @@ export function drawBackdrop(ctx, now) {
   ctx.beginPath(); ctx.moveTo(748, 296); ctx.lineTo(748, 322); ctx.lineTo(786, 322); ctx.closePath(); ctx.fill();
   ctx.beginPath(); ctx.moveTo(380, 336); ctx.lineTo(452, 336); ctx.lineTo(432, 350); ctx.lineTo(398, 350); ctx.closePath(); ctx.fill();
 
-  // Harbour water with slow reflections.
-  ctx.fillStyle = '#1d3a4d';
+  // Harbour water with bright sunset reflections.
+  ctx.fillStyle = '#16324a';
   ctx.fillRect(0, 348, 1280, 372);
-  ctx.fillStyle = 'rgba(255,190,110,0.22)';
+  ctx.fillStyle = 'rgba(255,217,77,0.34)';
   for (let i = 0; i < 10; i++) {
     const y = 372 + i * 36;
     const off = Math.sin(now * 0.7 + i * 1.7) * 16;
     ctx.fillRect(180 + off, y, 300 - i * 18, 3);
     ctx.fillRect(820 - off, y + 12, 260 - i * 14, 3);
+  }
+  ctx.fillStyle = 'rgba(255,140,66,0.28)';
+  for (let i = 0; i < 6; i++) {
+    const y = 384 + i * 52;
+    ctx.fillRect(940 + Math.sin(now + i) * 10, y, 180, 3);
   }
 
   // Wooden rooftop railing across the waterline.
@@ -82,22 +91,39 @@ export function drawBackdrop(ctx, now) {
     const x = t * 1280;
     const y = 8 + Math.sin(t * Math.PI) * 40;
     const glow = 0.6 + 0.4 * Math.sin(now * 2 + i);
-    ctx.fillStyle = `rgba(255,205,110,${0.5 + 0.4 * glow})`;
-    ctx.beginPath(); ctx.arc(x, y + 8, 4, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = 'rgba(255,180,80,0.25)';
-    ctx.beginPath(); ctx.arc(x, y + 8, 9, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,180,80,0.3)';
+    ctx.beginPath(); ctx.arc(x, y + 8, 12, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = `rgba(255,205,110,${0.6 + 0.4 * glow})`;
+    ctx.beginPath(); ctx.arc(x, y + 8, 5, 0, Math.PI * 2); ctx.fill();
+    if (i % 5 === 2) {
+      // A proper paper lantern: warm gold body, ink outline, lit from within.
+      ctx.fillStyle = '#ffb347';
+      roundRectPath(ctx, x - 7, y + 12, 14, 16, 7); ctx.fill();
+      ctx.strokeStyle = '#1a120b';
+      ctx.lineWidth = 1.5;
+      roundRectPath(ctx, x - 7, y + 12, 14, 16, 7); ctx.stroke();
+      ctx.fillStyle = '#fff3c4';
+      ctx.fillRect(x - 3, y + 16, 6, 8);
+    }
   }
 }
 
 export function drawCounter(ctx) {
-  // The counter band the stations sit on, with a warm top edge.
+  // Dark espresso / charcoal counter deck: bright stations and food pop
+  // off it at once. 2.5px ink border plus a warm brass trim along the top.
   const grad = ctx.createLinearGradient(0, 96, 0, 660);
-  grad.addColorStop(0, '#8a5a33');
-  grad.addColorStop(1, '#5d3a1e');
+  grad.addColorStop(0, '#231b18');
+  grad.addColorStop(1, '#17100d');
   ctx.fillStyle = grad;
   roundRectPath(ctx, 272, 96, 994, 548, 18); ctx.fill();
-  ctx.fillStyle = 'rgba(255,220,160,0.16)';
-  roundRectPath(ctx, 272, 96, 994, 26, 18); ctx.fill();
-  ctx.fillStyle = '#6d4526';
+  ctx.strokeStyle = '#1a120b';
+  ctx.lineWidth = 2.5;
+  roundRectPath(ctx, 272, 96, 994, 548, 18); ctx.stroke();
+  ctx.fillStyle = '#c9a24a';
+  ctx.fillRect(276, 100, 986, 3);
+  // Subtle wood grain on the dark deck.
+  ctx.fillStyle = 'rgba(255,220,160,0.05)';
+  for (let i = 0; i < 12; i++) ctx.fillRect(280 + (i * 83) % 980, 110 + (i % 5) * 104, 60, 2);
+  ctx.fillStyle = '#3a2418';
   ctx.fillRect(272, 428, 994, 8);
 }

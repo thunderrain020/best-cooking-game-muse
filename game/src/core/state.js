@@ -30,6 +30,7 @@ export function createGame(seed = 20261125) {
     shift: 1,
     shiftLeft: SHIFT_LENGTH,
     shiftServed: 0, // dishes served this shift
+    shiftScores: [0, 0, 0, 0, 0], // dishes served per shift, for the summary
     coins: 0,
     earned: 0,
     served: 0,

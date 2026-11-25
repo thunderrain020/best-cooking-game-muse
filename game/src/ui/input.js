@@ -43,7 +43,9 @@ function handleClick(api, mx, my) {
     return;
   }
   if (g.mode === 'over') {
-    if (pointInRect(mx, my, summaryButtons().again)) api.restart();
+    const b = summaryButtons();
+    if (pointInRect(mx, my, b.again)) api.restart();
+    else if (pointInRect(mx, my, b.seed)) api.restart();
     return;
   }
   if (g.mode === 'shop') {

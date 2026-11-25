@@ -39,7 +39,7 @@ function drawCards(ctx, g, list, y, heading) {
     ctx.stroke();
     ctx.fillStyle = u.kind === 'relic' ? '#7a3b9e' : '#b8860b';
     ctx.font = 'bold 12px system-ui, sans-serif';
-    ctx.fillText(u.kind === 'relic' ? 'RELIC · ' + u.icon : 'UPGRADE · ' + u.icon, x + 140, y + 24);
+    ctx.fillText(u.kind === 'relic' ? 'RELIC · ' + u.short : 'UPGRADE · ' + u.short, x + 140, y + 24);
     ctx.fillStyle = '#2a1a12';
     ctx.font = 'bold 18px Georgia, serif';
     ctx.fillText(u.name, x + 140, y + 50);

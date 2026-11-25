@@ -25,6 +25,11 @@ export function drawTicket(ctx, t, i, now) {
   roundRectPath(ctx, r.x, r.y, r.w, r.h, 10);
   ctx.fill();
   ctx.restore();
+  // 2px dark ink outline: the woodblock / cel-shaded edge.
+  ctx.strokeStyle = '#1a120b';
+  ctx.lineWidth = 2;
+  roundRectPath(ctx, r.x + 1, r.y + 1, r.w - 2, r.h - 2, 9);
+  ctx.stroke();
   if (critic) {
     ctx.strokeStyle = '#7a3b9e'; ctx.lineWidth = 3;
     roundRectPath(ctx, r.x + 1.5, r.y + 1.5, r.w - 3, r.h - 3, 9); ctx.stroke();

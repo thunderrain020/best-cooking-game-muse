@@ -85,13 +85,14 @@ export function pullWok(g, audio) {
     g.stats.perfects += 1;
     const bonus = 4 + (g.relics.ember ? 3 : 0);
     g.coins += bonus;
-    addFloat(g, 575, 280, 'PERFECT! +' + bonus, '#ffd94d');
+    // Float spawns above / upper-right of the wok, never over the plate.
+    addFloat(g, 655, 195, 'PERFECT! +' + bonus, '#ffd94d');
     spawnFlameBurst(g, 575, 232);
     audio.perfect();
   } else if (frac < w.perfect[0]) {
-    addFloat(g, 575, 280, 'Early — still edible', '#e8e0cf'); audio.flip();
+    addFloat(g, 655, 195, 'Early — still edible', '#e8e0cf'); audio.flip();
   } else {
-    addFloat(g, 575, 280, 'Late — chewy', '#e8e0cf'); audio.flip();
+    addFloat(g, 655, 195, 'Late — chewy', '#e8e0cf'); audio.flip();
   }
   toTray(g, w.item);
   w.item = null;

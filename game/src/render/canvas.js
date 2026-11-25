@@ -48,21 +48,26 @@ export function drawScene(ctx, g, view) {
   drawParticles(ctx, g);
   drawFloats(ctx, g);
 
-  // Rush banner: a pill floating just under the roadmap strip.
+  // Rush banner: its own dedicated strip at the top of the counter
+  // (y 96–126), with clear margin above the station headers at y 132.
+  // Never drawn over SIZZLE WOK / SIMMER POT or any other header.
   if (g.rush) {
     ctx.save();
     ctx.globalAlpha = 0.85 + 0.15 * Math.sin(now * 8);
     ctx.fillStyle = g.rush.name.includes('STORM') ? '#7a3b9e' : '#e8442e';
-    roundRectPath(ctx, 480, 92, 320, 36, 10); ctx.fill();
+    roundRectPath(ctx, 480, 96, 320, 30, 10); ctx.fill();
+    ctx.strokeStyle = '#1a120b';
+    ctx.lineWidth = 2.5;
+    roundRectPath(ctx, 480, 96, 320, 30, 10); ctx.stroke();
     ctx.fillStyle = '#fff';
-    ctx.font = 'bold 20px system-ui, sans-serif';
+    ctx.font = 'bold 18px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('» ' + g.rush.name + ' «', 640, 117);
+    ctx.fillText('» ' + g.rush.name + ' «', 640, 116);
     ctx.restore();
   }
-  // Critic callout sits above the board when the finale order is live.
+  // Critic callout uses the same strip when the finale order is live.
   if (g.critic.active && !g.critic.served && !g.rush) {
-    pillText(ctx, 'CRITIC FINALE — serve the Tide & Ember Special!', 640, 92, 'bold 13px system-ui, sans-serif', '#e8c8ff');
+    pillText(ctx, 'CRITIC FINALE — serve the Tide & Ember Special!', 640, 96, 'bold 13px system-ui, sans-serif', '#e8c8ff');
   }
 
   drawTopBar(ctx, g);
@@ -83,8 +88,8 @@ export function drawScene(ctx, g, view) {
     ctx.restore();
   }
 
-  // Hint bar.
-  ctx.fillStyle = 'rgba(24,12,8,0.72)';
+  // Hint bar, translucent so the harbour water shows through below.
+  ctx.fillStyle = 'rgba(19,17,38,0.55)';
   ctx.fillRect(0, 664, 1280, 56);
   ctx.fillStyle = '#e8dcc2';
   ctx.font = '14px system-ui, sans-serif';

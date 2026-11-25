@@ -4,21 +4,18 @@
 import { drawIngredientIcon } from './foodArt.js';
 import { drawBroth } from './plates.js';
 import { roundRectPath, clamp } from '../core/util.js';
-import { pillText, stationLabel, C } from './palette.js';
+import { pillText, stationLabel, stationDeck, C } from './palette.js';
 import { drawSlash, drawFlameBurst, drawBurnerFlame } from './feel.js';
 
 export const STATION_RECTS = {
-  boardRect: { x: 300, y: 120, w: 170, h: 190 },
-  wokRect: { x: 490, y: 120, w: 170, h: 190 },
-  potRect: { x: 680, y: 120, w: 170, h: 190 },
-  plateRect: { x: 870, y: 120, w: 190, h: 190 },
-  bellRect: { x: 1080, y: 120, w: 186, h: 190 },
+  boardRect: { x: 300, y: 132, w: 170, h: 190 },
+  wokRect: { x: 490, y: 132, w: 170, h: 190 },
+  potRect: { x: 680, y: 132, w: 170, h: 190 },
+  plateRect: { x: 870, y: 132, w: 190, h: 190 },
+  bellRect: { x: 1080, y: 132, w: 186, h: 190 },
 };
 
-function deck(ctx, r, fill) {
-  ctx.fillStyle = fill;
-  roundRectPath(ctx, r.x, r.y + 56, r.w, 118, 10); ctx.fill();
-}
+const deck = stationDeck;
 
 export function drawBoardStation(ctx, g, now) {
   const r = STATION_RECTS.boardRect;

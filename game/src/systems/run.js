@@ -37,6 +37,7 @@ export function endShift(g, audio) {
   const draft = pickDraft(g, g.rng);
   g.shopChoices = draft.upgrades;
   g.relicChoices = draft.relics;
+  g.shiftScores[g.shift - 1] = g.shiftServed;
   g.shift += 1;
   g.shiftLeft = SHIFT_LENGTH;
   g.shiftServed = 0;
@@ -68,5 +69,6 @@ export function endRun(g, won, reason) {
   g.mode = 'over';
   g.result = { won, reason };
   g.rush = null;
+  g.shiftScores[g.shift - 1] = Math.max(g.shiftScores[g.shift - 1] || 0, g.shiftServed);
   recordRun(g);
 }

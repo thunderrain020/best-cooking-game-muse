@@ -8,6 +8,9 @@ import { drawIngredientIcon } from './foodArt.js';
 function plateBase(ctx, r) {
   ctx.fillStyle = '#f7f2e8';
   ctx.beginPath(); ctx.ellipse(0, 0, r, r * 0.72, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = '#1a120b';
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.ellipse(0, 0, r, r * 0.72, 0, 0, Math.PI * 2); ctx.stroke();
   ctx.strokeStyle = 'rgba(255,255,255,0.9)';
   ctx.lineWidth = 2;
   ctx.beginPath(); ctx.ellipse(0, -r * 0.06, r * 0.92, r * 0.64, 0, Math.PI * 1.05, Math.PI * 1.95); ctx.stroke();

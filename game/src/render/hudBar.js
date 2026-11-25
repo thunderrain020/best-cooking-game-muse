@@ -59,29 +59,35 @@ export function drawTopBar(ctx, g) {
 }
 
 export function drawRoadmap(ctx, g, now) {
-  ctx.fillStyle = 'rgba(24,12,8,0.55)';
+  ctx.fillStyle = 'rgba(19,17,38,0.35)';
   ctx.fillRect(0, 56, 1280, 32);
-  // Roadmap nodes.
+  // Roadmap nodes: short labels (S1 ✓, S2… CRITIC) measured from the
+  // full drawn text, with a gap, so nothing is ever clipped.
   let x = 16;
   ctx.font = 'bold 12px system-ui, sans-serif';
   ctx.textAlign = 'left';
   for (let s = 1; s <= TOTAL_SHIFTS; s++) {
     const done = s < g.shift;
     const cur = s === g.shift;
-    const label = s === TOTAL_SHIFTS ? 'CRITIC FINALE' : 'SHIFT ' + s;
-    const w = ctx.measureText(label).width + 22;
+    const label = (done ? '✓ ' : '') + (s === TOTAL_SHIFTS ? 'CRITIC' : 'S' + s);
+    const w = ctx.measureText(label).width + 20;
     ctx.fillStyle = done ? '#4caf6d' : cur ? '#ffd94d' : 'rgba(255,246,227,0.25)';
     roundRectPath(ctx, x, 62, w, 20, 10); ctx.fill();
-    ctx.fillStyle = done || cur ? '#241608' : '#e8dcc2';
-    ctx.fillText((done ? '✓ ' : '') + label, x + 11, 76);
+    ctx.strokeStyle = '#1a120b';
+    ctx.lineWidth = 1.5;
+    roundRectPath(ctx, x, 62, w, 20, 10); ctx.stroke();
+    ctx.fillStyle = done || cur ? '#1a120b' : '#e8dcc2';
+    ctx.fillText(label, x + 10, 76);
     x += w + 6;
     if (s < TOTAL_SHIFTS) {
       ctx.fillStyle = '#c9b48a';
       ctx.fillText('›', x - 2, 76);
+      x += 8;
     }
   }
-  // WIN / LOSE objective pill, centred.
-  const obj = 'WIN: 5 Shifts + Critic  ·  LOSE: ' + LOSE_MISSES + ' Missed';
+  // WIN / LOSE objective pill, centred — target folded in so the right
+  // side keeps clear room for the perk strip.
+  const obj = 'WIN: 5 Shifts + Critic  ·  LOSE: ' + LOSE_MISSES + ' Missed  ·  TARGET ' + g.shiftServed + '/' + shiftTarget(g.shift);
   ctx.font = 'bold 12px system-ui, sans-serif';
   const ow = ctx.measureText(obj).width + 28;
   pill(ctx, 640 - ow / 2, 61, ow, 22, 'rgba(24,12,8,0.88)', '#d4a017');
@@ -89,32 +95,46 @@ export function drawRoadmap(ctx, g, now) {
   ctx.textAlign = 'center';
   ctx.fillText(obj, 640, 76);
   ctx.textAlign = 'left';
-  // Shift target sits left of the perk badges, never under them.
+  // Perks: readable short labels in a framed strip, max 3 shown + overflow.
   const badges = ownedBadges(g);
-  const badgeW = badges.length * 38 + (badges.length ? 48 : 0);
-  ctx.fillStyle = '#e8dcc2';
-  ctx.font = '12px system-ui, sans-serif';
-  ctx.textAlign = 'right';
-  ctx.fillText('TARGET ' + g.shiftServed + '/' + shiftTarget(g.shift) + ' served', 1270 - badgeW, 76);
-  ctx.textAlign = 'left';
-  // Active upgrades / relics as compact badges, right side.
-  let bx = 1270;
+  const shown = badges.slice(0, 3);
+  const overflow = badges.length - shown.length;
   ctx.font = 'bold 11px system-ui, sans-serif';
-  for (let i = badges.length - 1; i >= 0; i--) {
-    const b = badges[i];
-    const w = 34;
-    bx -= w + 4;
+  const labelW = (b) => ctx.measureText(b.short).width + 26;
+  let stripW = shown.reduce((a, b) => a + labelW(b) + 4, 0);
+  if (overflow > 0) stripW += 44;
+  stripW += 46; // PERKS caption
+  let bx = 1270 - stripW;
+  ctx.strokeStyle = '#d4a017';
+  ctx.lineWidth = 1.5;
+  roundRectPath(ctx, bx - 4, 60, stripW + 8, 24, 8);
+  ctx.stroke();
+  ctx.fillStyle = '#c9b48a';
+  ctx.font = 'bold 10px system-ui, sans-serif';
+  ctx.fillText('PERKS', bx + 2, 76);
+  bx += 46;
+  for (const b of shown) {
+    const w = labelW(b);
     ctx.fillStyle = b.kind === 'relic' ? '#7a3b9e' : '#2e7d32';
     roundRectPath(ctx, bx, 62, w, 20, 6); ctx.fill();
+    ctx.strokeStyle = '#1a120b';
+    ctx.lineWidth = 1.5;
+    roundRectPath(ctx, bx, 62, w, 20, 6); ctx.stroke();
     ctx.fillStyle = '#fff';
+    ctx.font = 'bold 11px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(b.icon, bx + w / 2, 76);
+    ctx.fillText(b.short, bx + w / 2, 76);
+    ctx.textAlign = 'left';
+    bx += w + 4;
   }
-  if (badges.length) {
-    ctx.fillStyle = '#c9b48a';
-    ctx.font = '11px system-ui, sans-serif';
-    ctx.textAlign = 'right';
-    ctx.fillText('PERKS', bx - 8, 76);
+  if (overflow > 0) {
+    ctx.fillStyle = 'rgba(255,246,227,0.25)';
+    roundRectPath(ctx, bx, 62, 40, 20, 6); ctx.fill();
+    ctx.fillStyle = '#fff6e5';
+    ctx.font = 'bold 11px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('+' + overflow, bx + 20, 76);
+    ctx.textAlign = 'left';
   }
   ctx.textAlign = 'left';
 }

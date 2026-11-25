@@ -6,7 +6,7 @@ import { fmtCoins, roundRectPath } from '../core/util.js';
 import { TOTAL_SHIFTS, LOSE_MISSES } from '../core/state.js';
 
 function dim(ctx) {
-  ctx.fillStyle = 'rgba(16,8,4,0.72)';
+  ctx.fillStyle = 'rgba(10, 8, 16, 0.88)';
   ctx.fillRect(0, 0, 1280, 720);
 }
 
