@@ -4,7 +4,7 @@
 // the Critic ticket gets a purple frame and a CRITIC ribbon.
 
 import { INGREDIENTS } from '../data/recipes.js';
-import { drawDishPlate } from './plates.js';
+import { drawDishPlate } from './foodDishes.js';
 import { fmtCoins, roundRectPath, clamp } from '../core/util.js';
 import { drawShimmer } from './feel.js';
 
@@ -42,7 +42,7 @@ export function drawTicket(ctx, t, i, now) {
     ctx.strokeStyle = '#e8442e'; ctx.lineWidth = 3;
     roundRectPath(ctx, r.x + 1.5, r.y + 1.5, r.w - 3, r.h - 3, 9); ctx.stroke();
   }
-  drawDishPlate(ctx, t.dish, r.x + 42, r.y + 38, 28);
+  drawDishPlate(ctx, t.dish, r.x + 42, r.y + 38, 28, now);
   // Dish name wraps to two lines when long, so it never collides with
   // the countdown pill, which lives on the patience-bar row instead.
   const words = t.dish.name.split(' ');

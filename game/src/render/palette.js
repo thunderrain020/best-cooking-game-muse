@@ -30,18 +30,6 @@ export const C = {
   skyMid: '#2c1d42',
 };
 
-// A station deck: solid fill plus a 2.5px dark ink outline so the station
-// pops off the counter instead of melting into it.
-export function stationDeck(ctx, r, fill) {
-  ctx.fillStyle = fill;
-  roundRectPath(ctx, r.x, r.y + 56, r.w, 118, 10);
-  ctx.fill();
-  ctx.strokeStyle = C.ink;
-  ctx.lineWidth = 2.5;
-  roundRectPath(ctx, r.x, r.y + 56, r.w, 118, 10);
-  ctx.stroke();
-}
-
 // Dark pill with light text: the one badge style for labels, toasts, alarms.
 export function pill(ctx, x, y, w, h, fill, stroke) {
   ctx.save();

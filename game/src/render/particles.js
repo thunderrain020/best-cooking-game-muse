@@ -43,9 +43,23 @@ export function drawParticles(ctx, g) {
 
 export function drawFloats(ctx, g) {
   for (const f of g.floats) {
+    // Dark pill backing plus an ink outline: the callout reads over any
+    // art behind it and never blends into a station or hint line. The
+    // rise is slow (16px over its life) so it never drifts up into the
+    // station hint lines above the art.
+    const y = f.y - f.t * 16;
     ctx.save();
     ctx.globalAlpha = Math.max(0, 1 - f.t / 1.4);
-    outlineText(ctx, f.text, f.x, f.y - f.t * 40, 'bold 20px system-ui, sans-serif', f.color || '#ffd94d');
+    ctx.font = 'bold 20px system-ui, sans-serif';
+    const w = ctx.measureText(f.text).width + 30;
+    ctx.fillStyle = 'rgba(24,12,8,0.88)';
+    ctx.strokeStyle = '#d4a017';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(f.x - w / 2, y - 18, w, 32, 16);
+    ctx.fill();
+    ctx.stroke();
+    outlineText(ctx, f.text, f.x, y + 1, 'bold 20px system-ui, sans-serif', f.color || '#ffd94d');
     ctx.restore();
   }
 }

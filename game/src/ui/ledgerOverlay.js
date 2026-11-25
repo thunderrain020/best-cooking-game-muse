@@ -3,7 +3,7 @@
 // readable book. VIP dishes are starred.
 
 import { DISHES, INGREDIENTS } from '../data/recipes.js';
-import { drawDishPlate } from '../render/plates.js';
+import { drawDishPlate } from '../render/foodDishes.js';
 import { fmtCoins, roundRectPath } from '../core/util.js';
 import { dim, panel } from './titleOverlay.js';
 

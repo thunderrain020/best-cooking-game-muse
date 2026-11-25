@@ -10,7 +10,7 @@ import { trayCap } from '../core/state.js';
 export function trayRect(i, cap = 4) {
   const w = cap > 4 ? 64 : 88;
   const step = cap > 4 ? 68 : 100;
-  return { x: 310 + i * step, y: 366, w, h: 40 };
+  return { x: 310 + i * step, y: 374, w, h: 40 };
 }
 
 export function crateRect(i) {
@@ -20,11 +20,11 @@ export function crateRect(i) {
 
 export function drawTray(ctx, g) {
   ctx.fillStyle = 'rgba(20,10,5,0.35)';
-  roundRectPath(ctx, 300, 340, 420, 76, 10); ctx.fill();
+  roundRectPath(ctx, 300, 348, 420, 76, 10); ctx.fill();
   ctx.fillStyle = '#ffe6a8';
   ctx.font = 'bold 12px system-ui, sans-serif';
   ctx.textAlign = 'left';
-  ctx.fillText('PREPPED TRAY — click to take', 312, 358);
+  ctx.fillText('PREPPED TRAY — click to take', 312, 366);
   const cap = trayCap(g);
   for (let i = 0; i < cap; i++) {
     const r = trayRect(i, cap);

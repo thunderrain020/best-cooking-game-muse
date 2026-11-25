@@ -17,18 +17,19 @@ export function drawBackdrop(ctx, now) {
   ctx.fillStyle = sky;
   ctx.fillRect(0, 0, 1280, 720);
 
-  // Low sun and its glow.
-  const sun = ctx.createRadialGradient(1010, 178, 10, 1010, 178, 260);
+  // Low sun and its glow, raised into the open window band above the
+  // counter (y 88–140) so it reads in the cover and rush shots.
+  const sun = ctx.createRadialGradient(1010, 112, 8, 1010, 112, 200);
   sun.addColorStop(0, 'rgba(255,214,130,0.98)');
   sun.addColorStop(0.4, 'rgba(255,140,66,0.55)');
   sun.addColorStop(1, 'rgba(255,140,66,0)');
   ctx.fillStyle = sun;
-  ctx.fillRect(720, 0, 560, 460);
+  ctx.fillRect(720, 0, 560, 340);
   ctx.fillStyle = '#ffe6a8';
-  ctx.beginPath(); ctx.arc(1010, 182, 50, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(1010, 112, 34, 0, Math.PI * 2); ctx.fill();
   ctx.strokeStyle = '#ff8c42';
   ctx.lineWidth = 3;
-  ctx.beginPath(); ctx.arc(1010, 182, 58, 0, Math.PI * 2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(1010, 112, 40, 0, Math.PI * 2); ctx.stroke();
 
   // Distant skyline: warehouses, a lighthouse, cranes, masts.
   ctx.fillStyle = '#241a33';
@@ -111,19 +112,21 @@ export function drawBackdrop(ctx, now) {
 export function drawCounter(ctx) {
   // Dark espresso / charcoal counter deck: bright stations and food pop
   // off it at once. 2.5px ink border plus a warm brass trim along the top.
-  const grad = ctx.createLinearGradient(0, 96, 0, 660);
+  // The deck top is lowered to y 140 so the harbour window (y 88–140)
+  // stays open above the stations.
+  const grad = ctx.createLinearGradient(0, 140, 0, 660);
   grad.addColorStop(0, '#231b18');
   grad.addColorStop(1, '#17100d');
   ctx.fillStyle = grad;
-  roundRectPath(ctx, 272, 96, 994, 548, 18); ctx.fill();
+  roundRectPath(ctx, 272, 140, 994, 504, 18); ctx.fill();
   ctx.strokeStyle = '#1a120b';
   ctx.lineWidth = 2.5;
-  roundRectPath(ctx, 272, 96, 994, 548, 18); ctx.stroke();
+  roundRectPath(ctx, 272, 140, 994, 504, 18); ctx.stroke();
   ctx.fillStyle = '#c9a24a';
-  ctx.fillRect(276, 100, 986, 3);
+  ctx.fillRect(276, 144, 986, 3);
   // Subtle wood grain on the dark deck.
   ctx.fillStyle = 'rgba(255,220,160,0.05)';
-  for (let i = 0; i < 12; i++) ctx.fillRect(280 + (i * 83) % 980, 110 + (i % 5) * 104, 60, 2);
+  for (let i = 0; i < 12; i++) ctx.fillRect(280 + (i * 83) % 980, 154 + (i % 5) * 96, 60, 2);
   ctx.fillStyle = '#3a2418';
   ctx.fillRect(272, 428, 994, 8);
 }

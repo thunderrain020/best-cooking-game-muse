@@ -6,8 +6,10 @@
 
 import { drawIngredientIcon } from './foodArt.js';
 import { drawBackdrop, drawCounter } from './backdrop.js';
+import { drawWindowSkyline } from './window.js';
 import { drawBoardPanel, ticketRect } from './tickets.js';
-import { drawBoardStation, drawWokStation, drawPotStation, STATION_RECTS } from './stations.js';
+import { drawBoardStation, drawWokStation, STATION_RECTS } from './stations.js';
+import { drawPotStation } from './stationsPot.js';
 import { drawPlateStation, drawBellStation } from './serve.js';
 import { drawTray, drawCrates, crateRect, trayRect } from './pantry.js';
 import { drawParticles, drawFloats } from './particles.js';
@@ -26,7 +28,7 @@ export const LAYOUT = {
   potRect: STATION_RECTS.potRect,
   plateRect: STATION_RECTS.plateRect,
   bellRect: STATION_RECTS.bellRect,
-  tray: { x: 300, y: 340, w: 420, h: 76 },
+  tray: { x: 300, y: 348, w: 420, h: 76 },
   crates: { x: 300, y: 450, w: 966, h: 150 },
   hintBar: { x: 0, y: 664, w: 1280, h: 56 },
 };
@@ -36,12 +38,13 @@ export { crateRect, trayRect, ticketRect, topBarButtons };
 export function drawScene(ctx, g, view) {
   const now = view.now;
   drawBackdrop(ctx, now);
+  drawWindowSkyline(ctx, now);
   drawCounter(ctx);
   drawBoardPanel(ctx, g, now);
   drawBoardStation(ctx, g, now);
   drawWokStation(ctx, g, now);
   drawPotStation(ctx, g, now);
-  drawPlateStation(ctx, g);
+  drawPlateStation(ctx, g, now);
   drawBellStation(ctx, g, now);
   drawTray(ctx, g);
   drawCrates(ctx, g);
@@ -52,17 +55,19 @@ export function drawScene(ctx, g, view) {
   // (y 96–126), with clear margin above the station headers at y 132.
   // Never drawn over SIZZLE WOK / SIMMER POT or any other header.
   if (g.rush) {
+    // Banner sits left in the window band so the COMBO float has the
+    // right side of the open sky to itself. Never over a station header.
     ctx.save();
     ctx.globalAlpha = 0.85 + 0.15 * Math.sin(now * 8);
     ctx.fillStyle = g.rush.name.includes('STORM') ? '#7a3b9e' : '#e8442e';
-    roundRectPath(ctx, 480, 96, 320, 30, 10); ctx.fill();
+    roundRectPath(ctx, 280, 96, 320, 30, 10); ctx.fill();
     ctx.strokeStyle = '#1a120b';
     ctx.lineWidth = 2.5;
-    roundRectPath(ctx, 480, 96, 320, 30, 10); ctx.stroke();
+    roundRectPath(ctx, 280, 96, 320, 30, 10); ctx.stroke();
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 18px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('» ' + g.rush.name + ' «', 640, 116);
+    ctx.fillText('» ' + g.rush.name + ' «', 440, 116);
     ctx.restore();
   }
   // Critic callout uses the same strip when the finale order is live.

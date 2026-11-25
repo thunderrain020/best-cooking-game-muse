@@ -41,7 +41,8 @@ export function setupShot(name) {
     g.hand = { kind: 'prepped', id: 'lime' };
     g.upgrades = { knives: true, wok: true, pass: false, calm: false, bell: false, pot: false };
     g.relics = { ember: true, star: true };
-    g.floats = [{ x: 640, y: 205, text: '+24 PERFECT!', color: '#ffd94d', t: 0.2 }];
+    // Float hangs in the open window sky, clear of every hint and rim.
+    g.floats = [{ x: 640, y: 112, text: '+24 PERFECT!', color: '#ffd94d', t: 0.2 }];
     g.toast = { text: 'PERFECT sear! +$4', until: 999 };
     g.shot = 'cover';
     return g;
@@ -79,7 +80,8 @@ export function setupShot(name) {
     g.hand = { kind: 'raw', id: 'herbs' };
     g.upgrades = { knives: true, wok: true, pass: true, calm: true, bell: true, pot: false };
     g.relics = { ember: true, lantern: true, star: true };
-    g.floats = [{ x: 640, y: 205, text: 'COMBO x1.8!', color: '#ffd94d', t: 0.1 }];
+    // COMBO float in the window sky, right of the shifted rush banner.
+    g.floats = [{ x: 700, y: 112, text: 'COMBO x1.8!', color: '#ffd94d', t: 0.1 }];
     g.shot = 'rush';
     return g;
   }
