@@ -7,12 +7,11 @@
 import { INGREDIENT_ORDER } from '../data/recipes.js';
 import { clearHand } from '../systems/kitchen.js';
 import { startShift, buyUpgrade, buyRelic, rerollDraft } from '../systems/run.js';
-import { saveMeta } from '../core/meta.js';
 import { goAct, walkTo, trayClick } from '../systems/act.js';
 import { interactNearest } from '../systems/pathing.js';
 import { LAYOUT, crateRect, topBarButtons, W, H } from '../render/canvas.js';
 import { obstacles } from '../render/layout.js';
-import { titleButtons } from './titleOverlay.js';
+import { handleTitleClick, handleTitleKey } from './titleMenu.js';
 import { shopButtons } from './shopOverlay.js';
 import { ledgerButtons } from './ledgerOverlay.js';
 import { summaryButtons } from './summaryOverlay.js';
@@ -24,17 +23,8 @@ function handleClick(api, mx, my) {
   const audio = api.audio;
   audio.ensure();
   if (g.mode === 'title') {
-    const tb = titleButtons(g);
-    for (const d of tb.diff) {
-      if (pointInRect(mx, my, d)) {
-        g.difficulty = d.id;
-        if (g.meta) { g.meta.difficulty = d.id; g.meta.dirty = true; saveMeta(g.meta); }
-        audio.click();
-        return;
-      }
-    }
-    if (tb.endless && pointInRect(mx, my, tb.endless)) { api.startEndless(); return; }
-    if (pointInRect(mx, my, tb.start)) startShift(g, audio);
+    // V11: menu buttons, difficulty pills and save slots (ui/titleMenu.js).
+    handleTitleClick(g, api, mx, my);
     return;
   }
   if (g.mode === 'over') {
@@ -107,9 +97,10 @@ export function attachInput(canvas, api, view, shotName) {
     const g = api.getG();
     const audio = api.audio;
     audio.ensure();
+    // V11: the title hub owns its keys (Enter/N/C/E/L/F/H/1-3).
+    if (g.mode === 'title') { handleTitleKey(g, api, k); return; }
     if (k === 'enter') {
-      if (g.mode === 'title') startShift(g, audio);
-      else if (g.mode === 'shop') startShift(g, audio);
+      if (g.mode === 'shop') startShift(g, audio);
       else if (g.mode === 'over') api.restart();
       return;
     }

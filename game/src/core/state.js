@@ -86,6 +86,11 @@ export function createGame(seed = 20261125) {
     relics: {},
     shopChoices: [],
     relicChoices: [],
+    // V11: 3 localStorage save slots on the title hub (core/saves.js).
+    saveSlots: [null, null, null], // loaded by main.js; demo slots in shots only
+    saveSlot: null, // this run's slot index (null = not saving yet)
+    elapsed: 0, // seconds played this run (shown on save slots)
+    featsOpen: false, // title-hub feats panel
     ledgerOpen: false,
     helpOpen: false,
     toast: null,

@@ -9,6 +9,7 @@ import { SHIFT_LENGTH, TOTAL_SHIFTS, shiftTarget, createGame } from '../core/sta
 import { UPGRADES, RELICS, pickDraft } from './upgrades.js';
 import { recordRun } from '../core/best.js';
 import { saveMeta } from '../core/meta.js';
+import { assignSaveSlot, snapshotSave, clearSlot } from '../core/saves.js';
 import { generateGoals, noteGoal } from './goals.js';
 import { checkFeats } from '../data/feats.js';
 import { toast } from './kitchen.js';
@@ -63,6 +64,8 @@ export function endShift(g, audio) {
   g.rushDone = { sunset: false, storm: false };
   g.combo = 0;
   audio.setSizzle(false);
+  // A cleared shift autosaves into this run's slot (V11).
+  snapshotSave(g);
 }
 
 export function buyUpgrade(g, id, audio) {
@@ -110,6 +113,8 @@ export function endRun(g, won, reason) {
   }
   if (g.meta && g.meta.dirty) saveMeta(g.meta);
   recordRun(g);
+  // The run is over: its save slot frees up for a fresh run.
+  if (g.saveSlot != null) clearSlot(g, g.saveSlot);
 }
 
 // Endless Rush: a fresh run that starts on Night 8 and never meets the
@@ -123,5 +128,6 @@ export function startEndless(g, audio) {
   g.endlessAvailable = true;
   g.endless = true;
   g.shift = TOTAL_SHIFTS + 1;
+  assignSaveSlot(g);
   startShift(g, audio);
 }

@@ -1,18 +1,83 @@
 // Ember & Tide — ui/titleOverlay.js
-// Title screen: the game name, the promise, the WIN / LOSE rules for the
-// 7 Harbour Nights, the difficulty tiers, Endless Rush once unlocked,
-// the controls, and the persistent best run. Drawn over the kitchen
-// backdrop.
+// The Harbour Rooftop Title Hub: a dark-indigo & gold production hub
+// with a menu column (keycap buttons + difficulty pills), the hero dish
+// and chef mascot, 3 interactive localStorage save slots, and a 7-tile
+// feature strip. Art lives in ui/titleArt.js / ui/titleBackdrop.js;
+// clicks and keys live in ui/titleMenu.js. Menu buttons and save slots
+// really work in live play; demo slots only ever exist in staged
+// screenshot states, never in live storage.
 
 import { fmtCoins, roundRectPath } from '../core/util.js';
-import { TOTAL_SHIFTS, LOSE_MISSES, DIFFICULTIES } from '../core/state.js';
+import { TOTAL_SHIFTS, LOSE_MISSES } from '../core/state.js';
+import { featCount } from '../data/feats.js';
+import { centreText, menuButton, diffPill, drawFeatureStrip, drawSlotCard, MENU, SLOTS } from './titleArt.js';
+import { drawTitleBackdrop, drawHero, drawFeatsPanel, FEATS_CLOSE } from './titleBackdrop.js';
 
-function dim(ctx) {
+export function titleButtons(g) {
+  const slots = g.saveSlots || [null, null, null];
+  const hasSave = slots.some(Boolean);
+  const endless = g.endlessAvailable || (g.meta && g.meta.endlessUnlocked);
+  const items = [];
+  let y = MENU.y0;
+  const push = (id, key, label, opts) => {
+    items.push({ id, key, label, opts, rect: { x: MENU.x, y, w: MENU.w, h: MENU.h } });
+    y += MENU.h + MENU.gap;
+  };
+  if (hasSave) push('continue', '⏎', 'CONTINUE', { accent: true });
+  push('new', 'N', 'NEW RUN', { accent: !hasSave });
+  push('endless', 'E', endless ? 'ENDLESS RUSH' : 'ENDLESS RUSH · LOCKED', { disabled: !endless });
+  push('ledger', 'L', 'RECIPE LEDGER (18)', {});
+  push('feats', 'F', 'FEATS (' + featCount(g) + '/16)', {});
+  push('help', 'H', 'HOW TO PLAY', {});
+  const diffLabelY = y + 12;
+  const diffY = diffLabelY + 14;
+  const diff = ['calm', 'service', 'typhoon'].map((id, i) => ({ id, x: MENU.x + i * 110, y: diffY, w: 100, h: 34 }));
+  const filled = slots.filter(Boolean).length;
+  const slotRects = [0, 1, 2].map((i) => ({ x: SLOTS.x + 14, y: 192 + i * 116, w: SLOTS.w - 28, h: 104 }));
+  const slotDel = slotRects.map((r) => ({ x: r.x + r.w - 30, y: r.y + 9, w: 20, h: 22 }));
+  return { menu: items, diff, diffLabelY, slotRects, slotDel, filled, endless, hasSave, featsClose: FEATS_CLOSE };
+}
+
+export function drawTitle(ctx, g, now) {
+  const t = now || 0;
+  drawTitleBackdrop(ctx, t);
+  centreText(ctx, 'EMBER & TIDE', 640, 78, 'bold 54px Georgia, serif', '#ffd94d');
+  centreText(ctx, 'a rooftop harbour kitchen at sunset', 640, 112, 'italic 20px Georgia, serif', '#ffe6a8');
+  const b = titleButtons(g);
+  for (const m of b.menu) menuButton(ctx, m.rect, m.key, m.label, m.opts);
+  centreText(ctx, 'DIFFICULTY', MENU.x + MENU.w / 2, b.diffLabelY, 'bold 13px system-ui, sans-serif', '#ffe6a8');
+  for (const d of b.diff) diffPill(ctx, d, d.id, g.difficulty === d.id);
+  // Hero: chef mascot + steaming Tide & Ember Special, centre column.
+  drawHero(ctx, t);
+  centreText(ctx, "TONIGHT'S SPECIAL", 628, 430, 'bold 13px system-ui, sans-serif', '#ffd94d');
+  centreText(ctx, 'Tide & Ember Special · $22', 628, 454, '15px system-ui, sans-serif', '#fdf6e3');
+  centreText(ctx, 'WIN: clear 7 nights & impress the Critic · LOSE: 3 tickets walk out', 628, 488, '12px system-ui, sans-serif', '#c9b48a');
+  if (g.best.score > 0) {
+    centreText(ctx, 'BEST RUN: ' + fmtCoins(g.best.score) + ' earned · reached Shift ' + g.best.shift, 628, 514, 'bold 14px system-ui, sans-serif', '#ffd94d');
+  }
+  // Saved runs panel, right.
+  ctx.fillStyle = 'rgba(24,12,8,0.72)';
+  roundRectPath(ctx, SLOTS.x, SLOTS.y, SLOTS.w, SLOTS.h, 16); ctx.fill();
+  ctx.strokeStyle = '#d4a017'; ctx.lineWidth = 2;
+  roundRectPath(ctx, SLOTS.x, SLOTS.y, SLOTS.w, SLOTS.h, 16); ctx.stroke();
+  centreText(ctx, 'SAVED RUNS (' + b.filled + '/3)', SLOTS.x + SLOTS.w / 2, 178, 'bold 16px system-ui, sans-serif', '#ffd94d');
+  const slots = g.saveSlots || [null, null, null];
+  for (let i = 0; i < 3; i++) drawSlotCard(ctx, slots[i], b.slotRects[i], i, t);
+  drawFeatureStrip(ctx);
+  // Single-line control hint bar, like the gameplay footer.
+  ctx.fillStyle = 'rgba(24,12,8,0.85)';
+  ctx.fillRect(0, 676, 1280, 44);
+  centreText(ctx, 'WASD walk · Space / E interact · 1–9, 0 pantry · Q chop · F wok · G grill · T pot · R plate · L ledger', 640, 698, '13px system-ui, sans-serif', '#fdf6e3');
+  if (g.featsOpen) drawFeatsPanel(ctx, g);
+}
+
+export function dim(ctx) {
   ctx.fillStyle = 'rgba(8,6,12,0.92)';
   ctx.fillRect(0, 0, 1280, 720);
 }
 
-function panel(ctx, x, y, w, h) {
+// Cream panel with a soft shadow, shared by the ledger/help overlays.
+export function panel(ctx, x, y, w, h) {
   ctx.fillStyle = '#fdf6e3';
   ctx.shadowColor = 'rgba(0,0,0,0.5)';
   ctx.shadowBlur = 24;
@@ -24,87 +89,4 @@ function panel(ctx, x, y, w, h) {
   ctx.shadowOffsetY = 0;
 }
 
-export const DIFF_BUTTONS = [
-  { id: 'calm', x: 448, y: 478, w: 120, h: 32 },
-  { id: 'service', x: 584, y: 478, w: 120, h: 32 },
-  { id: 'typhoon', x: 720, y: 478, w: 120, h: 32 },
-];
-
-export function drawTitle(ctx, g) {
-  dim(ctx);
-  panel(ctx, 240, 90, 800, 560);
-  ctx.textAlign = 'center';
-  ctx.fillStyle = '#e8703f';
-  ctx.font = 'bold 64px Georgia, serif';
-  ctx.fillText('EMBER & TIDE', 640, 190);
-  ctx.fillStyle = '#7a3b5e';
-  ctx.font = 'italic 24px Georgia, serif';
-  ctx.fillText('a rooftop harbour kitchen at sunset', 640, 232);
-  ctx.fillStyle = '#2a1a12';
-  ctx.font = '17px system-ui, sans-serif';
-  const lines = [
-    'The dinner crowd is coming up the stairs. Take their orders,',
-    'chop, sizzle and simmer, plate it beautiful, and ring the bell.',
-    'Serve fast for tips, chain serves for combos, and mind the wok —',
-    'a perfect pull pays extra, a burnt one pays nothing.',
-  ];
-  lines.forEach((l, i) => ctx.fillText(l, 640, 290 + i * 26));
-  ctx.fillStyle = '#7a3b5e';
-  ctx.font = 'bold 15px Georgia, serif';
-  ctx.fillText('WIN: clear ' + TOTAL_SHIFTS + ' Harbour Nights and impress the Harbour Critic  ·  LOSE: ' + LOSE_MISSES + ' tickets walk out', 640, 412);
-  if (g.best.score > 0) {
-    ctx.fillStyle = '#b8860b';
-    ctx.font = 'bold 16px system-ui, sans-serif';
-    ctx.fillText('BEST RUN: ' + fmtCoins(g.best.score) + ' earned · reached Shift ' + g.best.shift, 640, 442);
-  }
-  // Difficulty tiers: Calm (patient crowd), Service (the classic
-  // rush), Typhoon (tight patience, fast tickets). Persisted with the
-  // profile, so the choice survives a reload.
-  ctx.fillStyle = '#7a3b5e';
-  ctx.font = 'bold 13px system-ui, sans-serif';
-  ctx.fillText('DIFFICULTY', 640, 470);
-  for (const b of DIFF_BUTTONS) {
-    const d = DIFFICULTIES[b.id];
-    const sel = g.difficulty === b.id;
-    ctx.fillStyle = sel ? '#2e7d32' : '#e8dcc2';
-    roundRectPath(ctx, b.x, b.y, b.w, b.h, 10); ctx.fill();
-    ctx.strokeStyle = sel ? '#1a120b' : '#b8a67c'; ctx.lineWidth = 2;
-    roundRectPath(ctx, b.x, b.y, b.w, b.h, 10); ctx.stroke();
-    ctx.fillStyle = sel ? '#fff' : '#2a1a12';
-    ctx.font = 'bold 14px system-ui, sans-serif';
-    ctx.fillText(d.name.toUpperCase(), b.x + b.w / 2, b.y + 21);
-  }
-  ctx.fillStyle = '#5d3a1e';
-  ctx.font = 'bold 15px system-ui, sans-serif';
-  ctx.fillText('CLICK TO PLAY — or press Enter', 640, 536);
-  ctx.fillStyle = '#7a5a34';
-  ctx.font = '14px system-ui, sans-serif';
-  ctx.fillText('WASD walk · Space / E interact · 1–9, 0 pantry · Q chop · F wok · T pot · R plate · L ledger', 640, 558);
-  const endless = g.endlessAvailable || (g.meta && g.meta.endlessUnlocked);
-  const startBtn = endless ? { x: 420, y: 576, w: 220, h: 52 } : { x: 520, y: 576, w: 240, h: 52 };
-  ctx.fillStyle = '#e8703f';
-  roundRectPath(ctx, startBtn.x, startBtn.y, startBtn.w, startBtn.h, 12);
-  ctx.fill();
-  ctx.fillStyle = '#fff';
-  ctx.font = 'bold 22px system-ui, sans-serif';
-  ctx.fillText('START NIGHT 1', 640 - (endless ? 110 : 0), 610);
-  if (endless) {
-    ctx.fillStyle = '#7a3b9e';
-    roundRectPath(ctx, 660, 576, 220, 52, 12);
-    ctx.fill();
-    ctx.fillStyle = '#fff';
-    ctx.fillText('ENDLESS RUSH', 770, 610);
-  }
-}
-
-export function titleButtons(g) {
-  const endless = g.endlessAvailable || (g.meta && g.meta.endlessUnlocked);
-  const btns = {
-    start: endless ? { x: 420, y: 576, w: 220, h: 52 } : { x: 520, y: 576, w: 240, h: 52 },
-    diff: DIFF_BUTTONS,
-  };
-  if (endless) btns.endless = { x: 660, y: 576, w: 220, h: 52 };
-  return btns;
-}
-
-export { dim, panel };
+export { TOTAL_SHIFTS, LOSE_MISSES };

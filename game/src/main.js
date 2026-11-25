@@ -6,6 +6,7 @@
 import { createGame } from './core/state.js';
 import { loadBest } from './core/best.js';
 import { loadMeta } from './core/meta.js';
+import { loadSaves } from './core/saves.js';
 import { setupShot } from './core/shots.js';
 import { AudioSys } from './systems/audio.js';
 import { updateOrders } from './systems/orders.js';
@@ -35,6 +36,8 @@ if (!shotName) {
   g.difficulty = meta.difficulty;
   g.feats = { ...meta.feats };
   g.endlessAvailable = meta.endlessUnlocked;
+  // V11: the three save slots for the title hub.
+  g.saveSlots = loadSaves();
 }
 g.muted = false;
 
@@ -47,6 +50,7 @@ function restart() {
   g.best = best;
   g.muted = muted;
   g.meta = meta;
+  g.saveSlots = loadSaves();
   if (meta) {
     g.difficulty = meta.difficulty;
     g.feats = { ...meta.feats };
@@ -92,11 +96,17 @@ function frame(nowMs) {
     }
     updateKitchen(g, dt, audio);
     updateChef(g, dt, view.keys, audio);
+    g.elapsed = (g.elapsed || 0) + dt; // V11: run clock for save slots
     if (g.critic.served && g.mode === 'play') {
       endRun(g, true, 'The Critic loved the Tide & Ember Special — seven Harbour Nights cleared!');
     }
   }
-  if (g.mode === 'title') drawTitle(ctx, g);
+  if (g.mode === 'title') {
+    drawTitle(ctx, g, view.now);
+    // Ledger / help open over the title hub, not instead of it.
+    if (g.ledgerOpen) drawLedger(ctx, g);
+    else if (g.helpOpen) drawHelp(ctx, g);
+  }
   else if (g.mode === 'over') { drawScene(ctx, g, view); drawSummary(ctx, g); }
   else {
     drawScene(ctx, g, view);

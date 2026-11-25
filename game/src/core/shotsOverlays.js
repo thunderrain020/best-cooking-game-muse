@@ -1,10 +1,35 @@
 // Ember & Tide — core/shotsOverlays.js
-// The staged states for the two overlay screenshots: the between-shift
-// draft (prep) and the end-of-run victory summary (upgrades). Split out
-// of core/shots.js so both files stay under the 6 KB module cap.
+// The staged states for the overlay screenshots. V11 lineup:
+// prep = the illustrated Title Hub with 3 demo save slots,
+// rush = the between-shift draft shop, upgrades = the victory summary.
+// The demo save slots in setupTitle exist ONLY in this staged state —
+// live play reads real localStorage saves and never sees them. Split
+// out of core/shots.js so both files stay under the 6 KB module cap.
 
 import { base, ticket, chef } from './shotsUtil.js';
 import { generateGoals } from '../systems/goals.js';
+
+export function setupTitle() {
+  // The Title Hub shot: phase 'title', SERVICE highlighted, BEST RUN
+  // $512, FEATS 12/16, Endless unlocked, 3 pre-seeded demo save slots.
+  const g = base({ coins: 0, served: 0, shift: 1, shiftLeft: 150, time: 0 });
+  g.mode = 'title';
+  g.difficulty = 'service';
+  g.best = { score: 512, shift: 7 };
+  g.feats = {
+    'first-perfect': true, 'perfect-chef': true, 'storm-survivor': true, 'zero-waste': true,
+    'vip-maestro': true, 'combo-5': true, 'combo-8': true, 'clean-route': true,
+    'batch-cook': true, 'critic-fan': true, 'seven-nights': true, 'gold-rush': true,
+  };
+  g.endlessAvailable = true;
+  g.saveSlots = [
+    { shift: 5, difficulty: 'service', coins: 380, served: 21, earned: 380, failed: 0, upgrades: { knives: true, wok: true, batch: true }, relics: { ember: true, star: true }, elapsed: 2538, savedAt: 3 },
+    { shift: 3, difficulty: 'calm', coins: 210, served: 12, earned: 210, failed: 1, upgrades: { knives: true }, relics: { ember: true }, elapsed: 1245, savedAt: 2 },
+    { shift: 7, difficulty: 'typhoon', coins: 486, served: 27, earned: 512, failed: 0, upgrades: { knives: true, wok: true, pass: true, bell: true, batch: true, twin: true }, relics: { ember: true, lantern: true, star: true, crisp: true }, elapsed: 3720, savedAt: 1 },
+  ];
+  g.shot = 'prep';
+  return g;
+}
 
 export function setupPrep() {
   // Between-shift draft: the shop UI over a live kitchen mid-prep.
