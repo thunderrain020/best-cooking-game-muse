@@ -19,6 +19,7 @@ import { drawTopBar, topBarButtons } from './hudBar.js';
 import { drawRoadmap } from './roadmap.js';
 import { drawGoals } from './goals.js';
 import { drawRoute, drawChef } from './chef.js';
+import { drawHeatBar } from './heatBar.js';
 import { pillText } from './palette.js';
 import { roundRectPath } from '../core/util.js';
 import { FLOOR, TERRACE, BOARD_RECTS, WOK_RECTS, POT_RECT, GARNISH_RECT, ISLAND_RECT, BELL_RECT, TRASH_RECT } from './layout.js';
@@ -71,14 +72,14 @@ export function drawScene(ctx, g, view) {
   drawParticles(ctx, g);
   drawFloats(ctx, g);
 
-  // Rush banner: a floating pill in the seam between the ticket rail
-  // and the counter band — clear of cards, crates and station tags.
-  if (g.rush || (g.critic.active && !g.critic.served)) {
-    const storm = g.rush && g.rush.name.includes('STORM');
-    const text = g.rush ? '» ' + g.rush.name + ' «' : 'CRITIC FINALE — serve the Tide & Ember Special!';
+  // Rush banner: the HARBOUR HEAT escalation bar while a rush runs;
+  // the purple CRITIC FINALE pill when only the critic waits.
+  if (g.rush) {
+    drawHeatBar(ctx, g);
+  } else if (g.critic.active && !g.critic.served) {
     ctx.save();
     ctx.globalAlpha = 0.85 + 0.15 * Math.sin(now * 8);
-    ctx.fillStyle = storm || g.critic.active ? '#7a3b9e' : '#e8442e';
+    ctx.fillStyle = '#7a3b9e';
     roundRectPath(ctx, 640 - 200, 162, 400, 26, 12); ctx.fill();
     ctx.strokeStyle = '#1a120b';
     ctx.lineWidth = 2.5;
@@ -87,7 +88,7 @@ export function drawScene(ctx, g, view) {
     ctx.font = 'bold 15px system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(text, 640, 175);
+    ctx.fillText('CRITIC FINALE — serve the Tide & Ember Special!', 640, 175);
     ctx.textBaseline = 'alphabetic';
     ctx.restore();
   }

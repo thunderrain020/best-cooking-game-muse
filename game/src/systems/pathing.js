@@ -1,45 +1,14 @@
 // Ember & Tide — systems/pathing.js
-// Nearest station (Space / E) and grid A* pathfinding for stroll-to-act:
-// the island and counters block straight lines, so the chef follows a
-// path over 26px cells (blocked when a centre lies inside an obstacle
-// expanded by the chef's radius). A clear direct segment needs no path.
+// Grid A* pathfinding for stroll-to-act: the island and counters block
+// straight lines, so the chef follows a path over 26px cells (blocked
+// when a centre lies inside an obstacle expanded by the chef's radius).
+// A clear direct segment needs no path. Space / E interaction lives in
+// systems/pathingActions.js (split out so both stay under 5 KB).
 
-import { INGREDIENT_ORDER } from '../data/recipes.js';
-import { chopOnce, clickWok, pullWok } from './kitchen.js';
-import { clickBell } from './plating.js';
-import { servePlate } from './orders.js';
-import { stationAt, doAction, actionForKey } from './act.js';
 import { obstacles } from '../render/layout.js';
 
-const REACH = 48;
 const RADIUS = 13;
 const CELL = 26, COLS = 40, ROWS = 19, OY = 168;
-
-export function nearestStation(g) {
-  const c = g.chef;
-  const keys = ['board0', 'board1', 'wok0', 'wok1', 'pot', 'plate', 'bell', 'trash', 'garnish'];
-  for (let i = 0; i < 8; i++) keys.push('crate:' + INGREDIENT_ORDER[i]);
-  let best = null, bestD = REACH * REACH;
-  for (const key of keys) {
-    const at = stationAt(key);
-    const dx = at.x - c.x, dy = at.y - c.y;
-    const d = dx * dx + dy * dy;
-    if (d < bestD) { bestD = d; best = key; }
-  }
-  return best;
-}
-
-// Space / E: use the station the chef stands at, else the old contextual
-// action (pull the wok, chop the board, ring the bell).
-export function interactNearest(g, audio) {
-  const key = nearestStation(g);
-  if (key) { doAction(g, actionForKey(key, g), audio); return; }
-  if (g.wok.state === 'cooking') { pullWok(g, audio); return; }
-  if (g.wok.state === 'burning') { clickWok(g, audio, g.wok.slot); return; }
-  if (g.board.item) { chopOnce(g, audio); return; }
-  if (g.plate.dishId) { clickBell(g, audio, servePlate); }
-}
-
 function cellBlocked(cx, cy) {
   const x = cx * CELL + CELL / 2, y = OY + cy * CELL + CELL / 2;
   return obstacles().some((r) => x > r.x - RADIUS && x < r.x + r.w + RADIUS && y > r.y - RADIUS && y < r.y + r.h + RADIUS);

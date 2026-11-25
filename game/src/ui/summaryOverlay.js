@@ -11,7 +11,8 @@ import { roundRectPath } from '../core/util.js';
 import { drawChefMascot, drawStars } from '../render/iconBadges.js';
 import { darkPanel } from '../render/palette.js';
 import { drawShiftChart, drawFeatsBadge, drawVictoryQuote } from './summaryChart.js';
-import { SUMMARY_CARD, SUMMARY_SECTIONS, drawStatsColumns, drawPerksSection, drawDishesSection, drawBestRunPill, drawSummaryButtons, summaryButtons } from './summarySections.js';
+import { SUMMARY_CARD, SUMMARY_SECTIONS, drawStatsColumns, drawChronicleStrip, drawPerksSection, drawDishesSection } from './summarySections.js';
+import { drawBestRunPill, drawSummaryButtons, summaryButtons } from './summaryFooter.js';
 import { dim } from './titleOverlay.js';
 
 export { summaryButtons };
@@ -61,9 +62,11 @@ export function drawSummary(ctx, g) {
   ctx.textBaseline = 'alphabetic';
   // FEATS badge: unlocked feats this run, out of 16.
   drawFeatsBadge(ctx, g);
-  // Two-column stats, then the shift chart.
+  // Two-column stats, then the shift chart, then the campaign
+  // chronicle strip above the roomy sections.
   drawStatsColumns(ctx, g, 196);
   drawShiftChart(ctx, g);
+  drawChronicleStrip(ctx, g, SUMMARY_SECTIONS.chronicleY);
   // Roomy sections: perks, dishes, BEST RUN, buttons.
   drawPerksSection(ctx, g, SUMMARY_SECTIONS.perksHeaderY);
   drawDishesSection(ctx, g, SUMMARY_SECTIONS.dishesHeaderY);

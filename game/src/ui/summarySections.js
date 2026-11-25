@@ -14,12 +14,36 @@ import { drawSetBadges } from '../render/setBadges.js';
 
 export const SUMMARY_CARD = { x: 240, y: 22, w: 800, h: 676 };
 export const SUMMARY_SECTIONS = {
-  perksHeaderY: 408,
-  dishesHeaderY: 519,
-  bestRunY: 602,
-  buttonsY: 644,
+  chronicleY: 380,
+  perksHeaderY: 418,
+  dishesHeaderY: 527,
+  bestRunY: 610,
+  buttonsY: 648,
   footerY: 712,
 };
+
+// Campaign Chronicle: the full arc in one line — every rush cleared
+// and the critic won over — right above PERKS & RELICS, 16px clear of
+// it. V13: the chart moved up 8px (labels at 372) to make room.
+export function drawChronicleStrip(ctx, g, y) {
+  const label = 'NIGHTS & CRITICS CLEARED: ';
+  const items = 'WOK FLARE ✓ · BROTH RUSH ✓ · STORM RUSH ✓ · CRITIC LIN ★★★';
+  ctx.font = 'bold 12px system-ui, sans-serif';
+  const w = ctx.measureText(label).width + ctx.measureText(items).width + 32;
+  const x0 = 640 - w / 2;
+  ctx.fillStyle = 'rgba(24,12,8,0.78)';
+  roundRectPath(ctx, x0, y, w, 22, 11); ctx.fill();
+  ctx.strokeStyle = '#d4a017';
+  ctx.lineWidth = 1.5;
+  roundRectPath(ctx, x0, y, w, 22, 11); ctx.stroke();
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#ffd94d';
+  ctx.fillText(label, x0 + 16, y + 11);
+  ctx.fillStyle = '#fff6e5';
+  ctx.fillText(items, x0 + 16 + ctx.measureText(label).width, y + 11);
+  ctx.textBaseline = 'alphabetic';
+}
 
 function statRows(ctx, rows, lx, vx, y0) {
   rows.forEach(([label, value], i) => {
@@ -92,51 +116,4 @@ export function drawDishesSection(ctx, g, headerY) {
     ctx.font = '14px system-ui, sans-serif';
     ctx.fillText('—', 640, headerY + 36);
   }
-}
-
-// BEST RUN gold pill: text centred in the 26px pill.
-export function drawBestRunPill(ctx, g, y) {
-  const best = 'BEST RUN: ' + fmtCoins(g.best.score) + ' earned · reached Shift ' + g.best.shift;
-  ctx.font = 'bold 15px system-ui, sans-serif';
-  const bw = ctx.measureText(best).width + 28;
-  ctx.fillStyle = '#d4a017';
-  roundRectPath(ctx, 640 - bw / 2, y, bw, 26, 13);
-  ctx.fill();
-  ctx.strokeStyle = '#1a120b';
-  ctx.lineWidth = 1.5;
-  roundRectPath(ctx, 640 - bw / 2, y, bw, 26, 13);
-  ctx.stroke();
-  ctx.fillStyle = '#1a120b';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(best, 640, y + 13);
-  ctx.textBaseline = 'alphabetic';
-}
-
-// COOK AGAIN / NEW SEED / ENDLESS: text centred in the 48px buttons.
-export function drawSummaryButtons(ctx, g, y) {
-  const btn = (x, label, fill) => {
-    ctx.fillStyle = fill;
-    roundRectPath(ctx, x, y, 200, 48, 12);
-    ctx.fill();
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 19px system-ui, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(label, x + 100, y + 24);
-    ctx.textBaseline = 'alphabetic';
-  };
-  btn(340, 'COOK AGAIN', '#e8703f');
-  btn(560, 'NEW SEED', '#2e7d32');
-  if (g.endlessAvailable || g.meta && g.meta.endlessUnlocked) btn(780, 'ENDLESS', '#7a3b9e');
-}
-
-export function summaryButtons(g) {
-  const y = SUMMARY_SECTIONS.buttonsY;
-  const btns = {
-    again: { x: 340, y, w: 200, h: 48 },
-    seed: { x: 560, y, w: 200, h: 48 },
-  };
-  if (g.endlessAvailable || g.meta && g.meta.endlessUnlocked) btns.endless = { x: 780, y, w: 200, h: 48 };
-  return btns;
 }

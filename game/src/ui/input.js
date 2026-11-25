@@ -8,7 +8,7 @@ import { INGREDIENT_ORDER } from '../data/recipes.js';
 import { clearHand } from '../systems/kitchen.js';
 import { startShift, buyUpgrade, buyRelic, rerollDraft } from '../systems/run.js';
 import { goAct, walkTo, trayClick } from '../systems/act.js';
-import { interactNearest } from '../systems/pathing.js';
+import { interactNearest } from '../systems/pathingActions.js';
 import { LAYOUT, crateRect, topBarButtons, W, H } from '../render/canvas.js';
 import { obstacles } from '../render/layout.js';
 import { handleTitleClick, handleTitleKey } from './titleMenu.js';
