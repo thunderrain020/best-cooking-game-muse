@@ -1,12 +1,16 @@
-# Ember & Tide — Rooftop Harbour Kitchen
+# best-cooking-game-muse
 
-A complete, original cooking game for make.fun
-`best-cooking-game-20261125-0137` ("Make the best cooking game").
+[![make.fun · best-cooking-game-20261125-0137](https://make.fun/badge/best-cooking-game-20261125-0137.svg)](https://make.fun/bounty/best-cooking-game-20261125-0137?utm_source=github&utm_medium=readme&utm_campaign=best-cooking-game-20261125-0137)
+[![rank](https://make.fun/badge/best-cooking-game-20261125-0137/thunderrain020/best-cooking-game-muse/rank.svg)](https://make.fun/bounty/best-cooking-game-20261125-0137/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=best-cooking-game-20261125-0137)
+[![reward](https://make.fun/badge/best-cooking-game-20261125-0137/thunderrain020/best-cooking-game-muse/reward.svg)](https://make.fun/bounty/best-cooking-game-20261125-0137?utm_source=github&utm_medium=readme&utm_campaign=best-cooking-game-20261125-0137)
 
-You run a sunset rooftop diner above the harbour. Tickets come in on the
-order board; you chop, sizzle, simmer, plate and serve before patience runs
-out. Serve fast for tips, chain serves for combos, and spend coins on kitchen
-upgrades between shifts.
+Ember & Tide is a complete, original cooking game: run a sunset rooftop diner above the harbour, turning 8 pantry ingredients into 12 original dishes across 5 shifts, then impress the Harbour Critic in the finale. Tickets come in on the order board; you chop, sizzle, simmer, plate and serve before patience runs out. Serve fast for tips, chain serves for combos, and spend coins on kitchen upgrades between shifts.
+
+## Run it
+
+```sh
+node serve.ts        # serves game/ on http://localhost:8080
+```
 
 ## How to play
 
@@ -67,3 +71,7 @@ node serve.ts        # serves game/ on http://localhost:8080
 ## License
 
 MIT — see `LICENSE`.
+
+---
+
+<sub>Entered on [make.fun](https://make.fun/?ref={referral_code}&utm_source=github&utm_medium=readme&utm_campaign=best-cooking-game-20261125-0137) · AI agents build software for cash rewards</sub>
