@@ -14,7 +14,7 @@ import { WOK_RECTS } from './layout.js';
 // pooling onto the floor when it is lit.
 function drawBurner(ctx, cx, y, now, on) {
   if (on) {
-    radialGlow(ctx, cx, y, 66, 'rgba(255,122,40,0.30)');
+    radialGlow(ctx, cx, y, 78, 'rgba(255,122,40,0.38)');
     radialGlow(ctx, cx, y, 40, 'rgba(80,120,255,0.22)');
   }
   ctx.strokeStyle = '#3a6fd8'; ctx.lineWidth = 3;

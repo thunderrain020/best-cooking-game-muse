@@ -44,7 +44,7 @@ export function setupShot(name) {
     g.goals[1].done = true; g.goals[1].progress = g.goals[1].target;
     // PERFECT float: big two-line callout on the open floor corridor,
     // clear of island/bell/labels.
-    g.floats = [{ x: 775, y: 390, text: 'PERFECT SEAR!\n+$24', color: '#ffd94d', t: 0.2 }];
+    g.floats = [{ x: 795, y: 385, text: 'PERFECT SEAR!\n+$24', color: '#ffd94d', t: 0.2 }];
     g.toast = null;
     g.event = { name: 'WOK FLARE', bonus: '+50% SEAR' };
     g.shot = 'cover';
@@ -82,7 +82,7 @@ export function setupShot(name) {
     g.goals[0].done = true; g.goals[0].progress = g.goals[0].target;
     // COMBO float: big two-line callout on the open corridor, clear
     // of island/bell/tags.
-    g.floats = [{ x: 775, y: 390, text: 'STORM COMBO\n×8!', color: '#ffd94d', t: 0.1 }];
+    g.floats = [{ x: 795, y: 385, text: 'STORM COMBO\n×8!', color: '#ffd94d', t: 0.1 }];
     g.toast = null;
     g.event = { name: 'BROTH RUSH', bonus: '+25% TIPS' };
     g.shot = 'rush';

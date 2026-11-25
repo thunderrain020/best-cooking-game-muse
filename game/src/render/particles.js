@@ -24,7 +24,7 @@ export function spawnSparks(g, x, y, n) {
 }
 
 export function spawnFlameBurst(g, x, y) {
-  spawnSparks(g, x, y, 14);
+  spawnSparks(g, x, y, 20);
   spawnSteam(g, x, y, 6, 'rgba(255,180,90,0.7)');
 }
 
@@ -54,19 +54,21 @@ export function drawFloats(ctx, g) {
     if (lines.length > 1) {
       // Big celebratory callout (PERFECT SEAR! / STORM COMBO): two
       // lines, a golden glow, and a spark burst around the pill.
-      ctx.font = 'bold 24px system-ui, sans-serif';
+      // V7: narrowed (22px / +30 padding) so the pill clears the
+      // island edge and the bell heat-lamp cone by 12px or more.
+      ctx.font = 'bold 22px system-ui, sans-serif';
       const w1 = ctx.measureText(lines[0]).width;
-      ctx.font = 'bold 19px system-ui, sans-serif';
+      ctx.font = 'bold 18px system-ui, sans-serif';
       const w2 = ctx.measureText(lines[1]).width;
-      const w = Math.max(w1, w2) + 40;
-      const px = f.x - w / 2, py = y - 34;
+      const w = Math.max(w1, w2) + 30;
+      const px = f.x - w / 2, py = y - 32;
       ctx.shadowColor = 'rgba(255,179,71,0.9)';
       ctx.shadowBlur = 18;
       ctx.fillStyle = 'rgba(24,12,8,0.92)';
       ctx.strokeStyle = '#ffd94d';
       ctx.lineWidth = 2.5;
       ctx.beginPath();
-      ctx.roundRect(px, py, w, 62, 18);
+      ctx.roundRect(px, py, w, 58, 18);
       ctx.fill();
       ctx.stroke();
       ctx.shadowBlur = 0;
@@ -88,8 +90,8 @@ export function drawFloats(ctx, g) {
         ctx.beginPath(); ctx.arc(sx, sy, 1.8, 0, Math.PI * 2); ctx.fill();
         ctx.restore();
       }
-      outlineText(ctx, lines[0], f.x, y - 12, 'bold 24px system-ui, sans-serif', f.color || '#ffd94d');
-      outlineText(ctx, lines[1], f.x, y + 14, 'bold 19px system-ui, sans-serif', '#fff6e5');
+      outlineText(ctx, lines[0], f.x, y - 11, 'bold 22px system-ui, sans-serif', f.color || '#ffd94d');
+      outlineText(ctx, lines[1], f.x, y + 13, 'bold 18px system-ui, sans-serif', '#fff6e5');
       ctx.restore();
       continue;
     }

@@ -6,15 +6,17 @@
 // what the chef needs mid-shift.
 
 import { roundRectPath } from '../core/util.js';
-import { TOTAL_SHIFTS, shiftTarget } from '../core/state.js';
+import { TOTAL_SHIFTS } from '../core/state.js';
 import { ownedBadges } from '../systems/upgrades.js';
 import { routeSummary } from '../systems/route.js';
 import { goalsDone } from '../systems/goals.js';
 import { pill } from './palette.js';
 
 export function drawRoadmap(ctx, g, now) {
+  // V7: a taller strip (36px) with roomier pills — the floor below
+  // breathes, and nothing in the strip is cramped.
   ctx.fillStyle = 'rgba(19,17,38,0.35)';
-  ctx.fillRect(0, 46, 1280, 32);
+  ctx.fillRect(0, 46, 1280, 36);
   // Roadmap nodes: short labels (S1 ✓, S2… CRITIC) measured from the
   // full drawn text, with a gap, so nothing is ever clipped.
   let x = 16;
@@ -24,34 +26,35 @@ export function drawRoadmap(ctx, g, now) {
     const done = s < g.shift;
     const cur = s === g.shift;
     const label = (done ? '✓ ' : '') + (s === TOTAL_SHIFTS ? 'CRITIC' : 'S' + s);
-    const w = ctx.measureText(label).width + 20;
+    const w = ctx.measureText(label).width + 24;
     ctx.fillStyle = done ? '#4caf6d' : cur ? '#ffd94d' : 'rgba(255,246,227,0.25)';
-    roundRectPath(ctx, x, 52, w, 20, 10); ctx.fill();
+    roundRectPath(ctx, x, 54, w, 22, 11); ctx.fill();
     ctx.strokeStyle = '#1a120b';
     ctx.lineWidth = 1.5;
-    roundRectPath(ctx, x, 52, w, 20, 10); ctx.stroke();
+    roundRectPath(ctx, x, 54, w, 22, 11); ctx.stroke();
     ctx.fillStyle = done || cur ? '#1a120b' : '#e8dcc2';
-    ctx.fillText(label, x + 10, 66);
+    ctx.fillText(label, x + 12, 69);
     x += w + 6;
     if (s < TOTAL_SHIFTS) {
       ctx.fillStyle = '#c9b48a';
-      ctx.fillText('›', x - 2, 66);
+      ctx.fillText('›', x - 2, 69);
       x += 8;
     }
   }
-  // Route Planner pill, centred: stops, walk time, BATCH, GOALS, target.
+  // Route Planner pill, centred: stops, walk time, BATCH, GOALS.
+  // V7: TARGET dropped — it already lives on the tickets and the
+  // GOALS panel, so the pill stays clean and readable.
   const r = routeSummary(g);
   let plan = 'ROUTE: ' + r.stops + (r.stops === 1 ? ' stop' : ' stops') + ' · ' + r.seconds.toFixed(1) + 's';
   if (r.batch) plan += '  |  BATCH ×2';
   const gd = goalsDone(g);
   plan += '  |  GOALS ' + gd + '/' + (g.goals ? g.goals.length : 3);
-  plan += '  |  TARGET ' + g.shiftServed + '/' + shiftTarget(g.shift);
   ctx.font = 'bold 12px system-ui, sans-serif';
-  const ow = ctx.measureText(plan).width + 28;
-  pill(ctx, 640 - ow / 2, 51, ow, 22, 'rgba(24,12,8,0.88)', '#d4a017');
+  const ow = ctx.measureText(plan).width + 32;
+  pill(ctx, 640 - ow / 2, 53, ow, 24, 'rgba(24,12,8,0.88)', '#d4a017');
   ctx.fillStyle = '#ffe6a8';
   ctx.textAlign = 'center';
-  ctx.fillText(plan, 640, 66);
+  ctx.fillText(plan, 640, 69);
   ctx.textAlign = 'left';
   // Perks: readable short labels in a framed strip, max 3 shown + overflow.
   const badges = ownedBadges(g);
@@ -65,33 +68,33 @@ export function drawRoadmap(ctx, g, now) {
   let bx = 1270 - stripW;
   ctx.strokeStyle = '#d4a017';
   ctx.lineWidth = 1.5;
-  roundRectPath(ctx, bx - 4, 50, stripW + 8, 24, 8);
+  roundRectPath(ctx, bx - 4, 52, stripW + 8, 26, 8);
   ctx.stroke();
   ctx.fillStyle = '#c9b48a';
   ctx.font = 'bold 10px system-ui, sans-serif';
-  ctx.fillText('PERKS', bx + 2, 66);
+  ctx.fillText('PERKS', bx + 2, 69);
   bx += 46;
   for (const b of shown) {
     const w = labelW(b);
     ctx.fillStyle = b.kind === 'relic' ? '#7a3b9e' : '#2e7d32';
-    roundRectPath(ctx, bx, 52, w, 20, 6); ctx.fill();
+    roundRectPath(ctx, bx, 54, w, 22, 6); ctx.fill();
     ctx.strokeStyle = '#1a120b';
     ctx.lineWidth = 1.5;
-    roundRectPath(ctx, bx, 52, w, 20, 6); ctx.stroke();
+    roundRectPath(ctx, bx, 54, w, 22, 6); ctx.stroke();
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 11px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(b.short, bx + w / 2, 66);
+    ctx.fillText(b.short, bx + w / 2, 69);
     ctx.textAlign = 'left';
     bx += w + 4;
   }
   if (overflow > 0) {
     ctx.fillStyle = 'rgba(255,246,227,0.25)';
-    roundRectPath(ctx, bx, 52, 40, 20, 6); ctx.fill();
+    roundRectPath(ctx, bx, 54, 40, 22, 6); ctx.fill();
     ctx.fillStyle = '#fff6e5';
     ctx.font = 'bold 11px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('+' + overflow, bx + 20, 66);
+    ctx.fillText('+' + overflow, bx + 20, 69);
     ctx.textAlign = 'left';
   }
   ctx.textAlign = 'left';

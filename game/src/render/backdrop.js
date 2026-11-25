@@ -1,39 +1,83 @@
 // Ember & Tide — render/backdrop.js
-// The top-down kitchen floor: warm harbour slate / teal-ceramic tiles
-// with grout lines, a terracotta runner rug under the plating island, and
-// warm lantern light pools. The top wooden counter band carries the
+// The top-down kitchen floor, V7: warm harbour wood planks with
+// alternating grain (no more flat schematic grid), a slate threshold
+// band with a brass compass medallion inlaid at its centre, and warm
+// amber lantern light pools. The top wooden counter band carries the
 // pantry crates and the trash bin.
 
 import { roundRectPath } from '../core/util.js';
 import { FLOOR } from './layout.js';
 
-const TILE_A = '#2e5a58';
-const TILE_B = '#356661';
-const TILE_C = '#2a4f4d';
+const WOODS = ['#7a5230', '#6b4526', '#835a34', '#5f3d22'];
+const SLATES = ['#3d4a4f', '#46545a'];
 
 export function drawBackdrop(ctx, now) {
   // Dark base under everything (top bar and hint strip sit on it).
   ctx.fillStyle = '#17100d';
   ctx.fillRect(0, 0, 1280, 720);
-  // Ceramic tile floor.
-  const T = 64;
-  for (let ty = FLOOR.y; ty < FLOOR.y + FLOOR.h; ty += T) {
-    for (let tx = 0; tx < FLOOR.w; tx += T) {
-      const i = Math.floor(tx / T), j = Math.floor((ty - FLOOR.y) / T);
-      ctx.fillStyle = (i + j) % 3 === 0 ? TILE_C : (i + j) % 2 === 0 ? TILE_A : TILE_B;
-      ctx.fillRect(tx, ty, Math.min(T, FLOOR.w - tx), Math.min(T, FLOOR.y + FLOOR.h - ty));
-      ctx.strokeStyle = '#1d3a38';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(tx + 1, ty + 1, Math.min(T, FLOOR.w - tx) - 2, Math.min(T, FLOOR.y + FLOOR.h - ty) - 2);
-      ctx.fillStyle = 'rgba(255,235,200,0.05)';
-      ctx.fillRect(tx + 4, ty + 4, Math.min(T - 8, FLOOR.w - tx - 8), 3);
+  // Warm wood-plank floor: horizontal planks, 32px tall, staggered
+  // seams, alternating grain tones and a dark seam per plank.
+  const PH = 32;
+  for (let y = FLOOR.y; y < FLOOR.y + FLOOR.h; y += PH) {
+    const row = Math.floor((y - FLOOR.y) / PH);
+    const off = (row % 2) * 130;
+    for (let sx = -off; sx < FLOOR.w; sx += 260) {
+      const seg = Math.floor((sx + off) / 260);
+      const x0 = Math.max(0, sx);
+      const x1 = Math.min(FLOOR.w, sx + 260);
+      if (x1 <= x0) continue;
+      ctx.fillStyle = WOODS[(row + seg) % WOODS.length];
+      ctx.fillRect(x0, y, x1 - x0, PH);
+      // Grain streaks: one dark, one warm highlight per plank.
+      ctx.fillStyle = 'rgba(0,0,0,0.10)';
+      ctx.fillRect(x0 + 8, y + 9, Math.max(0, x1 - x0 - 16), 2);
+      ctx.fillStyle = 'rgba(255,220,160,0.07)';
+      ctx.fillRect(x0 + 8, y + 21, Math.max(0, x1 - x0 - 16), 2);
+      ctx.fillStyle = 'rgba(20,10,4,0.55)';
+      ctx.fillRect(x1 - 2, y, 2, PH);
     }
+    ctx.fillStyle = 'rgba(20,10,4,0.5)';
+    ctx.fillRect(0, y + PH - 2, FLOOR.w, 2);
   }
+  // Slate threshold band across the floor just below the counter
+  // (y 292–330), with brass grout and a compass medallion inlaid
+  // at its centre — the harbour emblem of the rooftop kitchen.
+  for (let x = 0; x < FLOOR.w; x += 52) {
+    const i = Math.floor(x / 52);
+    ctx.fillStyle = SLATES[i % 2];
+    ctx.fillRect(x, 292, 52, 38);
+    ctx.fillStyle = 'rgba(255,220,160,0.06)';
+    ctx.fillRect(x + 4, 296, 44, 3);
+  }
+  ctx.fillStyle = '#c9a24a';
+  ctx.fillRect(0, 292, FLOOR.w, 2);
+  ctx.fillRect(0, 328, FLOOR.w, 2);
+  for (let x = 0; x <= FLOOR.w; x += 52) ctx.fillRect(x, 292, 2, 38);
+  // Brass compass medallion inlaid in the open floor left of the
+  // island — the harbour emblem of the rooftop kitchen. (It lived
+  // in the slate band first, but the PLATING ISLAND tag covered it.)
+  const mx = 290, my = 440;
+  ctx.strokeStyle = '#c9a24a';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.arc(mx, my, 20, 0, Math.PI * 2); ctx.stroke();
+  ctx.fillStyle = '#c9a24a';
+  ctx.beginPath(); ctx.arc(mx, my, 14, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#3d4a4f';
+  for (let i = 0; i < 4; i++) {
+    const a = (i / 4) * Math.PI * 2 - Math.PI / 2;
+    ctx.beginPath();
+    ctx.moveTo(mx + Math.cos(a) * 13, my + Math.sin(a) * 13);
+    ctx.lineTo(mx + Math.cos(a + 0.35) * 5, my + Math.sin(a + 0.35) * 5);
+    ctx.lineTo(mx + Math.cos(a - 0.35) * 5, my + Math.sin(a - 0.35) * 5);
+    ctx.closePath(); ctx.fill();
+  }
+  ctx.fillStyle = '#ffd94d';
+  ctx.beginPath(); ctx.arc(mx, my, 3, 0, Math.PI * 2); ctx.fill();
   // Warm lantern light pools on the floor.
-  const pools = [[260, 320, 150], [700, 430, 170], [920, 320, 130], [520, 600, 150]];
+  const pools = [[260, 340, 160], [700, 440, 180], [920, 340, 140], [520, 600, 160], [300, 460, 140]];
   for (const [x, y, r] of pools) {
     const g = ctx.createRadialGradient(x, y, 8, x, y, r);
-    g.addColorStop(0, 'rgba(255,190,90,0.13)');
+    g.addColorStop(0, 'rgba(255,190,90,0.20)');
     g.addColorStop(1, 'rgba(255,190,90,0)');
     ctx.fillStyle = g;
     ctx.fillRect(x - r, y - r, r * 2, r * 2);

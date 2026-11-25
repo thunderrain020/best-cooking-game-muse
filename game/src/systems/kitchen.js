@@ -15,7 +15,7 @@ export function toast(g, text) {
 export function addFloat(g, x, y, text, color) {
   g.floats.push({ x, y, text, color: color || '#ffd94d', t: 0 });
   // Celebratory two-line callouts burst sparks around the wok / bell.
-  if (text.includes('\n')) spawnSparks(g, x, y, 12);
+  if (text.includes('\n')) spawnSparks(g, x, y, 16);
 }
 
 export function grabIngredient(g, id, audio) {

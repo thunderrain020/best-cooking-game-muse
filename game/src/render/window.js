@@ -6,6 +6,7 @@ import { roundRectPath } from '../core/util.js';
 import { TERRACE } from './layout.js';
 import { drawDiner, drawTable, drawOrderTag } from './diners.js';
 import { drawRegulars } from './regulars.js';
+import { drawPassArch } from './archway.js';
 
 export function drawTerrace(ctx, g, now) {
   const T = TERRACE;
@@ -103,15 +104,9 @@ export function drawTerrace(ctx, g, now) {
   drawDiner(ctx, 1160, 238, '#7a3b9e', criticHere ? 'impatient' : 'happy');
   // Named regulars + reactive quotes (names, critic pill, quote lines).
   drawRegulars(ctx, g);
-  // Kitchen wall down the terrace's left edge, brass-trimmed pass opening.
-  ctx.fillStyle = '#231b18';
-  ctx.fillRect(T.x, T.y, 14, 254);
-  ctx.fillRect(T.x, 490, 14, T.h - 402);
-  ctx.fillStyle = '#c9a24a';
-  ctx.fillRect(T.x + 11, T.y, 3, 254);
-  ctx.fillRect(T.x + 11, 490, 3, T.h - 402);
-  ctx.fillStyle = 'rgba(255,190,90,0.25)';
-  ctx.fillRect(T.x, 342, 14, 148);
+  // Warm timber pass archway on the terrace edge — the kitchen and
+  // the terrace are one rooftop restaurant now, no harsh wall split.
+  drawPassArch(ctx, g, now);
   if (storm) {
     ctx.strokeStyle = 'rgba(200,210,255,0.55)';
     ctx.lineWidth = 1.5;

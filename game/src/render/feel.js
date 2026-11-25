@@ -29,9 +29,9 @@ export function drawFlameBurst(ctx, cx, cy, now) {
   ctx.save();
   ctx.translate(cx, cy);
   ctx.scale(pulse, pulse);
-  for (let i = 0; i < 5; i++) {
-    const a = (i / 5) * Math.PI * 2 + now * 0.8;
-    const r = 34 + 6 * Math.sin(now * 6 + i);
+  for (let i = 0; i < 7; i++) {
+    const a = (i / 7) * Math.PI * 2 + now * 0.8;
+    const r = 40 + 6 * Math.sin(now * 6 + i);
     ctx.fillStyle = i % 2 ? '#ff8a3c' : '#ffd94d';
     ctx.beginPath();
     ctx.moveTo(Math.cos(a) * 10, Math.sin(a) * 8);
@@ -104,14 +104,27 @@ export function drawBurnFlames(ctx, cx, y, now) {
   }
 }
 
-// Deterministic sizzle sparks rising off a cooking wok.
+// Deterministic sizzle sparks rising off a cooking wok, V7: more
+// sparks, bigger and brighter, over a warm ember glow pooling in
+// the pan — cooking feedback that pops at thumbnail size.
 export function drawSizzleSparks(ctx, cx, y, now) {
-  for (let i = 0; i < 6; i++) {
-    const t = (now * 1.6 + i * 0.17) % 1;
-    const sx = cx - 34 + ((i * 53) % 68) + Math.sin(now * 5 + i) * 4;
-    const sy = y - t * 34;
-    ctx.fillStyle = i % 2 ? 'rgba(255,180,80,0.9)' : 'rgba(255,240,200,0.9)';
-    ctx.beginPath(); ctx.arc(sx, sy, 2.5 - t, 0, Math.PI * 2); ctx.fill();
+  radialGlow(ctx, cx, y + 8, 52, 'rgba(255,122,40,0.34)');
+  radialGlow(ctx, cx, y, 34, 'rgba(255,217,77,0.30)');
+  for (let i = 0; i < 10; i++) {
+    const t = (now * 1.6 + i * 0.1) % 1;
+    const sx = cx - 38 + ((i * 53) % 76) + Math.sin(now * 5 + i) * 4;
+    const sy = y - t * 44;
+    ctx.fillStyle = i % 3 === 0 ? '#fff3c4' : i % 3 === 1 ? 'rgba(255,190,80,0.95)' : 'rgba(255,140,60,0.95)';
+    ctx.beginPath(); ctx.arc(sx, sy, 3.4 - t * 1.2, 0, Math.PI * 2); ctx.fill();
+    // Star glint on the brightest sparks.
+    if (i % 3 === 0) {
+      ctx.strokeStyle = 'rgba(255,240,200,0.9)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(sx - 5, sy); ctx.lineTo(sx + 5, sy);
+      ctx.moveTo(sx, sy - 5); ctx.lineTo(sx, sy + 5);
+      ctx.stroke();
+    }
   }
 }
 
